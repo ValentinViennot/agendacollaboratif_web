@@ -31,29 +31,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by Valentin on 13/07/2016.
  */
 var core_1 = require('@angular/core');
-// TODO Imports minimaux (voir setup PrimeNG)
+// TODO Imports directives mini (cf setup PrimeNG)
 var primeng_1 = require('primeng/primeng');
 var synchronize_service_1 = require("../services/synchronize.service");
-var devoirs_service_1 = require("./devoirs.service");
+var date_service_1 = require("../services/date.service");
+var parse_service_1 = require("../services/parse.service");
 var CdtComponent = (function () {
-    function CdtComponent(_sync, _devoirs) {
+    function CdtComponent(_sync, _date, _parse) {
         this._sync = _sync;
-        this._devoirs = _devoirs;
+        this._date = _date;
+        this._parse = _parse;
+        // Archives ou Devoirs
         this.type = "devoirs";
-        this.commentaires = [];
-        this.active_com = 0;
-        this.display = false; // DEBUG
     }
     CdtComponent.prototype.ngOnInit = function () {
         console.log("* cdtController *");
-        // TODO Vérifier si les variables sont dispo et si l'user est logged via CanActivate
+        this.sync(); // DEBUG (Login -> _sync.then ( navigate to CDT ) )
+        // TODO Vérifier si les variables sont dispo et si l'user est logged via un CanActivate
         // On récupère les infos de l'utilisateur
         this.user = this._sync.getUser();
         // On récupère les devoirs du stockage local
-        this.sections = this._devoirs.getDevoirs(this.type);
+        this.sections = this.getSections();
         // On synchronise les devoirs
-        this.sync();
-        this.ajd_texte = "15/07";
+        this.sync(); // DEBUG : Remplacer par tache reguliere
+        this.ajd_texte = "15/07"; // DEBUG ?
         // DEBUG
         // On configure une synchronisation automatique régulière (ms)
         // DEBUG IntervalObservable.create(1000).subscribe((t) => this.sync());
@@ -62,11 +63,62 @@ var CdtComponent = (function () {
         var th = this;
         this._sync.do().then(function (str) {
             // Si la synchronisation a été effective, on remplace les devoirs de la template par les nouveaux
-            th.sections = th._devoirs.getDevoirs(th.type); // TODO
+            th.sections = th.getSections();
             console.log(str);
         }, function (str) {
             console.log(str);
         });
+    };
+    CdtComponent.prototype.getDevoirs = function () {
+        console.log("GETDEVOIRS"); // DEBUG TODO Optimisation de l'appel (nb occurences)
+        return this._parse.parse(this.type);
+    };
+    /**
+     * ATTENTION : On suppose que les devoirs sont déjà triés par date et classés par matière
+     * @return {Section[]}
+     */
+    CdtComponent.prototype.getSections = function () {
+        // Retour
+        var sections = [];
+        // Variables pour la boucle
+        var section;
+        var lastDate = new Date();
+        var premier = true;
+        this.devoirs = this.getDevoirs();
+        // Pour chaque devoir...
+        this.devoirs.forEach(function (devoir, index, array) {
+            // Si la date du devoir est différente de celle du précédent...
+            if (devoir.date.getTime() != lastDate.getTime()) {
+                // ...S'il s'agit du premier élément...
+                if (premier) {
+                    // ...alors le prochain ne sera plus le premier !
+                    premier = false;
+                }
+                else {
+                    // ...On ajoute la section en cours au retour
+                    sections.push(section);
+                    // On efface la section
+                    section = null;
+                }
+                // On initialise une nouvelle section
+                var day_num = devoir.date.getDate().toString();
+                var day_texte = this._date.getDayTiny(devoir.date);
+                section = {
+                    "titre": day_num,
+                    "sous_titre": day_texte,
+                    "devoirs": []
+                };
+            }
+            // On ajoute le devoir à la section en cours
+            section.devoirs.push(devoir);
+            // On remplace la "date du dernier devoir" par celle de celui en cours
+            lastDate = devoir.date;
+            // Puis on passe au suivant !
+        }, this);
+        // On ajoute la dernière section créée aux sections
+        sections.push(section);
+        // Et on renvoi les sections !
+        return sections;
     };
     CdtComponent.prototype.done = function (devoir) {
         // TODO
@@ -83,16 +135,8 @@ var CdtComponent = (function () {
     CdtComponent.prototype.supprimer_comm = function (commentaire) {
         // TODO
     };
-    CdtComponent.prototype.modifier = function (devoir) {
-        // TODO
-    };
     CdtComponent.prototype.addToMine = function (devoir) {
         // TODO
-    };
-    CdtComponent.prototype.openComms = function (devoir) {
-        this.commentaires = devoir.commentaires;
-        this.active_com = devoir.id;
-        this.display = true;
     };
     CdtComponent = __decorate([
         core_1.Component({
@@ -109,10 +153,11 @@ var CdtComponent = (function () {
             ],
             providers: [
                 synchronize_service_1.SyncService,
-                devoirs_service_1.DevoirsService
+                date_service_1.DateService,
+                parse_service_1.ParseService
             ]
         }), 
-        __metadata('design:paramtypes', [synchronize_service_1.SyncService, devoirs_service_1.DevoirsService])
+        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService])
     ], CdtComponent);
     return CdtComponent;
 }());

@@ -21,7 +21,6 @@
                         <p-splitButtonItem icon="fa-code-fork" label="Doublon" (onClick)="addToMerge(devoir)"></p-splitButtonItem>
                         <p-splitButtonItem icon="fa-exclamation-triangle" label="Signaler" (onClick)="signaler(devoir)"></p-splitButtonItem>
                         <p-splitButtonItem *ngIf="devoir.user==user.id" icon="fa-close" label="Supprimer" (onClick)="supprimer(devoir)"></p-splitButtonItem>
-                        <p-splitButtonItem *ngIf="devoir.user==user.id" icon="fa-pencil" label="Modifier" (onClick)="modifier(devoir)"></p-splitButtonItem>
                     </p-splitButton>
                 </div>
             </header>
@@ -31,7 +30,7 @@
                 /
                 <b>{{devoir.commentaires.length}}</b> <i class="fa fa-comment"></i>
             </footer>
-            <p-accordion>
+            <p-accordion *ngIf="devoir.commentaires.length>0"> <!-- /!\ TODO Mettre le input à l'extérieur quand ==0 --->
                 <p-accordionTab>
                     <header>
                         voir les commentaires
@@ -47,8 +46,7 @@
                             {{commentaire.texte}}
                         </p>
                         <p class="footer">
-                            <span *ngIf="commentaire.date!=ajd_texte" class="date">{{commentaire.date}}</span>
-                            <span class="heure">{{commentaire.heure}}</span>
+                            <span class="date">{{commentaire.date}}</span>
                             <!-- TODO Pipe minutes -->
                         </p>
                     </div>

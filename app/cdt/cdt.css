@@ -21,9 +21,10 @@
 }
 
 .cdt aside p {
-    font-family: "Josefin Sans";
+    font-family: "Josefin Sans", sans-serif;
     font-size: 1.5em;
     margin: 0;
+    background-color: white
 }
 
 .cdt aside p:first-child {
@@ -71,4 +72,8 @@
 
 .cdt .commentaire a {
     float: right
+}
+
+.cdt .flex-item-fluid p-panel:first-child > .ui-widget {
+    margin-top: 50px;
 }

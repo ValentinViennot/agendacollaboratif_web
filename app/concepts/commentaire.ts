@@ -26,7 +26,6 @@ export class Commentaire {
     id: number; // Ref en bdd et pour filtres
     user: number; // ID auteur
     auteur: string; // @prenomnom
-    date: string; // JJ/MM
-    heure: string; // HH:MM
+    date: Date;
     texte: string; // texte + liens des PJ
 }

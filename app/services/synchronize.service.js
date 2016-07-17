@@ -37,6 +37,10 @@ var SyncService = (function () {
     function SyncService(http) {
         this.http = http;
     }
+    /**
+     * Envoi les requêtes vers le serveur et récupère les nouvelles données
+     * @return Promise<string> Resolve si la synchro a été effective, Reject sinon
+     */
     SyncService.prototype.do = function () {
         // On commence par envoyer les requêtes en attente
         return this.sendPending()
@@ -49,6 +53,7 @@ var SyncService = (function () {
      * Envoi des requêtes locales (DO, ADD, DEL) vers le serveur
      * En cas de succès les requêtes sont effacées du stockage navigateur
      * En cas d'échec elles y restent jusqu'à la prochaine synchro réussie
+     * @return Resolve si pas d'action nécessaire ou si requêtes bien envoyées, Reject pour tout autre cas
      */
     SyncService.prototype.sendPending = function () {
         /* DEBUG
@@ -118,6 +123,10 @@ var SyncService = (function () {
         return Promise.resolve("DEBUG - Pending 'envoyees'"); // DEBUG
     };
     // TODO Requete Devoirs & penser au hash de version (reject si pas besoin de sync)
+    /**
+     * Réupère les devoirs et tâches depuis le serveur seulement si la version locale est différente de celle du serveur
+     * @return {Promise<string>} Resolve si des devoirs ont été récupérés correctement, Reject sinon
+     */
     SyncService.prototype.getDevoirs = function () {
         /*
          // On récupère les devoirs depuis le serveur
@@ -138,7 +147,7 @@ var SyncService = (function () {
         window.localStorage.setItem("devoirs", JSON.stringify(mock_1.DEVOIRS));
         return Promise.resolve("DEBUG - Devoirs écrits au local storage"); // DEBUG
     };
-    // TODO Regarder les codes d'erreur et gérer les cas
+    // TODO Regarder les codes d'erreur et gérer les cas depuis les APIS + notifications ici
     /**
      * Gestion des erreurs HTTP
      * @param error

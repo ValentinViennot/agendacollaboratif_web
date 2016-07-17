@@ -23,7 +23,6 @@
  import { Injectable } from '@angular/core';
  import { HTTP_PROVIDERS, Http, Response, Headers, RequestOptions } from '@angular/http';
 
- import { Devoir } from '../concepts/devoir';
  import { DEVOIRS, ARCHIVES } from '../mock';
  import {User} from "../concepts/user";
 
@@ -33,9 +32,14 @@
      constructor(private http:Http) {
      }
 
+     /**
+      * Envoi les requêtes vers le serveur et récupère les nouvelles données
+      * @return Promise<string> Resolve si la synchro a été effective, Reject sinon
+      */
      public do():Promise<string> {
          // On commence par envoyer les requêtes en attente
          return this.sendPending()
+             // Puis on récupère les devoirs depuis le serveur (si nécessaire)
              .then(this.getDevoirs, function (result:string) {
                  return Promise.reject(result);
              })
@@ -47,8 +51,10 @@
       * Envoi des requêtes locales (DO, ADD, DEL) vers le serveur
       * En cas de succès les requêtes sont effacées du stockage navigateur
       * En cas d'échec elles y restent jusqu'à la prochaine synchro réussie
+      * @return Resolve si pas d'action nécessaire ou si requêtes bien envoyées, Reject pour tout autre cas
       */
      public sendPending():Promise<string> {
+         // AJOUTER LES NOUVEAUX PENDING ! (reprendre juste le concept)
           /* DEBUG
          console.log("* Envoi des requêtes locales *");
          // On vérifie la connexion à Internet
@@ -107,6 +113,7 @@
                  }
              } else {
                  return Promise.reject("SYNC ERR! - Il manque des variables au stockage local");
+                 // Déconnecter l'utilisateur avec un message "Corrompu, vérifier lalala"
              }
          }
          else {
@@ -116,7 +123,11 @@
          return Promise.resolve<string>("DEBUG - Pending 'envoyees'"); // DEBUG
      }
 
-     // TODO Requete Devoirs & penser au hash de version (reject si pas besoin de sync)
+     // TODO Requete Devoirs & penser au hash de version (reject si pas besoin de sync ni devoirs ni taches)
+     /**
+      * Réupère les devoirs et tâches depuis le serveur seulement si la version locale est différente de celle du serveur
+      * @return {Promise<string>} Resolve si des devoirs ont été récupérés correctement, Reject sinon
+      */
      public getDevoirs():Promise<string> {
          /*
           // On récupère les devoirs depuis le serveur
@@ -135,10 +146,11 @@
           );
           */
          window.localStorage.setItem("devoirs", JSON.stringify(DEVOIRS));
-         return Promise.resolve<string>("DEBUG - Devoirs écrits au local storage"); // DEBUG
+         window.localStorage.setItem("taches", JSON.stringify(DEVOIRS));
+         return Promise.resolve<string>("DEBUG - Devoirs et tâches écrits au local storage"); // DEBUG
      }
     
-     // TODO Regarder les codes d'erreur et gérer les cas
+     // TODO Regarder les codes d'erreur et gérer les cas depuis les APIS + notifications ici
      /**
       * Gestion des erreurs HTTP
       * @param error

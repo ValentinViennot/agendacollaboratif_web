@@ -22,15 +22,15 @@
  * Created by Valentin on 14/07/2016.
  */
 
-import { Commentaire } from './commentaire';
+ import { Commentaire } from './commentaire';
 
 export class Devoir {
+
     // Identité
     id: number; // Référence du devoir en BDD
     user: number; // Référence de l'utilisateur en BDD
     // Dates
-    date_num: number; // AAMMJJ pour filtres
-    date: string; // JJ/MM/AA pour affichage
+    date: Date; // POUR la génération de dates PHP->JSON : https://openclassrooms.com/forum/sujet/transformer-un-datetime-en-date-pour-json
     // Contenu
     auteur: string; // prenomnom de l'auteur
     matiere: string; // Nom de la matiere
@@ -40,4 +40,5 @@ export class Devoir {
     nb_fait: number; // Combien l'ont fait
     // Infos personnalisées
     fait: boolean; // Propre à l'utilisateur
+
 }

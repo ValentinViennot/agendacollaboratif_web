@@ -23,14 +23,13 @@
 "use strict";
 /**
  * Données test
- * @type {{id: number; user: number; date_num: number; date: string; auteur: string; matiere: string; texte: string; commentaires: {id: number; user: number; user: number; date: string; heure: string; texte: string}[]; nb_fait: number; fait: boolean}[]}
+ * POUR la génération de dates en JSON : https://openclassrooms.com/forum/sujet/transformer-un-datetime-en-date-pour-json
  */
 exports.DEVOIRS = [
     {
         "id": 1,
         "user": 1,
-        "date_num": 160714,
-        "date": "14/07/16",
+        "date": new Date("07/14/2016"),
         "auteur": "valentinviennot",
         "matiere": "Physique",
         "matiere_c": "matiere01",
@@ -40,8 +39,7 @@ exports.DEVOIRS = [
                 "id": 1,
                 "user": 1,
                 "auteur": "valentinviennot",
-                "date": "14/07",
-                "heure": "14:17",
+                "date": new Date("07/14/2016 14:17"),
                 "texte": "commentaire et liens des pj"
             }
         ],
