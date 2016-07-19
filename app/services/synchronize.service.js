@@ -56,6 +56,7 @@ var SyncService = (function () {
      * @return Resolve si pas d'action nécessaire ou si requêtes bien envoyées, Reject pour tout autre cas
      */
     SyncService.prototype.sendPending = function () {
+        // AJOUTER LES NOUVEAUX PENDING ! (reprendre juste le concept)
         /* DEBUG
        console.log("* Envoi des requêtes locales *");
        // On vérifie la connexion à Internet
@@ -114,6 +115,7 @@ var SyncService = (function () {
                }
            } else {
                return Promise.reject("SYNC ERR! - Il manque des variables au stockage local");
+               // Déconnecter l'utilisateur avec un message "Corrompu, vérifier lalala"
            }
        }
        else {
@@ -122,7 +124,7 @@ var SyncService = (function () {
        */
         return Promise.resolve("DEBUG - Pending 'envoyees'"); // DEBUG
     };
-    // TODO Requete Devoirs & penser au hash de version (reject si pas besoin de sync)
+    // TODO Requete Devoirs & penser au hash de version (reject si pas besoin de sync ni devoirs ni taches)
     /**
      * Réupère les devoirs et tâches depuis le serveur seulement si la version locale est différente de celle du serveur
      * @return {Promise<string>} Resolve si des devoirs ont été récupérés correctement, Reject sinon
@@ -145,7 +147,8 @@ var SyncService = (function () {
          );
          */
         window.localStorage.setItem("devoirs", JSON.stringify(mock_1.DEVOIRS));
-        return Promise.resolve("DEBUG - Devoirs écrits au local storage"); // DEBUG
+        window.localStorage.setItem("taches", JSON.stringify(mock_1.DEVOIRS));
+        return Promise.resolve("DEBUG - Devoirs et tâches écrits au local storage"); // DEBUG
     };
     // TODO Regarder les codes d'erreur et gérer les cas depuis les APIS + notifications ici
     /**

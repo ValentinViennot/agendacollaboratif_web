@@ -27,9 +27,10 @@
 
  import { AppComponent } from './app.component';
  import { appRouterProviders } from './app.routes';
+ import {NotificationService} from "./services/notification.service";
 
  bootstrap(AppComponent, [
      appRouterProviders,
-     HTTP_PROVIDERS,
-     {provide: LocationStrategy, useClass: HashLocationStrategy}
+     {provide: LocationStrategy, useClass: HashLocationStrategy},
+     HTTP_PROVIDERS
  ]);

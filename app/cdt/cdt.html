@@ -1,12 +1,59 @@
 <link rel="stylesheet" href="/app/cdt/cdt.css">
 
+<!-- Formulaire de fusion de devoirs -->
+<section *ngIf="merge.length>0" class="merge">
+    <p-panel>
+        <header>
+            Devoirs à fusionner
+        </header>
+        <ul>
+            <li *ngFor="let devoir of merge">
+                {{devoir.texte}}
+            </li>
+        </ul>
+        <br>
+        <div>
+            <button pButton type="button" icon="fa-check" iconPos="left"
+                    label="Confirmer la fusion" [disabled]="merge.length<2"></button>
+            <button class="secondaire" pButton type="button" icon="fa-ban" iconPos="left"
+                    label="Annuler" (click)="clearMerge()"></button>
+        </div>
+    </p-panel>
+</section>
+
+<!-- Liste de tâches -->
+<section class="taches">
+    <p-panel>
+        <header>
+            Mes tâches en cours
+            <span id="pastille">
+                {{taches.length}}
+            </span>
+        </header>
+        <ul>
+            <li *ngFor="let devoir of taches">
+                <p-checkbox ([ngModel])="devoir.fait" (click)="taskdone(devoir)"></p-checkbox>
+                <p>{{_date.jjmm(devoir.date)}},
+                     {{devoir.texte.length>120 ? devoir.texte.substr(0,115)+"(...)" : devoir.texte}}
+                    <span class="matiere">#{{devoir.matiere|lowercase}}</span>
+                </p>
+            </li>
+        </ul>
+        <br>
+        <div id="addtask">
+            // INPUT
+        </div>
+    </p-panel>
+</section>
+
+<!-- Sections des devoirs (core) -->
 <section *ngFor="let section of sections" class="cdt flex-container">
     <aside class="pam unstyled txtcenter">
         <p>{{section.titre}}</p>
         <p>{{section.sous_titre}}</p>
     </aside>
     <div role="main" class="flex-item-fluid pam">
-        <p-panel [class]="devoir.fait ? 'done' : 'undone'" *ngFor="let devoir of section.devoirs">
+        <p-panel [class]="devoir.fait ? 'done' : 'undone' + devoir.matiere_c" *ngFor="let devoir of section.devoirs">
             <header>
                 <div class="ui-helper-clearfix">
                     <span class="ui-panel-title" style="font-size:16px">
@@ -17,7 +64,7 @@
                         <span class="matiere">#{{devoir.matiere | lowercase}}</span>
                         <span class="auteur">@{{devoir.auteur | lowercase}}</span>
                     </span>
-                    <p-splitButton class="myFloatRight" [label]="devoir.fait ? 'Fait' : 'Non fait'" icon="fa-check" (onClick)="done(devoir)">
+                    <p-splitButton class="myFloatRight" [label]="devoir.fait ? 'Fait' : 'À faire'" icon="fa-check" (onClick)="done(devoir)">
                         <p-splitButtonItem icon="fa-code-fork" label="Doublon" (onClick)="addToMerge(devoir)"></p-splitButtonItem>
                         <p-splitButtonItem icon="fa-exclamation-triangle" label="Signaler" (onClick)="signaler(devoir)"></p-splitButtonItem>
                         <p-splitButtonItem *ngIf="devoir.user==user.id" icon="fa-close" label="Supprimer" (onClick)="supprimer(devoir)"></p-splitButtonItem>
@@ -38,7 +85,7 @@
                     <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
                         <p class="header">
                             @{{commentaire.auteur}}
-                            <a (click)="supprimer_comm(commentaire)">
+                            <a *ngIf="user.id==commentaire.user" (click)="supprimer_comm(devoir,commentaire)">
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </p>
@@ -46,8 +93,7 @@
                             {{commentaire.texte}}
                         </p>
                         <p class="footer">
-                            <span class="date">{{commentaire.date}}</span>
-                            <!-- TODO Pipe minutes -->
+                            <span class="date">{{_date.recentDateTime(commentaire.date)}}</span>
                         </p>
                     </div>
                 </p-accordionTab>
@@ -55,72 +101,3 @@
         </p-panel>
     </div>
 </section>
-
-
-
-
-<!--
-<div class="ui secondary menu">
-    <div class="left menu">
-        <div class="ui transparent left icon input">
-            <input type="text" placeholder="Rechercher...">
-            <i class="search icon"></i>
-        </div>
-    </div>
-    <a class="active item">
-        Liste
-    </a>
-    <a class="item">
-        Matières
-    </a>
-</div>
-
-<section class="ui grid">
-    <div class="ui statistic font_titre two wide column">
-        <div class="value">
-            15
-        </div>
-        <div class="label">
-            Vendredi
-        </div>
-    </div>
-    <div class="seven wide column">
-        <div class="ui one cards" *ngFor="let devoir of devoirs">
-            <div class="ui fluid card">
-                <div class="content">
-                    <div class="header">
-                        <a class="right">
-                            #{{devoir.matiere | lowercase}}
-                        </a>
-                    </div>
-                    <div class="meta">
-                        <div class="right floated meta">
-                            @{{devoir.auteur | lowercase}}
-                        </div>
-                        <div>
-                            pour le {{devoir.date}}
-                        </div>
-                    </div>
-                    <div class="description">
-                        <p>{{devoir.texte}}</p>
-                    </div>
-                </div>
-                <div class="content">
-                    <span class="right floated">
-                      <i class="checkmark icon"></i>
-                      {{devoir.nb_fait}}
-                        <i class="comment icon"></i>
-                        12
-                    </span>
-                </div>
-                <div class="extra content">
-                    <div class="ui two buttons">
-                        <div class="ui basic green button">Modifier</div>
-                        <div class="ui basic red button">Supprimer</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
--->

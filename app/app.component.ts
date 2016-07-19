@@ -20,19 +20,30 @@
 /**
  * Created by Valentin on 10/07/2016.
  */
- import { Component } from '@angular/core';
+ import {Component, Inject} from '@angular/core';
  import { ROUTER_DIRECTIVES } from '@angular/router';
+
+ import {NotificationService} from "./services/notification.service";
+ import {Growl} from "../vendor/primeng/components/growl/growl";
+ import {CdtComponent} from "./cdt/cdt.component";
 
  @Component({
      selector: 'body',
      templateUrl: `app/app.html`,
      styleUrls: ['app/app.css'],
      directives: [
-         ROUTER_DIRECTIVES
+         CdtComponent,
+         ROUTER_DIRECTIVES,
+         Growl
      ],
      providers: [
+         NotificationService
      ]
  })
  export class AppComponent {
 
+     constructor(
+        private _notif:NotificationService
+     ) {
+     }
  }

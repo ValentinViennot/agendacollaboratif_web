@@ -18,8 +18,8 @@
    FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
 /**
- * Created by Valentin on 16/07/2016.
- */
+* Created by Valentin on 17/07/2016.
+*/
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -31,56 +31,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var core_1 = require("@angular/core");
-var DateService = (function () {
-    function DateService() {
-        this.today = new Date();
+var NotificationService = (function () {
+    function NotificationService() {
+        this.msgs = [];
     }
-    DateService.prototype.getDay = function (date) {
-        var day = "ERREUR";
-        switch (date.getDay()) {
-            case 0:
-                day = "Dimanche";
-                break;
-            case 1:
-                day = "Lundi";
-                break;
-            case 2:
-                day = "Mardi";
-                break;
-            case 3:
-                day = "Mercredi";
-                break;
-            case 4:
-                day = "Jeudi";
-                break;
-            case 5:
-                day = "Vendredi";
-                break;
-            case 6:
-                day = "Samedi";
-                break;
-        }
-        return day;
+    NotificationService.prototype.add = function (level, titre, message) {
+        // TODO Problème affichage notification après que les premières se soient effacées
+        var levels = ["info", "warn", "error"];
+        this.msgs.push({ severity: levels[level], summary: titre, detail: message }); // DEBUG
     };
-    DateService.prototype.getDayTiny = function (date) {
-        return this.getDay(date).substr(0, 3) + "."; // TODO
+    NotificationService.prototype.ask = function (titre, message, confirmer, annuler) {
+        return Promise.resolve("DEBUG");
     };
-    DateService.prototype.recentDateTime = function (date) {
-        if (date.toDateString() == this.today.toDateString()) {
-            return date.toLocaleTimeString().substr(0, 5);
-        }
-        else {
-            return date.toLocaleDateString();
-        }
-    };
-    DateService.prototype.jjmm = function (date) {
-        return date.toLocaleDateString().substr(0, 5);
-    };
-    DateService = __decorate([
+    NotificationService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [])
-    ], DateService);
-    return DateService;
+    ], NotificationService);
+    return NotificationService;
 }());
-exports.DateService = DateService;
-//# sourceMappingURL=date.service.js.map
+exports.NotificationService = NotificationService;
+//# sourceMappingURL=notification.service.js.map

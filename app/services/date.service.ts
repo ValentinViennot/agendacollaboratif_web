@@ -27,8 +27,10 @@ import {Injectable} from "@angular/core";
 
  @Injectable()
  export class DateService {
-     constructor() {
+     today: Date;
 
+     constructor() {
+         this.today = new Date();
      }
 
      public getDay(date:Date):string {
@@ -62,4 +64,17 @@ import {Injectable} from "@angular/core";
      public getDayTiny(date:Date):string {
          return `${this.getDay(date).substr(0, 3)}.`; // TODO
      }
+
+     public recentDateTime(date:Date):string {
+         if (date.toDateString()==this.today.toDateString()) {
+             return date.toLocaleTimeString().substr(0,5);
+         } else {
+             return date.toLocaleDateString();
+         }
+     }
+
+     public jjmm(date:Date):string {
+         return date.toLocaleDateString().substr(0,5);
+     }
+
  }

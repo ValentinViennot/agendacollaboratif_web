@@ -32,8 +32,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  */
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
+var notification_service_1 = require("./services/notification.service");
+var growl_1 = require("../vendor/primeng/components/growl/growl");
+var cdt_component_1 = require("./cdt/cdt.component");
 var AppComponent = (function () {
-    function AppComponent() {
+    function AppComponent(_notif) {
+        this._notif = _notif;
     }
     AppComponent = __decorate([
         core_1.Component({
@@ -41,11 +45,15 @@ var AppComponent = (function () {
             templateUrl: "app/app.html",
             styleUrls: ['app/app.css'],
             directives: [
-                router_1.ROUTER_DIRECTIVES
+                cdt_component_1.CdtComponent,
+                router_1.ROUTER_DIRECTIVES,
+                growl_1.Growl
             ],
-            providers: []
+            providers: [
+                notification_service_1.NotificationService
+            ]
         }), 
-        __metadata('design:paramtypes', [])
+        __metadata('design:paramtypes', [notification_service_1.NotificationService])
     ], AppComponent);
     return AppComponent;
 }());
