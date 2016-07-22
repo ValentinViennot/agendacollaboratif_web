@@ -31,33 +31,46 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Created by Valentin on 13/07/2016.
  */
 var core_1 = require('@angular/core');
-// TODO Imports directives mini (cf setup PrimeNG)
-var primeng_1 = require('../../vendor/primeng/primeng');
 var synchronize_service_1 = require("../services/synchronize.service");
 var date_service_1 = require("../services/date.service");
 var parse_service_1 = require("../services/parse.service");
 var notification_service_1 = require("../services/notification.service");
-var tri_service_1 = require("../services/tri.service");
+var mock_1 = require("../mock");
+var splitbutton_1 = require("../../vendor/primeng/components/splitbutton/splitbutton");
+var splitbuttonitem_1 = require("../../vendor/primeng/components/splitbutton/splitbuttonitem");
+var panel_1 = require("../../vendor/primeng/components/panel/panel");
+var accordion_1 = require("../../vendor/primeng/components/accordion/accordion");
+var accordiontab_1 = require("../../vendor/primeng/components/accordion/accordiontab");
+var checkbox_1 = require("../../vendor/primeng/components/checkbox/checkbox");
+var button_1 = require("../../vendor/primeng/components/button/button");
+var overlaypanel_1 = require("../../vendor/primeng/components/overlaypanel/overlaypanel");
+var tooltip_1 = require("../../vendor/primeng/components/tooltip/tooltip");
+var common_1 = require("../../vendor/primeng/components/common");
+var inputtextarea_1 = require("../../vendor/primeng/components/inputtextarea/inputtextarea");
 var CdtComponent = (function () {
-    function CdtComponent(_sync, _date, _parse, _notif, _tri) {
+    function CdtComponent(_sync, _date, _parse, _notif) {
         this._sync = _sync;
         this._date = _date;
         this._parse = _parse;
         this._notif = _notif;
-        this._tri = _tri;
         // Archives ou Devoirs
         this.type = "devoirs";
         this.merge = [];
+        this.flags = ["grey", "blue", "orange", "red"];
+        this.input = [];
     }
     CdtComponent.prototype.ngOnInit = function () {
         // DEBUG
         // Normalement les vérifications que les variables existent avant d'arriver ici évitent la présence de ces lignes
         this.sync();
-        window.localStorage.setItem("pendingDEL", JSON.stringify([]));
-        window.localStorage.setItem("pendingDELc", JSON.stringify([]));
-        window.localStorage.setItem("pendingALERT", JSON.stringify([]));
-        window.localStorage.setItem("pendingDO", JSON.stringify([]));
-        window.localStorage.setItem("pendingTASK", JSON.stringify([]));
+        window.localStorage.setItem("devoirs", JSON.stringify(mock_1.DEVOIRS));
+        window.localStorage.setItem("pendDEL", JSON.stringify([]));
+        window.localStorage.setItem("pendDELc", JSON.stringify([]));
+        window.localStorage.setItem("pendALERT", JSON.stringify([]));
+        window.localStorage.setItem("pendDO", JSON.stringify([]));
+        window.localStorage.setItem("pendFLAG", JSON.stringify([]));
+        window.localStorage.setItem("pendCOMM", JSON.stringify([]));
+        window.localStorage.setItem("pendMERGE", JSON.stringify([]));
         // DEBUG
         console.log("* cdtController *");
         // TODO Vérifier si les variables (devoirs, archives, user, pending) sont dispo et si l'user est logged via un CanActivate
@@ -65,11 +78,9 @@ var CdtComponent = (function () {
         this.devoirs = this.getDevoirs();
         // On les transforme en sections
         this.recalcSections();
-        // Récupère les taches du local storage
-        this.taches = this.getTaches();
         // On récupère les infos de l'utilisateur
-        this.user = this._sync.getUser();
-        // DEBUG Pour le moment la SYNC est toujours effective donc la synchro overwrite tout le temps les données...
+        this.user = this._sync.getUser(); // TODO user.service
+        // DEBUG Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
         // On configure une synchronisation automatique régulière (ms)
         // IntervalObservable.create(1000).subscribe((t) => this.sync());
     };
@@ -98,14 +109,6 @@ var CdtComponent = (function () {
     CdtComponent.prototype.getDevoirs = function () {
         console.log("GETDEVOIRS"); // DEBUG TODO Optimisation de l'appel (nb occurences)
         return this._parse.parse(this.type);
-    };
-    /**
-     * Récupère les tâches de l'utilisateur du local storage
-     * @return {any}
-     */
-    CdtComponent.prototype.getTaches = function () {
-        console.log("GETTACHES"); // DEBUG TODO Optimisation de l'appel (nb occurences)
-        return this._parse.parse("taches");
     };
     /**
      * Recalcule les sections à partir du tableau de devoirs du component
@@ -159,7 +162,8 @@ var CdtComponent = (function () {
             // Puis on passe au suivant !
         }, this);
         // On ajoute la dernière section créée aux sections
-        sections.push(section);
+        if (!premier)
+            sections.push(section);
         // Et on renvoi les sections !
         return sections;
     };
@@ -170,27 +174,6 @@ var CdtComponent = (function () {
         console.log("RECALCSECTIONS"); // DEBUG
         this.sections = this.getSections();
     };
-    CdtComponent.prototype.taskdone = function (devoir) {
-        // Tache déjà marquée comme faite grâce au binding
-        // Ecrase le localstorage
-        window.localStorage.setItem("taches", JSON.stringify(this.taches));
-        var matches = false;
-        this.devoirs.forEach(function (value) {
-            if (value.id == devoir.id) {
-                this.done(value);
-                matches = true;
-            }
-        }, this);
-        if (!matches) {
-            // Ajout l'opération à la liste d'attente
-            var pending_1 = JSON.parse(window.localStorage.getItem("pendingDO"));
-            // Les opérations seront traitées successivement par le serveur qui reproduira l'action de l'utilisateur
-            pending_1.push(devoir.id);
-            window.localStorage.setItem("pendingDO", JSON.stringify(pending_1));
-            // Lance une synchro
-            this.sync();
-        }
-    };
     CdtComponent.prototype.done = function (devoir) {
         // On change l'état du devoir
         devoir.fait = !devoir.fait;
@@ -200,17 +183,8 @@ var CdtComponent = (function () {
         else
             var increment = -1;
         this.devoirs[(this.devoirs).indexOf(devoir)].nb_fait += increment;
-        // Actualise l'affichage
-        this.recalcSections();
-        // Ecrase le localstorage
-        window.localStorage.setItem("devoirs", JSON.stringify(this.devoirs));
-        // Ajout l'opération à la liste d'attente
-        var pending = JSON.parse(window.localStorage.getItem("pendingDO"));
-        // Les opérations seront traitées successivement par le serveur qui reproduira l'action de l'utilisateur
-        pending.push(devoir.id);
-        window.localStorage.setItem("pendingDO", JSON.stringify(pending));
-        // Lance une synchro
-        this.sync();
+        // Ajoute à la liste d'actions en attente
+        this.pend("DO", { "id": devoir.id, "done": devoir.fait });
     };
     /**
      * Ajoute un devoir à la liste de "merge"
@@ -250,17 +224,21 @@ var CdtComponent = (function () {
     CdtComponent.prototype.clearMerge = function () {
         this.merge = [];
     };
+    CdtComponent.prototype.doMerge = function () {
+        var ids = [];
+        for (var i = 0; i < this.merge.length; i++)
+            ids[i] = this.merge[i].id;
+        this.pend("MERGE", ids);
+        this._notif.add(0, "Fusion préparée", "La demande de fusion pour ces " + this.merge.length + " devoirs sera bientôt transmise au serveur, à la prochaine synchronisation les anciens devoirs seront remplacés par le résultat de cette fusion !");
+        this.merge = [];
+    };
     /**
      * Signale le devoir comme indésirable
      * @param devoir
      */
     CdtComponent.prototype.signaler = function (devoir) {
         // On ajoute l'ID du devoir à la liste d'attente des signalements
-        var pending = JSON.parse(window.localStorage.getItem("pendingALERT"));
-        pending.push(devoir.id);
-        window.localStorage.setItem("pendingALERT", JSON.stringify(pending));
-        // Lance une synchronisation
-        this.sync();
+        this.pend("ALERT", devoir.id);
         // Notifie l'utilisateur
         this._notif.add(1, "Devoir signalé !", "Un modérateur l'examinera prochainement. S'il n'est pas conforme à nos règles d'utilisation il sera supprimé et son auteur sanctionné, votre identité ne sera jamais dévoilée au cours du processus.");
     };
@@ -276,14 +254,8 @@ var CdtComponent = (function () {
             th.devoirs.splice((th.devoirs).indexOf(devoir), 1);
             // On actualise l'affichage
             th.recalcSections();
-            // Ecrase localstorage
-            window.localStorage.setItem("devoirs", JSON.stringify(th.devoirs));
-            // Ajoute l'opération à la liste d'attente du suppression de devoirs
-            var pending = JSON.parse(window.localStorage.getItem("pendingDEL"));
-            pending.push(devoir.id);
-            window.localStorage.setItem("pendingDEL", JSON.stringify(pending));
-            // Lance une synchronisation
-            th.sync();
+            // Ajout à la liste de suppression de devoirs
+            th.pend("DEL", devoir.id);
             // Notifie l'utilisateur
             th._notif.add(0, "Effectué.", "Le devoir a été supprimé de l'agenda !");
         });
@@ -296,28 +268,47 @@ var CdtComponent = (function () {
     CdtComponent.prototype.supprimer_comm = function (devoir, commentaire) {
         // On supprime le commentaire du devoir concerné
         devoir.commentaires.splice((devoir.commentaires).indexOf(commentaire), 1);
-        // On actualise l'affichage
-        this.recalcSections();
+        // On ajoute l'opération en liste d'attente
+        this.pend("DELc", commentaire.id);
+    };
+    CdtComponent.prototype.sendComment = function (devoir, input, index) {
+        // Création du commentaire
+        var commentaire = {
+            "id": 0,
+            "user": this.user.id,
+            "auteur": this.user.prenom + this.user.nom,
+            "date": new Date(),
+            "texte": input
+        };
+        // On ajoute le commentaire au devoir
+        devoir.commentaires.splice(0, 0, commentaire);
+        // Ajout à la liste d'attente
+        this.pend("COMM", { "id": devoir.id, "content": commentaire });
+        this.input[index] = "";
+    };
+    CdtComponent.prototype.selectDevoir = function (event, devoir, overlaypanel) {
+        this.selectedDevoir = devoir;
+        overlaypanel.toggle(event);
+    };
+    CdtComponent.prototype.getFlags = function () {
+        var retour = [];
+        for (var i = 0; i < this.flags.length; i++)
+            if (i != this.selectedDevoir.flag)
+                retour.push(i);
+        return retour;
+    };
+    CdtComponent.prototype.setFlag = function (flag, overlaypanel) {
+        this.selectedDevoir.flag = flag;
+        this.pend("FLAG", { "id": this.selectedDevoir.id, "flag": flag });
+        overlaypanel.hide();
+    };
+    CdtComponent.prototype.pend = function (list, push) {
         // Ecrase localstorage
         window.localStorage.setItem("devoirs", JSON.stringify(this.devoirs));
         // Ajoute l'opération à la liste d'attente du suppression de commentaires
-        var pending = JSON.parse(window.localStorage.getItem("pendingDELc"));
-        pending.push(commentaire.id);
-        window.localStorage.setItem("pendingDELc", JSON.stringify(pending));
-        // Lance une synchronisation
-        this.sync();
-    };
-    CdtComponent.prototype.addToMine = function (devoir) {
-        // Ajoute le devoir aux taches en cours
-        this.taches.push(devoir);
-        // Tri le tableau de taches
-        this.taches = this._tri.devoirs_date(this.taches);
-        // Ecrase localstorage
-        window.localStorage.setItem("taches", JSON.stringify(this.taches));
-        // Ajoute l'opération à la liste d'attente du suppression de commentaires
-        var pending = JSON.parse(window.localStorage.getItem("pendingTASK"));
-        pending.push(devoir.id);
-        window.localStorage.setItem("pendingTASK", JSON.stringify(pending));
+        var pending = JSON.parse(window.localStorage.getItem("pend" + list));
+        pending.push(push);
+        window.localStorage.setItem("pend" + list, JSON.stringify(pending));
         // Lance une synchronisation
         this.sync();
     };
@@ -326,24 +317,25 @@ var CdtComponent = (function () {
             selector: 'my-cdt',
             templateUrl: 'app/cdt/cdt.html',
             directives: [
-                primeng_1.Panel,
-                primeng_1.SplitButton,
-                primeng_1.SplitButtonItem,
-                primeng_1.Tooltip,
-                primeng_1.Accordion,
-                primeng_1.AccordionTab,
-                primeng_1.Header,
-                primeng_1.Button,
-                primeng_1.Checkbox
+                splitbutton_1.SplitButton,
+                splitbuttonitem_1.SplitButtonItem,
+                panel_1.Panel,
+                accordion_1.Accordion,
+                accordiontab_1.AccordionTab,
+                checkbox_1.Checkbox,
+                button_1.Button,
+                overlaypanel_1.OverlayPanel,
+                tooltip_1.Tooltip,
+                common_1.Header,
+                inputtextarea_1.InputTextarea
             ],
             providers: [
                 synchronize_service_1.SyncService,
                 date_service_1.DateService,
-                parse_service_1.ParseService,
-                tri_service_1.TriService
+                parse_service_1.ParseService
             ]
         }), 
-        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService, tri_service_1.TriService])
+        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService])
     ], CdtComponent);
     return CdtComponent;
 }());

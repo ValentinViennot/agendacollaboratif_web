@@ -22,15 +22,16 @@
  * Created by Valentin on 17/07/2016.
  */
 
- import {Message} from "../../vendor/primeng/components/common";
  import {Injectable} from "@angular/core";
+ import {Message} from "../../vendor/primeng/components/common";
 
  @Injectable()
 export class NotificationService {
-    public msgs: Message[];
+
+     msgs:Message[];
 
     constructor() {
-        this.msgs= [];
+        this.msgs = [];
     }
 
     public add(level:number, titre:string, message:string):void {

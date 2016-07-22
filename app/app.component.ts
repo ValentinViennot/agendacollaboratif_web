@@ -24,8 +24,8 @@
  import { ROUTER_DIRECTIVES } from '@angular/router';
 
  import {NotificationService} from "./services/notification.service";
- import {Growl} from "../vendor/primeng/components/growl/growl";
  import {CdtComponent} from "./cdt/cdt.component";
+ import {Growl} from "../vendor/primeng/components/growl/growl";
 
  @Component({
      selector: 'body',

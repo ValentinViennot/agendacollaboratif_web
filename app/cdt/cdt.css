@@ -77,3 +77,14 @@
 .cdt .flex-item-fluid p-panel:first-child > .ui-widget {
     margin-top: 50px;
 }
+
+.cdt .done .ui-panel-title {
+    color: grey;
+    text-decoration: line-through;
+}
+
+/* Couleurs des matières */
+
+.cdt .matiere01 .ui-panel {
+    background-color: #EEFFFF
+}

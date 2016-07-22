@@ -23,9 +23,6 @@
  import {Component, OnInit, Inject} from '@angular/core';
  import { IntervalObservable } from 'rxjs/observable/IntervalObservable';
 
- // TODO Imports directives mini (cf setup PrimeNG)
- import {Panel, SplitButtonItem, SplitButton, Tooltip, AccordionTab, Accordion, Header, Button, Checkbox } from '../../vendor/primeng/primeng';
-
  import {SyncService} from "../services/synchronize.service";
  import {User} from "../concepts/user";
  import {Section} from "./section";
@@ -34,27 +31,39 @@
  import {DateService} from "../services/date.service";
  import {ParseService} from "../services/parse.service";
  import {NotificationService} from "../services/notification.service";
- import {TriService} from "../services/tri.service";
+ import {DEVOIRS} from "../mock";
+ import {SplitButton} from "../../vendor/primeng/components/splitbutton/splitbutton";
+ import {SplitButtonItem} from "../../vendor/primeng/components/splitbutton/splitbuttonitem";
+ import {Panel} from "../../vendor/primeng/components/panel/panel";
+ import {Accordion} from "../../vendor/primeng/components/accordion/accordion";
+ import {AccordionTab} from "../../vendor/primeng/components/accordion/accordiontab";
+ import {Checkbox} from "../../vendor/primeng/components/checkbox/checkbox";
+ import {Button} from "../../vendor/primeng/components/button/button";
+ import {OverlayPanel} from "../../vendor/primeng/components/overlaypanel/overlaypanel";
+ import {Tooltip} from "../../vendor/primeng/components/tooltip/tooltip";
+ import {Header} from "../../vendor/primeng/components/common";
+ import {InputTextarea} from "../../vendor/primeng/components/inputtextarea/inputtextarea";
 
  @Component({
      selector: 'my-cdt',
      templateUrl: 'app/cdt/cdt.html',
      directives: [
-         Panel,
          SplitButton,
          SplitButtonItem,
-         Tooltip,
+         Panel,
          Accordion,
          AccordionTab,
-         Header,
+         Checkbox,
          Button,
-         Checkbox
+         OverlayPanel,
+         Tooltip,
+         Header,
+         InputTextarea
      ],
      providers: [
          SyncService,
          DateService,
-         ParseService,
-         TriService
+         ParseService
      ]
  })
  export class CdtComponent implements OnInit {
@@ -63,31 +72,40 @@
      type:string = "devoirs";
      // Utilisateur
      user: User;
-     //
+     // Devoirs
      devoirs: Devoir[];
      sections: Section[];
-     taches: Devoir[];
+     // Flag
+     selectedDevoir:Devoir;
+     flags:string[];
+     // Merge
      merge: Devoir[];
+     // Commentaire
+     input:string[];
 
      constructor(
          private _sync: SyncService,
          private _date: DateService,
          private _parse: ParseService,
-         private _notif: NotificationService,
-         private _tri: TriService
+         private _notif: NotificationService
      ) {
          this.merge= [];
+         this.flags= ["grey","blue","orange","red"];
+         this.input= [];
      }
 
      ngOnInit() {
          // DEBUG
          // Normalement les vérifications que les variables existent avant d'arriver ici évitent la présence de ces lignes
          this.sync();
-         window.localStorage.setItem("pendingDEL", JSON.stringify([]));
-         window.localStorage.setItem("pendingDELc", JSON.stringify([]));
-         window.localStorage.setItem("pendingALERT", JSON.stringify([]));
-         window.localStorage.setItem("pendingDO", JSON.stringify([]));
-         window.localStorage.setItem("pendingTASK", JSON.stringify([]));
+         window.localStorage.setItem("devoirs", JSON.stringify(DEVOIRS));
+         window.localStorage.setItem("pendDEL", JSON.stringify([]));
+         window.localStorage.setItem("pendDELc", JSON.stringify([]));
+         window.localStorage.setItem("pendALERT", JSON.stringify([]));
+         window.localStorage.setItem("pendDO", JSON.stringify([]));
+         window.localStorage.setItem("pendFLAG", JSON.stringify([]));
+         window.localStorage.setItem("pendCOMM", JSON.stringify([]));
+         window.localStorage.setItem("pendMERGE", JSON.stringify([]));
 
          // DEBUG
          console.log("* cdtController *");
@@ -96,11 +114,9 @@
          this.devoirs = this.getDevoirs();
          // On les transforme en sections
          this.recalcSections();
-         // Récupère les taches du local storage
-         this.taches = this.getTaches();
          // On récupère les infos de l'utilisateur
-         this.user = this._sync.getUser();
-         // DEBUG Pour le moment la SYNC est toujours effective donc la synchro overwrite tout le temps les données...
+         this.user = this._sync.getUser(); // TODO user.service
+         // DEBUG Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
          // On configure une synchronisation automatique régulière (ms)
          // IntervalObservable.create(1000).subscribe((t) => this.sync());
      }
@@ -133,14 +149,6 @@
      private getDevoirs(): Devoir[] {
          console.log("GETDEVOIRS"); // DEBUG TODO Optimisation de l'appel (nb occurences)
          return this._parse.parse(this.type);
-     }
-     /**
-      * Récupère les tâches de l'utilisateur du local storage
-      * @return {any}
-      */
-     private getTaches(): Devoir[] {
-         console.log("GETTACHES"); // DEBUG TODO Optimisation de l'appel (nb occurences)
-         return this._parse.parse("taches");
      }
      /**
       * Recalcule les sections à partir du tableau de devoirs du component
@@ -192,7 +200,8 @@
              // Puis on passe au suivant !
          },this);
          // On ajoute la dernière section créée aux sections
-         sections.push(section);
+         if(!premier)
+             sections.push(section);
          // Et on renvoi les sections !
          return sections;
      }
@@ -204,27 +213,6 @@
          this.sections = this.getSections();
      }
 
-     public taskdone(devoir:Devoir):void {
-         // Tache déjà marquée comme faite grâce au binding
-         // Ecrase le localstorage
-         window.localStorage.setItem("taches", JSON.stringify(this.taches));
-         var matches:boolean=false;
-         this.devoirs.forEach(function (value) {
-             if (value.id==devoir.id) {
-                 this.done(value);
-                 matches = true;
-             }
-         }, this);
-         if (!matches) {
-             // Ajout l'opération à la liste d'attente
-             let pending = JSON.parse(window.localStorage.getItem("pendingDO"));
-             // Les opérations seront traitées successivement par le serveur qui reproduira l'action de l'utilisateur
-             pending.push(devoir.id);
-             window.localStorage.setItem("pendingDO", JSON.stringify(pending));
-             // Lance une synchro
-             this.sync();
-         }
-     }
      public done(devoir:Devoir):void {
          // On change l'état du devoir
          devoir.fait=!devoir.fait;
@@ -234,17 +222,8 @@
          else
              var increment = -1;
          this.devoirs[(this.devoirs).indexOf(devoir)].nb_fait+=increment;
-         // Actualise l'affichage
-         this.recalcSections();
-         // Ecrase le localstorage
-         window.localStorage.setItem("devoirs", JSON.stringify(this.devoirs));
-         // Ajout l'opération à la liste d'attente
-         var pending = JSON.parse(window.localStorage.getItem("pendingDO"));
-         // Les opérations seront traitées successivement par le serveur qui reproduira l'action de l'utilisateur
-         pending.push(devoir.id);
-         window.localStorage.setItem("pendingDO", JSON.stringify(pending));
-         // Lance une synchro
-         this.sync();
+         // Ajoute à la liste d'actions en attente
+         this.pend("DO",{"id":devoir.id,"done":devoir.fait});
      }
      /**
       * Ajoute un devoir à la liste de "merge"
@@ -290,6 +269,17 @@
      public clearMerge():void {
          this.merge = [];
      }
+     public doMerge():void {
+         var ids:number[] = [];
+         for (var i:number=0;i<this.merge.length;i++)
+             ids[i]=this.merge[i].id;
+         this.pend("MERGE",ids);
+         this._notif.add(0,
+             "Fusion préparée",
+             "La demande de fusion pour ces "+this.merge.length+" devoirs sera bientôt transmise au serveur, à la prochaine synchronisation les anciens devoirs seront remplacés par le résultat de cette fusion !"
+         );
+         this.merge = [];
+     }
 
      /**
       * Signale le devoir comme indésirable
@@ -297,11 +287,7 @@
       */
      public signaler(devoir:Devoir):void {
          // On ajoute l'ID du devoir à la liste d'attente des signalements
-         var pending=JSON.parse(window.localStorage.getItem("pendingALERT"));
-         pending.push(devoir.id);
-         window.localStorage.setItem("pendingALERT", JSON.stringify(pending));
-         // Lance une synchronisation
-         this.sync();
+         this.pend("ALERT",devoir.id);
          // Notifie l'utilisateur
          this._notif.add(1,"Devoir signalé !", "Un modérateur l'examinera prochainement. S'il n'est pas conforme à nos règles d'utilisation il sera supprimé et son auteur sanctionné, votre identité ne sera jamais dévoilée au cours du processus.");
      }
@@ -320,14 +306,8 @@
                     th.devoirs.splice((th.devoirs).indexOf(devoir),1);
                     // On actualise l'affichage
                     th.recalcSections();
-                    // Ecrase localstorage
-                    window.localStorage.setItem("devoirs", JSON.stringify(th.devoirs));
-                    // Ajoute l'opération à la liste d'attente du suppression de devoirs
-                    var pending=JSON.parse(window.localStorage.getItem("pendingDEL"));
-                    pending.push(devoir.id);
-                    window.localStorage.setItem("pendingDEL", JSON.stringify(pending));
-                    // Lance une synchronisation
-                    th.sync();
+                    // Ajout à la liste de suppression de devoirs
+                    th.pend("DEL",devoir.id);
                     // Notifie l'utilisateur
                     th._notif.add(0,"Effectué.", "Le devoir a été supprimé de l'agenda !");
                 });
@@ -340,29 +320,53 @@
      public supprimer_comm(devoir:Devoir, commentaire:Commentaire):void {
          // On supprime le commentaire du devoir concerné
          devoir.commentaires.splice((devoir.commentaires).indexOf(commentaire),1);
-         // On actualise l'affichage
-         this.recalcSections();
+
+         // On ajoute l'opération en liste d'attente
+         this.pend("DELc",commentaire.id);
+     }
+
+     public sendComment(devoir:Devoir,input:string,index:number) {
+         // Création du commentaire
+         var commentaire:Commentaire = {
+             "id":0,
+             "user":this.user.id,
+             "auteur":this.user.prenom+this.user.nom,
+             "date": new Date(),
+             "texte": input
+         };
+         // On ajoute le commentaire au devoir
+         devoir.commentaires.splice(0,0,commentaire);
+         // Ajout à la liste d'attente
+         this.pend("COMM", {"id":devoir.id,"content":commentaire});
+         this.input[index]="";
+     }
+
+     public selectDevoir(event,devoir: Devoir, overlaypanel: OverlayPanel) {
+         this.selectedDevoir = devoir;
+         overlaypanel.toggle(event);
+     }
+
+     public getFlags():number[] {
+         var retour:number[] = [];
+         for (var i:number=0;i<this.flags.length;i++)
+             if (i!=this.selectedDevoir.flag)
+                 retour.push(i);
+         return retour;
+     }
+
+     public setFlag(flag:number, overlaypanel: OverlayPanel) {
+         this.selectedDevoir.flag = flag;
+         this.pend("FLAG",{"id":this.selectedDevoir.id,"flag":flag});
+         overlaypanel.hide();
+     }
+
+     private pend(list:string, push:any):void {
          // Ecrase localstorage
          window.localStorage.setItem("devoirs", JSON.stringify(this.devoirs));
          // Ajoute l'opération à la liste d'attente du suppression de commentaires
-         var pending=JSON.parse(window.localStorage.getItem("pendingDELc"));
-         pending.push(commentaire.id);
-         window.localStorage.setItem("pendingDELc", JSON.stringify(pending));
-         // Lance une synchronisation
-         this.sync();
-     }
-
-     public addToMine(devoir:Devoir):void {
-         // Ajoute le devoir aux taches en cours
-         this.taches.push(devoir);
-         // Tri le tableau de taches
-         this.taches = this._tri.devoirs_date(this.taches);
-         // Ecrase localstorage
-         window.localStorage.setItem("taches", JSON.stringify(this.taches));
-         // Ajoute l'opération à la liste d'attente du suppression de commentaires
-         var pending=JSON.parse(window.localStorage.getItem("pendingTASK"));
-         pending.push(devoir.id);
-         window.localStorage.setItem("pendingTASK", JSON.stringify(pending));
+         var pending=JSON.parse(window.localStorage.getItem("pend"+list));
+         pending.push(push);
+         window.localStorage.setItem("pend"+list, JSON.stringify(pending));
          // Lance une synchronisation
          this.sync();
      }

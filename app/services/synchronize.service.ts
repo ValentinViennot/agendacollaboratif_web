@@ -145,9 +145,7 @@
           }
           );
           */
-         window.localStorage.setItem("devoirs", JSON.stringify(DEVOIRS));
-         window.localStorage.setItem("taches", JSON.stringify(DEVOIRS));
-         return Promise.resolve<string>("DEBUG - Devoirs et tâches écrits au local storage"); // DEBUG
+         return Promise.reject<string>("DEBUG HORS LIGNE"); // DEBUG
      }
     
      // TODO Regarder les codes d'erreur et gérer les cas depuis les APIS + notifications ici

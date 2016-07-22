@@ -33,8 +33,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var notification_service_1 = require("./services/notification.service");
-var growl_1 = require("../vendor/primeng/components/growl/growl");
 var cdt_component_1 = require("./cdt/cdt.component");
+var growl_1 = require("../vendor/primeng/components/growl/growl");
 var AppComponent = (function () {
     function AppComponent(_notif) {
         this._notif = _notif;

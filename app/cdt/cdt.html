@@ -11,54 +11,39 @@
                 {{devoir.texte}}
             </li>
         </ul>
-        <br>
         <div>
             <button pButton type="button" icon="fa-check" iconPos="left"
-                    label="Confirmer la fusion" [disabled]="merge.length<2"></button>
+                    label="Confirmer la fusion" (click)="doMerge()" [disabled]="merge.length<2"></button>
             <button class="secondaire" pButton type="button" icon="fa-ban" iconPos="left"
                     label="Annuler" (click)="clearMerge()"></button>
         </div>
     </p-panel>
 </section>
 
-<!-- Liste de tâches -->
-<section class="taches">
-    <p-panel>
-        <header>
-            Mes tâches en cours
-            <span id="pastille">
-                {{taches.length}}
-            </span>
-        </header>
-        <ul>
-            <li *ngFor="let devoir of taches">
-                <p-checkbox ([ngModel])="devoir.fait" (click)="taskdone(devoir)"></p-checkbox>
-                <p>{{_date.jjmm(devoir.date)}},
-                     {{devoir.texte.length>120 ? devoir.texte.substr(0,115)+"(...)" : devoir.texte}}
-                    <span class="matiere">#{{devoir.matiere|lowercase}}</span>
-                </p>
-            </li>
-        </ul>
-        <br>
-        <div id="addtask">
-            // INPUT
-        </div>
-    </p-panel>
-</section>
+<!-- sélection de flag -->
 
-<!-- Sections des devoirs (core) -->
+<p-overlayPanel #op>
+    <ul *ngIf="selectedDevoir">
+        <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
+            <i [style.color]="flags[flag]" class="fa fa-font-awesome">
+            </i>
+        </li>
+    </ul>
+</p-overlayPanel>
+
+<!-- Sections des devoirs (core)  -->
 <section *ngFor="let section of sections" class="cdt flex-container">
     <aside class="pam unstyled txtcenter">
         <p>{{section.titre}}</p>
         <p>{{section.sous_titre}}</p>
     </aside>
     <div role="main" class="flex-item-fluid pam">
-        <p-panel [class]="devoir.fait ? 'done' : 'undone' + devoir.matiere_c" *ngFor="let devoir of section.devoirs">
+        <p-panel *ngFor="let devoir of section.devoirs; let i=index" [class]="devoir.matiere_c+' '+(devoir.fait ? 'done' : 'undone')" >
             <header>
                 <div class="ui-helper-clearfix">
                     <span class="ui-panel-title" style="font-size:16px">
-                        <a (onClick)="addToMine(devoir)">
-                            <i pTooltip="Ajouter à mes tâches en cours" tooltipPosition="top" class="fa fa-plus-square-o">
+                        <a (click)="selectDevoir($event,devoir,op)">
+                            <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur" tooltipPosition="top" class="fa fa-font-awesome">
                             </i>
                         </a>
                         <span class="matiere">#{{devoir.matiere | lowercase}}</span>
@@ -77,11 +62,16 @@
                 /
                 <b>{{devoir.commentaires.length}}</b> <i class="fa fa-comment"></i>
             </footer>
-            <p-accordion *ngIf="devoir.commentaires.length>0"> <!-- /!\ TODO Mettre le input à l'extérieur quand ==0 --->
+            <p-accordion>
                 <p-accordionTab>
                     <header>
                         voir les commentaires
                     </header>
+                    <div class="commentaire">
+                        <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire" [autoResize]="true" [(ngModel)]="input[i]">
+                        </textarea>
+                        <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
+                    </div>
                     <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
                         <p class="header">
                             @{{commentaire.auteur}}

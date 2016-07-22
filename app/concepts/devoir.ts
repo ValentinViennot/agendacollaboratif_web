@@ -40,5 +40,6 @@ export class Devoir {
     nb_fait: number; // Combien l'ont fait
     // Infos personnalisées
     fait: boolean; // Propre à l'utilisateur
+    flag:number; // Priorité du devoir
 
 }

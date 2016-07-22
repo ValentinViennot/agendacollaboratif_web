@@ -146,9 +146,7 @@ var SyncService = (function () {
          }
          );
          */
-        window.localStorage.setItem("devoirs", JSON.stringify(mock_1.DEVOIRS));
-        window.localStorage.setItem("taches", JSON.stringify(mock_1.DEVOIRS));
-        return Promise.resolve("DEBUG - Devoirs et tâches écrits au local storage"); // DEBUG
+        return Promise.reject("DEBUG HORS LIGNE"); // DEBUG
     };
     // TODO Regarder les codes d'erreur et gérer les cas depuis les APIS + notifications ici
     /**
