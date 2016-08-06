@@ -24,6 +24,7 @@
  import { provideRouter, RouterConfig }  from '@angular/router';
 
  import { CdtComponent } from './cdt/cdt.component';
+ import {GroupComponent} from "./group/group.component";
 
  const routes: RouterConfig = [
      {
@@ -31,10 +32,15 @@
          component: CdtComponent
      },
      {
+         path: 'group',
+         component: GroupComponent
+     },
+     {
          path: '',
          redirectTo: '/cdt',
          pathMatch: 'prefix'
-     }
+     },
+     { path: '**', redirectTo: '/cdt' }
  ];
  // Authentification https://angular.io/docs/ts/latest/guide/router.html : can activate
 

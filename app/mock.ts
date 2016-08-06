@@ -35,18 +35,39 @@
   */
  DEVOIRS = [
      {
+         "id": 4,
+         "user": 2,
+         "date": new Date("07/17/2016"),
+         "auteur": "jeanmichel",
+         "matiere": "Maths",
+         "matiere_c": "matiere2",
+         "texte": "Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
+         "commentaires": [
+             {
+                 "id": 100,
+                 "user": 1,
+                 "auteur": "valentinviennot",
+                 "date": new Date("07/14/2016 14:17:00"),
+                 "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
+             }
+         ],
+         "nb_fait": 3,
+         "fait": false,
+         "flag":0
+     },
+     {
          "id": 1,
          "user": 1,
          "date": new Date("07/17/2016"),
          "auteur": "valentinviennot",
          "matiere": "Physique",
-         "matiere_c": "matiere01",
+         "matiere_c": "matiere1",
          "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
          "commentaires": [
              {
                  "id": 1,
-                 "user": 1,
-                 "auteur": "valentinviennot",
+                 "user": 2,
+                 "auteur": "jeanmichel",
                  "date": new Date("07/14/2016 14:17:00"),
                  "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
              }
@@ -57,106 +78,43 @@
      },
      {
          "id": 2,
-         "user": 1,
+         "user": 2,
          "date": new Date("07/17/2016"),
-         "auteur": "valentinviennot",
+         "auteur": "jeanmichel",
          "matiere": "Physique",
-         "matiere_c": "matiere01",
-         "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
+         "matiere_c": "matiere2",
+         "texte": "Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
          "commentaires": [
              {
-                 "id": 2,
+                 "id": 100,
                  "user": 1,
                  "auteur": "valentinviennot",
                  "date": new Date("07/14/2016 14:17:00"),
                  "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
              }
          ],
-         "nb_fait": 0,
+         "nb_fait": 3,
          "fait": false,
          "flag":0
      },
      {
-         "id": 1,
-         "user": 1,
+         "id": 3,
+         "user": 2,
          "date": new Date("07/17/2016"),
-         "auteur": "valentinviennot",
-         "matiere": "Physique",
-         "matiere_c": "matiere01",
-         "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
+         "auteur": "jeanmichel",
+         "matiere": "Maths",
+         "matiere_c": "matiere2",
+         "texte": "Suspendisse congue, http://google.fr api.groupesix.xyz ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
          "commentaires": [
              {
-                 "id": 1,
+                 "id": 100,
                  "user": 1,
                  "auteur": "valentinviennot",
                  "date": new Date("07/14/2016 14:17:00"),
                  "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
              }
          ],
-         "nb_fait": 0,
-         "fait": false,
-         "flag":0
-     },
-     {
-         "id": 1,
-         "user": 1,
-         "date": new Date("07/17/2016"),
-         "auteur": "valentinviennot",
-         "matiere": "Physique",
-         "matiere_c": "matiere01",
-         "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
-         "commentaires": [
-             {
-                 "id": 1,
-                 "user": 1,
-                 "auteur": "valentinviennot",
-                 "date": new Date("07/14/2016 14:17:00"),
-                 "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
-             }
-         ],
-         "nb_fait": 0,
-         "fait": false,
-         "flag":0
-     },
-     {
-         "id": 1,
-         "user": 1,
-         "date": new Date("07/17/2016"),
-         "auteur": "valentinviennot",
-         "matiere": "Physique",
-         "matiere_c": "matiere01",
-         "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
-         "commentaires": [
-             {
-                 "id": 1,
-                 "user": 1,
-                 "auteur": "valentinviennot",
-                 "date": new Date("07/14/2016 14:17:00"),
-                 "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
-             }
-         ],
-         "nb_fait": 0,
-         "fait": false,
-         "flag":0
-     },
-     {
-         "id": 1,
-         "user": 1,
-         "date": new Date("07/17/2016"),
-         "auteur": "valentinviennot",
-         "matiere": "Physique",
-         "matiere_c": "matiere01",
-         "texte": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse congue, ex non elementum vestibulum, dolor massa hendrerit ante, vel euismod nisl nunc sed felis. Fusce pharetra nunc non venenatis tempor. Phasellus ut tellus nec orci commodo porttitor at eleifend felis. Integer elementum auctor ultricies.",
-         "commentaires": [
-             {
-                 "id": 1,
-                 "user": 1,
-                 "auteur": "valentinviennot",
-                 "date": new Date("07/14/2016 14:17:00"),
-                 "texte": "Phasellus sapien felis, rutrum quis luctus at, venenatis non justo. Ut sapien neque, accumsan non finibus vel, placerat et lacus. Donec euismod nibh vel placerat pharetra."
-             }
-         ],
-         "nb_fait": 0,
+         "nb_fait": 3,
          "fait": false,
          "flag":0
      }

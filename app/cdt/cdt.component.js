@@ -1,13 +1,3 @@
-"use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
 /*
    "l'Agenda Collaboratif"
    Copyright (C)  2016  Valentin VIENNOT
@@ -30,12 +20,31 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 /**
  * Created by Valentin on 13/07/2016.
  */
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+// TODO Améliorations, todos, DEBUG, relire code et erreurs, style
+// Angular2 components
 var core_1 = require('@angular/core');
+var router_1 = require('@angular/router');
+var common_1 = require("@angular/common");
+// RXJS : Observables
+require('rxjs/add/operator/debounceTime');
+require('rxjs/add/operator/distinctUntilChanged');
+var devoir_1 = require("../concepts/devoir");
+// Services persos
 var synchronize_service_1 = require("../services/synchronize.service");
 var date_service_1 = require("../services/date.service");
 var parse_service_1 = require("../services/parse.service");
 var notification_service_1 = require("../services/notification.service");
-var mock_1 = require("../mock");
+// Prime UI / Prime NG directives
 var splitbutton_1 = require("../../vendor/primeng/components/splitbutton/splitbutton");
 var splitbuttonitem_1 = require("../../vendor/primeng/components/splitbutton/splitbuttonitem");
 var panel_1 = require("../../vendor/primeng/components/panel/panel");
@@ -45,24 +54,43 @@ var checkbox_1 = require("../../vendor/primeng/components/checkbox/checkbox");
 var button_1 = require("../../vendor/primeng/components/button/button");
 var overlaypanel_1 = require("../../vendor/primeng/components/overlaypanel/overlaypanel");
 var tooltip_1 = require("../../vendor/primeng/components/tooltip/tooltip");
-var common_1 = require("../../vendor/primeng/components/common");
+var common_2 = require("../../vendor/primeng/components/common");
 var inputtextarea_1 = require("../../vendor/primeng/components/inputtextarea/inputtextarea");
+var selectbutton_1 = require("../../vendor/primeng/components/selectbutton/selectbutton");
+// DEBUG
+var mock_1 = require("../mock");
+var linky_pipe_1 = require("../../vendor/angular2-linky/linky-pipe");
 var CdtComponent = (function () {
-    function CdtComponent(_sync, _date, _parse, _notif) {
+    function CdtComponent(_sync, _date, _parse, _notif, _route, _router) {
+        var _this = this;
         this._sync = _sync;
         this._date = _date;
         this._parse = _parse;
         this._notif = _notif;
+        this._route = _route;
+        this._router = _router;
         // Archives ou Devoirs
         this.type = "devoirs";
+        this.filtre = "";
+        this.filtre_texte = "";
+        this.filtres = [];
+        this.selectedFiltres = [];
+        this.term = new common_1.Control(); // Input
         this.merge = [];
         this.flags = ["grey", "blue", "orange", "red"];
         this.input = [];
+        this.selectedDevoir = new devoir_1.Devoir();
+        this.selectedComm = new devoir_1.Devoir();
+        this.term.valueChanges
+            .debounceTime(600)
+            .distinctUntilChanged()
+            .subscribe(function (term) { return _this.filtr(_this.filtre); });
     }
     CdtComponent.prototype.ngOnInit = function () {
+        var _this = this;
         // DEBUG
+        // TODO naviguer vers un query param this._router.navigate(['/cdt', { filter: 'test' }]);
         // Normalement les vérifications que les variables existent avant d'arriver ici évitent la présence de ces lignes
-        this.sync();
         window.localStorage.setItem("devoirs", JSON.stringify(mock_1.DEVOIRS));
         window.localStorage.setItem("pendDEL", JSON.stringify([]));
         window.localStorage.setItem("pendDELc", JSON.stringify([]));
@@ -72,29 +100,35 @@ var CdtComponent = (function () {
         window.localStorage.setItem("pendCOMM", JSON.stringify([]));
         window.localStorage.setItem("pendMERGE", JSON.stringify([]));
         // DEBUG
+        this.sub = this._route
+            .params
+            .subscribe(function (params) { return _this.filtre = (params['filter']); });
+        this.filtre = "";
+        // DEBUG
         console.log("* cdtController *");
         // TODO Vérifier si les variables (devoirs, archives, user, pending) sont dispo et si l'user est logged via un CanActivate
-        // Récupère les devoirs du local storage
-        this.devoirs = this.getDevoirs();
-        // On les transforme en sections
-        this.recalcSections();
+        this.refresh();
         // On récupère les infos de l'utilisateur
         this.user = this._sync.getUser(); // TODO user.service
-        // DEBUG Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
+        // TODO Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
         // On configure une synchronisation automatique régulière (ms)
-        // IntervalObservable.create(1000).subscribe((t) => this.sync());
+        // this.interval = IntervalObservable.create(1000).subscribe((t) => this.sync()); // DEBUG
     };
-    // Méthodes internes, pour le Component
+    CdtComponent.prototype.ngOnDestroy = function () {
+        this.sub.unsubscribe();
+        //this.interval.unsubscribe(); // DEBUG
+    };
+    CdtComponent.prototype.refresh = function () {
+        this.devoirs = this.getDevoirs();
+        this.recalcSections();
+    };
     /**
      * Synchronise les devoirs, si lea SYNC est effective : on remplace les devoirs du template par les nouveaux
      */
     CdtComponent.prototype.sync = function () {
         var th = this;
         this._sync.do().then(function (str) {
-            // Si la synchronisation a été effective, on remplace les devoirs de la template par les nouveaux
-            th.devoirs = th.getDevoirs();
-            // Sans oublier de recalculer les sections !
-            th.recalcSections();
+            th.refresh();
             // DEBUG
             console.log(str);
         }, function (str) {
@@ -103,11 +137,9 @@ var CdtComponent = (function () {
         });
     };
     /**
-     * Récupère les devoirs du local storage
-     * @return {any}
+     * Récupère les devoirs du local Storage
      */
     CdtComponent.prototype.getDevoirs = function () {
-        console.log("GETDEVOIRS"); // DEBUG TODO Optimisation de l'appel (nb occurences)
         return this._parse.parse(this.type);
     };
     /**
@@ -115,7 +147,12 @@ var CdtComponent = (function () {
      * ATTENTION : On suppose que les devoirs sont déjà triés par date et classés par matière
      * @return {Section[]}
      */
-    CdtComponent.prototype.getSections = function () {
+    CdtComponent.prototype.recalcSections = function () {
+        console.log("SECTIONS");
+        var devoirs = this.filtrage(this.devoirs);
+        var filtres_name = [];
+        var filtres_count = [];
+        this.flags_count = Array.apply(null, Array(this.flags.length)).map(Number.prototype.valueOf, 0);
         // Retour
         var sections = [];
         // Variables pour la boucle
@@ -123,7 +160,16 @@ var CdtComponent = (function () {
         var lastDate = new Date();
         var premier = true;
         // Pour chaque devoir...
-        this.devoirs.forEach(function (devoir) {
+        devoirs.forEach(function (devoir) {
+            // Compte les flags
+            this.flags_count[devoir.flag]++;
+            // Enregistre les filtres appliquables
+            if (filtres_name.indexOf(devoir.matiere) < 0) {
+                filtres_name.push(devoir.matiere);
+                filtres_count[filtres_name.indexOf(devoir.matiere)] = 1;
+            }
+            else
+                filtres_count[filtres_name.indexOf(devoir.matiere)]++;
             // Si la date (jour) du devoir est différente de celle du précédent...
             if (devoir.date.toDateString() != lastDate.toDateString()) {
                 // ...S'il s'agit du premier élément...
@@ -164,15 +210,112 @@ var CdtComponent = (function () {
         // On ajoute la dernière section créée aux sections
         if (!premier)
             sections.push(section);
+        // On créé les filtres appliquables
+        if (this.filtre == "" && this.filtre_texte == "") {
+            this.filtres = [];
+            filtres_name.forEach(function (name, index, array) {
+                this.filtres.push({
+                    "label": "#" + name + " (" + filtres_count[index] + ")",
+                    "value": "#" + name
+                });
+            }, this);
+        }
         // Et on renvoi les sections !
-        return sections;
+        this.sections = sections;
     };
     /**
-     * Remplace les sections du template par les sections recalculées
+     * Applique un filtre aux devoirs s'il y a eu lieu
+     * @return Devoir[]
      */
-    CdtComponent.prototype.recalcSections = function () {
-        console.log("RECALCSECTIONS"); // DEBUG
-        this.sections = this.getSections();
+    CdtComponent.prototype.filtrage = function (devoirs) {
+        var filtre_full = (this.filtre_texte.length > 2 ? this.filtre_texte : "") +
+            (this.filtre_texte.length > 2 && this.filtre.length > 2 ? "&&" : "") +
+            (this.filtre.length > 2 ? this.filtre : "");
+        if (filtre_full.length < 2) {
+            this.selectedFiltres = [];
+            return devoirs;
+        }
+        else {
+            console.log("FILTREDEVOIRS"); // DEBUG
+            // Devoirs renvoyés
+            var retour = [];
+            // On récupère les conditions "ET"
+            var filtresET = filtre_full.trim().split("&&");
+            // Trouve le premier tableau non vide
+            var nonvide = 0;
+            var premier = true;
+            // Pour chaque condition "ET"
+            for (var i = 0; i < filtresET.length; i++) {
+                // On récupère les conditions "OU"
+                var filtresOU = filtresET[i].trim().split("||");
+                // Sélection des devoirs pour ce groupement "ET"
+                var retourTEMP = [];
+                // Pour chaque condition "OU"
+                for (var j = 0; j < filtresET[i].length; j++) {
+                    if (filtresOU[j] != null && filtresOU[j] != "") {
+                        nonvide++;
+                        // On récupère le type de filtrage
+                        var type = filtresOU[j].substr(0, 1);
+                        var search = filtresOU[j].substr(1);
+                        // Pour chaque devoir
+                        for (var k = 0; k < devoirs.length; k++) {
+                            // On teste s'il correspond à la condition selon le type de filtre
+                            // Si le devoir répond à la condition (selon le type de filtre)
+                            if ((type == "@" && devoirs[k].auteur.toLowerCase().match("^" + search.toLowerCase())) ||
+                                (type == "#" && devoirs[k].matiere.toLowerCase().match("^" + search.toLowerCase())) ||
+                                (type == "?" && devoirs[k].date.toLocaleDateString() == search) ||
+                                (type == ":" && devoirs[k].flag == this.flags.indexOf(search)) ||
+                                (type == "-" && devoirs[k].fait.toString() == search) ||
+                                (devoirs[k].texte.toLowerCase().match(filtresOU[j].toLowerCase()))) {
+                                // En évitant les doublons, on l'ajoute aux résultats retournés de la sous condition en cours
+                                if (retourTEMP.indexOf(devoirs[k]) < 0) {
+                                    retourTEMP.push(devoirs[k]);
+                                }
+                                // Pour parfaire l'affichage, on met à jour les filtres appliqués
+                                if (type == "#" && this.selectedFiltres.indexOf(filtresOU[j]) < 0)
+                                    this.selectedFiltres.push(filtresOU[j]);
+                            }
+                        }
+                    }
+                }
+                // A ce stade tous les devoirs répondant à au moins une condition du groupe "OU"
+                // sont ajoutés au tableau retourTEMP (sans doublon)
+                // Ajout au tableau de retour final
+                // S'il s'agit du premier tour, on copie tout simplement le contenu
+                if (premier && nonvide > 0) {
+                    premier = false;
+                    retour = retourTEMP.slice();
+                }
+                else if (retourTEMP.length > 0) {
+                    var length_1 = retour.length;
+                    var todelete = [];
+                    for (var l = 0; l < length_1; l++) {
+                        var et = false;
+                        for (var k = 0; !et && k < retourTEMP.length; k++)
+                            if (retour[l] == retourTEMP[k])
+                                et = true;
+                        if (!et)
+                            todelete.push(retour[l]);
+                    }
+                    for (var k = 0; k < todelete.length; k++)
+                        retour.splice(retour.indexOf(todelete[k]), 1);
+                }
+                else if (nonvide > 0) {
+                    retour = [];
+                }
+            }
+            return retour;
+        }
+    };
+    CdtComponent.prototype.filtr = function (filtre) {
+        this.filtre = filtre;
+        this.refresh();
+    };
+    CdtComponent.prototype.clear_filtr = function () {
+        this.selectedFiltres = [];
+        this.filtre = "";
+        this.filtre_texte = "";
+        this.refresh();
     };
     CdtComponent.prototype.done = function (devoir) {
         // On change l'état du devoir
@@ -252,8 +395,6 @@ var CdtComponent = (function () {
             .then(function () {
             // Supprimer de devoirs[]
             th.devoirs.splice((th.devoirs).indexOf(devoir), 1);
-            // On actualise l'affichage
-            th.recalcSections();
             // Ajout à la liste de suppression de devoirs
             th.pend("DEL", devoir.id);
             // Notifie l'utilisateur
@@ -268,6 +409,7 @@ var CdtComponent = (function () {
     CdtComponent.prototype.supprimer_comm = function (devoir, commentaire) {
         // On supprime le commentaire du devoir concerné
         devoir.commentaires.splice((devoir.commentaires).indexOf(commentaire), 1);
+        this.selectedComm = devoir;
         // On ajoute l'opération en liste d'attente
         this.pend("DELc", commentaire.id);
     };
@@ -283,8 +425,12 @@ var CdtComponent = (function () {
         // On ajoute le commentaire au devoir
         devoir.commentaires.splice(0, 0, commentaire);
         // Ajout à la liste d'attente
+        this.selectedComm = devoir;
         this.pend("COMM", { "id": devoir.id, "content": commentaire });
         this.input[index] = "";
+    };
+    CdtComponent.prototype.unselect = function () {
+        this.selectedComm = new devoir_1.Devoir();
     };
     CdtComponent.prototype.selectDevoir = function (event, devoir, overlaypanel) {
         this.selectedDevoir = devoir;
@@ -311,10 +457,12 @@ var CdtComponent = (function () {
         window.localStorage.setItem("pend" + list, JSON.stringify(pending));
         // Lance une synchronisation
         this.sync();
+        // Rafraichi l'affichage
+        this.refresh();
     };
     CdtComponent = __decorate([
         core_1.Component({
-            selector: 'my-cdt',
+            selector: 'agd-cdt',
             templateUrl: 'app/cdt/cdt.html',
             directives: [
                 splitbutton_1.SplitButton,
@@ -326,16 +474,20 @@ var CdtComponent = (function () {
                 button_1.Button,
                 overlaypanel_1.OverlayPanel,
                 tooltip_1.Tooltip,
-                common_1.Header,
-                inputtextarea_1.InputTextarea
+                common_2.Header,
+                inputtextarea_1.InputTextarea,
+                selectbutton_1.SelectButton
             ],
             providers: [
                 synchronize_service_1.SyncService,
                 date_service_1.DateService,
                 parse_service_1.ParseService
+            ],
+            pipes: [
+                linky_pipe_1.LinkyPipe
             ]
         }), 
-        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService])
+        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService, router_1.ActivatedRoute, router_1.Router])
     ], CdtComponent);
     return CdtComponent;
 }());

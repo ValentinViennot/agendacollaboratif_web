@@ -1,5 +1,27 @@
 <link rel="stylesheet" href="/app/cdt/cdt.css">
 
+<input [ngFormControl]="term" pInputText title="Rechercher" placeholder="Rechercher" type="search" size="30" [(ngModel)]="filtre_texte" />
+<button type="button" (click)="clear_filtr()" pButton icon="fa-close" label="Effacer la recherche"></button>
+<div class="flags">
+    <p>
+        <a *ngFor="let flag of flags.slice().reverse()" (click)="filtr((filtre==''?'':filtre+'&&')+':'+flag)">
+            <span *ngIf="flags_count[flags.indexOf(flag)]>0">
+                <i [style.color]="flag" class="fa fa-font-awesome">
+                </i>
+                ({{flags_count[flags.indexOf(flag)]}})
+            </span>
+        </a>
+    </p>
+    <p>
+        <a (click)="filtr((filtre==''?'':filtre+'&&')+'-false')">[Masquer les devoirs terminés]</a>
+    </p>
+</div>
+<div>
+    <p-selectButton [options]="filtres" (onChange)="filtr(selectedFiltres.join('||'))" [(value)]="selectedFiltres" [multiple]="true"></p-selectButton>
+</div>
+<p>DEBUG // FILTRE : {{(filtre_texte.length>2 ? filtre_texte : "") +
+    (filtre_texte.length>2&&filtre.length>2 ? "&&" : "") +
+    (filtre.length>2 ? filtre : "")}}</p> <!-- DEBUG -->
 <!-- Formulaire de fusion de devoirs -->
 <section *ngIf="merge.length>0" class="merge">
     <p-panel>
@@ -8,7 +30,7 @@
         </header>
         <ul>
             <li *ngFor="let devoir of merge">
-                {{devoir.texte}}
+                <span [innerHTML]="devoir.texte | linky"></span>
             </li>
         </ul>
         <div>
@@ -23,7 +45,7 @@
 <!-- sélection de flag -->
 
 <p-overlayPanel #op>
-    <ul *ngIf="selectedDevoir">
+    <ul *ngIf="selectedDevoir" class="flags">
         <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
             <i [style.color]="flags[flag]" class="fa fa-font-awesome">
             </i>
@@ -46,8 +68,8 @@
                             <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur" tooltipPosition="top" class="fa fa-font-awesome">
                             </i>
                         </a>
-                        <span class="matiere">#{{devoir.matiere | lowercase}}</span>
-                        <span class="auteur">@{{devoir.auteur | lowercase}}</span>
+                        <span (click)="filtr('#'+devoir.matiere)" class="matiere">#{{devoir.matiere | lowercase}}</span>
+                        <span (click)="filtr('@'+devoir.auteur)" class="auteur">@{{devoir.auteur | lowercase}}</span>
                     </span>
                     <p-splitButton class="myFloatRight" [label]="devoir.fait ? 'Fait' : 'À faire'" icon="fa-check" (onClick)="done(devoir)">
                         <p-splitButtonItem icon="fa-code-fork" label="Doublon" (onClick)="addToMerge(devoir)"></p-splitButtonItem>
@@ -56,14 +78,14 @@
                     </p-splitButton>
                 </div>
             </header>
-            {{devoir.texte}}
+            <span [innerHTML]="devoir.texte | linky"></span>
             <footer>
                 <b>{{devoir.nb_fait}}</b> <i class="fa fa-check"></i>
                 /
                 <b>{{devoir.commentaires.length}}</b> <i class="fa fa-comment"></i>
             </footer>
             <p-accordion>
-                <p-accordionTab>
+                <p-accordionTab (click)="unselect()" [selected]="devoir.id==selectedComm.id">
                     <header>
                         voir les commentaires
                     </header>
@@ -75,12 +97,12 @@
                     <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
                         <p class="header">
                             @{{commentaire.auteur}}
-                            <a *ngIf="user.id==commentaire.user" (click)="supprimer_comm(devoir,commentaire)">
+                            <a class="delete" *ngIf="user.id==commentaire.user" (click)="supprimer_comm(devoir,commentaire)">
                                 <i class="fa fa-trash-o"></i>
                             </a>
                         </p>
                         <p>
-                            {{commentaire.texte}}
+                            <span [innerHTML]="commentaire.texte | linky"></span>
                         </p>
                         <p class="footer">
                             <span class="date">{{_date.recentDateTime(commentaire.date)}}</span>

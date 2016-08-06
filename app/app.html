@@ -20,9 +20,30 @@
 <!--
 <ul>
     <nav>
-        <a [routerLink]="['/cdt']" routerLinkActive="active">Agenda</a>
+
     </nav>
 </ul>
 -->
-<router-outlet></router-outlet>
+
 <p-growl [value]="_notif.msgs" [life]="3000"></p-growl>
+
+<div id="main" role="main" class="flex-container">
+    <div class="w20 pam aside">
+        <nav role="navigation">
+            <a [routerLink]="['/cdt']" routerLinkActive="active">Prochainement</a>
+        </nav>
+        <nav role="navigation">
+            <a [routerLink]="['/group']" routerLinkActive="active">Groupes DEBUG</a>
+        </nav>
+    </div>
+    <div class="flex-item-fluid pam content">
+        <router-outlet>
+        </router-outlet>
+    </div>
+    <aside class="pam w25 aside">
+        <p class="">Hopla vous savez que la mamsell Huguette, la miss Miss Dahlias du messti de Bischheim était au Christkindelsmärik en compagnie de Richard Schirmeck (celui qui a un blottkopf), le mari de Chulia Roberstau, qui lui trempait sa Nüdle dans sa Schneck ! Yo dû, Pfourtz ! Ch'espère qu'ils avaient du Kabinetpapier, Gal !</p>
+    </aside>
+</div>
+<footer id="footer" role="contentinfo" class="line pam txtcenter">
+    Lorem Elsass ipsum lacus leverwurscht Wurschtsalad mamsell Gal. gewurztraminer turpis, suspendisse commodo Oberschaeffolsheim ornare aliquam semper Miss Dahlias Mauris turpis sagittis kuglopf eleifend dignissim baeckeoffe geht's Richard Schirmeck mollis habitant schnaps ante et sit leo schpeck sit Salu bissame Salut bisamme varius quam. amet elementum nullam bissame bredele Heineken picon bière gal sed risus, condimentum Verdammi ch'ai ac réchime météor barapli s'guelt quam, non Christkindelsmärik blottkopf, Carola tellus rucksack vielmols, Gal !
+</footer>

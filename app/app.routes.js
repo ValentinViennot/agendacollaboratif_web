@@ -23,16 +23,22 @@
 "use strict";
 var router_1 = require('@angular/router');
 var cdt_component_1 = require('./cdt/cdt.component');
+var group_component_1 = require("./group/group.component");
 var routes = [
     {
         path: 'cdt',
         component: cdt_component_1.CdtComponent
     },
     {
+        path: 'group',
+        component: group_component_1.GroupComponent
+    },
+    {
         path: '',
         redirectTo: '/cdt',
         pathMatch: 'prefix'
-    }
+    },
+    { path: '**', redirectTo: '/cdt' }
 ];
 // Authentification https://angular.io/docs/ts/latest/guide/router.html : can activate
 exports.appRouterProviders = [

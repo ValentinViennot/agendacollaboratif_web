@@ -70,7 +70,7 @@
     color: #aaa
 }
 
-.cdt .commentaire a {
+.cdt .commentaire a.delete {
     float: right
 }
 
@@ -81,10 +81,4 @@
 .cdt .done .ui-panel-title {
     color: grey;
     text-decoration: line-through;
-}
-
-/* Couleurs des matières */
-
-.cdt .matiere01 .ui-panel {
-    background-color: #EEFFFF
 }

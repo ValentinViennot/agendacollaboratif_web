@@ -25,6 +25,7 @@
 
  import { DEVOIRS, ARCHIVES } from '../mock';
  import {User} from "../concepts/user";
+ import {Groupe} from "../group/groupe";
 
  @Injectable()
  export class SyncService {
@@ -181,5 +182,54 @@
          };
          return USER; // DEBUG
      }
- 
+
+     public getGroups(index:number):Groupe[] {
+         // TODO
+         return [
+             {
+                 "id":1,
+                 "parent":0,
+                 "nom":"INSA1",
+                 "joint":true,
+                 "group":true,
+                 "color":1
+             },
+             {
+                 "id":2,
+                 "parent":1,
+                 "nom":"TEST2",
+                 "joint":false,
+                 "group":true,
+                 "color":2
+             },
+             {
+                 "id":3,
+                 "parent":2,
+                 "nom":"MAT1",
+                 "joint":true,
+                 "group":false,
+                 "color":3
+             },
+             {
+                 "id":4,
+                 "parent":3,
+                 "nom":"MAT2",
+                 "joint":false,
+                 "group":false,
+                 "color":4
+             }
+         ];
+     }
+
+     public getGroup(index:number):Groupe {
+         return {
+             "id":2,
+             "parent":1,
+             "nom":"TEST2",
+             "joint":false,
+             "group":true,
+             "color":2
+         };
+     }
+
  }

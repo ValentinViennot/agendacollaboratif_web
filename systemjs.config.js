@@ -9,6 +9,7 @@
     'app':                        'app', // 'dist',
     '@angular':                   'node_modules/@angular',
     'angular2-in-memory-web-api': 'node_modules/angular2-in-memory-web-api',
+    'angular2-linky':             'vendor/angular2-linky',
     'rxjs':                       'node_modules/rxjs',
     'primeng':                    'vendor/primeng'
   };
@@ -18,6 +19,7 @@
     'app':                        { main: 'main.js',  defaultExtension: 'js' },
     'rxjs':                       { defaultExtension: 'js' },
     'angular2-in-memory-web-api': { main: 'index.js', defaultExtension: 'js' },
+    'angular2-linky':             { main: 'index.js', defaultExtension: 'js' },
     'primeng':                    { defaultExtension: 'js' }
   };
 
@@ -31,7 +33,7 @@
     'platform-browser-dynamic',
     'router',
     'router-deprecated',
-    'upgrade',
+    'upgrade'
   ];
 
   // Individual files (~300 requests):

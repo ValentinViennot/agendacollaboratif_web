@@ -179,6 +179,53 @@ var SyncService = (function () {
         };
         return USER; // DEBUG
     };
+    SyncService.prototype.getGroups = function (index) {
+        // TODO
+        return [
+            {
+                "id": 1,
+                "parent": 0,
+                "nom": "INSA1",
+                "joint": true,
+                "group": true,
+                "color": 1
+            },
+            {
+                "id": 2,
+                "parent": 1,
+                "nom": "TEST2",
+                "joint": false,
+                "group": true,
+                "color": 2
+            },
+            {
+                "id": 3,
+                "parent": 2,
+                "nom": "MAT1",
+                "joint": true,
+                "group": false,
+                "color": 3
+            },
+            {
+                "id": 4,
+                "parent": 3,
+                "nom": "MAT2",
+                "joint": false,
+                "group": false,
+                "color": 4
+            }
+        ];
+    };
+    SyncService.prototype.getGroup = function (index) {
+        return {
+            "id": 2,
+            "parent": 1,
+            "nom": "TEST2",
+            "joint": false,
+            "group": true,
+            "color": 2
+        };
+    };
     SyncService = __decorate([
         core_1.Injectable(), 
         __metadata('design:paramtypes', [http_1.Http])
