@@ -22,14 +22,14 @@
  */
 
  import {Component, OnInit} from '@angular/core';
- import {Groupe} from "./groupe";
+ import {Groupe} from "../concepts/groupe";
  import {SyncService} from "../services/synchronize.service";
- import {MenuItem} from "../../vendor/primeng/components/common";
- import {Breadcrumb} from "../../vendor/primeng/components/breadcrumb/breadcrumb";
- import {DataGrid} from "../../vendor/primeng/components/datagrid/datagrid";
- import {Panel} from "../../vendor/primeng/components/panel/panel";
- import {Button} from "../../vendor/primeng/components/button/button";
- import {OverlayPanel} from "../../vendor/primeng/components/overlaypanel/overlaypanel";
+ import {MenuItem} from "../../components/common";
+ import {Breadcrumb} from "../../components/breadcrumb/breadcrumb";
+ import {DataGrid} from "../../components/datagrid/datagrid";
+ import {Panel} from "../../components/panel/panel";
+ import {Button} from "../../components/button/button";
+ import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
 
 
 @Component({
@@ -74,6 +74,7 @@ export class GroupComponent implements OnInit {
     }
 
     ngOnInit() {
+        console.log("* GroupController *");
         // groupe 0 (ROOT, ex : INSA)
         this.group = this._sync.getGroup(0);
         this.push(this.group);

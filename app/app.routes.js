@@ -17,14 +17,12 @@
    
    FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
-/**
- * Created by Valentin on 10/07/2016.
- */
 "use strict";
 var router_1 = require('@angular/router');
 var cdt_component_1 = require('./cdt/cdt.component');
 var group_component_1 = require("./group/group.component");
-var routes = [
+var user_component_1 = require("./user/user.component");
+exports.routes = [
     {
         path: 'cdt',
         component: cdt_component_1.CdtComponent
@@ -34,6 +32,10 @@ var routes = [
         component: group_component_1.GroupComponent
     },
     {
+        path: 'user',
+        component: user_component_1.UserComponent
+    },
+    {
         path: '',
         redirectTo: '/cdt',
         pathMatch: 'prefix'
@@ -41,7 +43,7 @@ var routes = [
     { path: '**', redirectTo: '/cdt' }
 ];
 // Authentification https://angular.io/docs/ts/latest/guide/router.html : can activate
-exports.appRouterProviders = [
-    router_1.provideRouter(routes)
+exports.APP_ROUTER_PROVIDERS = [
+    router_1.provideRouter(exports.routes)
 ];
 //# sourceMappingURL=app.routes.js.map

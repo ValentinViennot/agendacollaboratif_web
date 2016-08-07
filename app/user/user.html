@@ -1,0 +1,63 @@
+<!--
+    "l'Agenda Collaboratif"
+    Copyright (C)  2016  Valentin VIENNOT
+    Contact : vviennot@orange.fr
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    You have to put a copy of this program's license into your project.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+    
+    FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
+-->
+<link rel="stylesheet" href="/app/user/user.css">
+<P>DEBUG : {{changed}}</P>
+
+<p-panel>
+    <header>
+        <div class="ui-helper-clearfix">
+            <span class="ui-panel-title" style="font-size:16px">Compte</span>
+            <button pButton styleClass="floatRight" [class.secondary]="changed" type="text" (click)="save()" icon="fa-check" label="Enregistrer"></button>
+        </div>
+    </header>
+    <!-- Informations générales sur le compte -->
+    <div class="ligne">
+        <i [pTooltip]="user.fake_identity ? 'Identité affichée' : 'Les modifications sur ces paramètres sont désactivées' " class="fa fa-user"></i>
+        <input pInputText [disabled]="!user.fake_identity" [ngFormControl]="form" title="Prénom" type="text" size="30" [(ngModel)]="user.prenom" />
+        <input pInputText [disabled]="!user.fake_identity" [ngFormControl]="form" title="Nom" type="text" size="30" [(ngModel)]="user.nom" />
+    </div>
+    <div class="ligne">
+        <i pTooltip="Adresse pour te joindre (Nous ne diffusons pas de publicité)" class="fa fa-envelope"></i>
+        <input [ngFormControl]="form" title="Email" type="text" size="70" pInputText [(ngModel)]="user.email" />
+    </div>
+    <div>
+        <i pTooltip="Modifie ton mot de passe" class="fa fa-lock"></i>
+        <input [ngFormControl]="form" title="Nouveau mot de passe" placeholder="Nouveau mot de passe" type="password" size="30" pInputText [(ngModel)]="mdp1" />
+        <input [ngFormControl]="form" title="Confirmer le nouveau mot de passe" placeholder="Confirmer" type="password" size="30" pInputText [(ngModel)]="mdp2" />
+    </div>
+</p-panel>
+
+<p-panel>
+    <header>
+        <div class="ui-helper-clearfix">
+            <span class="ui-panel-title" style="font-size:16px">Notifications</span>
+            <button pButton styleClass="floatRight" [class.secondary]="changed" type="text" (click)="save()" icon="fa-check" label="Enregistrer"></button>
+        </div>
+    </header>
+    <h5>Recevoir des notifications</h5>
+    <p>Choisis ici où recevoir tes notifications. Nous utiliserons toujours ton mail pour communiquer à propos de ton compte.</p>
+    <div>
+        <!--<p-toggleButton ([ngModel])="user.mail" onLabel="Recevoir par email" offLabel="Ne pas recevoir par email" onIcon="fa-envelope-o" offIcon="fa-envelope" ></p-toggleButton>-->
+        <p-checkbox [(ngModel)]="user.mail" binary="true"></p-checkbox>
+    </div>
+    <h5>Mes notifications</h5>
+    <p>Sélectionne ici quelles notifications tu souhaites activer ou nom. Elles seront envoyées sur les supports choisis ci dessus.</p>
+
+</p-panel>

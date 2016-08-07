@@ -32,11 +32,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var synchronize_service_1 = require("../services/synchronize.service");
-var breadcrumb_1 = require("../../vendor/primeng/components/breadcrumb/breadcrumb");
-var datagrid_1 = require("../../vendor/primeng/components/datagrid/datagrid");
-var panel_1 = require("../../vendor/primeng/components/panel/panel");
-var button_1 = require("../../vendor/primeng/components/button/button");
-var overlaypanel_1 = require("../../vendor/primeng/components/overlaypanel/overlaypanel");
+var breadcrumb_1 = require("../../components/breadcrumb/breadcrumb");
+var datagrid_1 = require("../../components/datagrid/datagrid");
+var panel_1 = require("../../components/panel/panel");
+var button_1 = require("../../components/button/button");
+var overlaypanel_1 = require("../../components/overlaypanel/overlaypanel");
 var GroupComponent = (function () {
     function GroupComponent(_sync) {
         this._sync = _sync;
@@ -48,6 +48,7 @@ var GroupComponent = (function () {
         this.groups = [];
     }
     GroupComponent.prototype.ngOnInit = function () {
+        console.log("* GroupController *");
         // groupe 0 (ROOT, ex : INSA)
         this.group = this._sync.getGroup(0);
         this.push(this.group);

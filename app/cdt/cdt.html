@@ -1,6 +1,8 @@
 <link rel="stylesheet" href="/app/cdt/cdt.css">
 
-<input [ngFormControl]="term" pInputText title="Rechercher" placeholder="Rechercher" type="search" size="30" [(ngModel)]="filtre_texte" />
+<form [formGroup]="searchForm">
+    <input pInputText formControlName="term" [(ngModel)]="filtre_texte" title="Rechercher" placeholder="Rechercher" type="search" size="30" />
+</form>
 <button type="button" (click)="clear_filtr()" pButton icon="fa-close" label="Effacer la recherche"></button>
 <div class="flags">
     <p>
@@ -17,11 +19,8 @@
     </p>
 </div>
 <div>
-    <p-selectButton [options]="filtres" (onChange)="filtr(selectedFiltres.join('||'))" [(value)]="selectedFiltres" [multiple]="true"></p-selectButton>
+    <p-selectButton [options]="filtres" [(ngModel)]="selectedFiltres" (onChange)="filtr(selectedFiltres.join('||'))" [multiple]="true"></p-selectButton>
 </div>
-<p>DEBUG // FILTRE : {{(filtre_texte.length>2 ? filtre_texte : "") +
-    (filtre_texte.length>2&&filtre.length>2 ? "&&" : "") +
-    (filtre.length>2 ? filtre : "")}}</p> <!-- DEBUG -->
 <!-- Formulaire de fusion de devoirs -->
 <section *ngIf="merge.length>0" class="merge">
     <p-panel>

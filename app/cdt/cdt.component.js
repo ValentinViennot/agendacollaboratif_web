@@ -17,9 +17,6 @@
    
    FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
-/**
- * Created by Valentin on 13/07/2016.
- */
 "use strict";
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -35,56 +32,63 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var router_1 = require('@angular/router');
 var common_1 = require("@angular/common");
+var forms_1 = require('@angular/forms');
 // RXJS : Observables
 require('rxjs/add/operator/debounceTime');
 require('rxjs/add/operator/distinctUntilChanged');
+var section_1 = require("./section");
 var devoir_1 = require("../concepts/devoir");
 // Services persos
 var synchronize_service_1 = require("../services/synchronize.service");
 var date_service_1 = require("../services/date.service");
 var parse_service_1 = require("../services/parse.service");
 var notification_service_1 = require("../services/notification.service");
+var user_service_1 = require("../services/user.service");
+var linky_pipe_1 = require("../../node_modules/angular2-linky/linky-pipe");
 // Prime UI / Prime NG directives
-var splitbutton_1 = require("../../vendor/primeng/components/splitbutton/splitbutton");
-var splitbuttonitem_1 = require("../../vendor/primeng/components/splitbutton/splitbuttonitem");
-var panel_1 = require("../../vendor/primeng/components/panel/panel");
-var accordion_1 = require("../../vendor/primeng/components/accordion/accordion");
-var accordiontab_1 = require("../../vendor/primeng/components/accordion/accordiontab");
-var checkbox_1 = require("../../vendor/primeng/components/checkbox/checkbox");
-var button_1 = require("../../vendor/primeng/components/button/button");
-var overlaypanel_1 = require("../../vendor/primeng/components/overlaypanel/overlaypanel");
-var tooltip_1 = require("../../vendor/primeng/components/tooltip/tooltip");
-var common_2 = require("../../vendor/primeng/components/common");
-var inputtextarea_1 = require("../../vendor/primeng/components/inputtextarea/inputtextarea");
-var selectbutton_1 = require("../../vendor/primeng/components/selectbutton/selectbutton");
+var splitbutton_1 = require("../../components/splitbutton/splitbutton");
+var splitbuttonitem_1 = require("../../components/splitbutton/splitbuttonitem");
+var panel_1 = require("../../components/panel/panel");
+var accordion_1 = require("../../components/accordion/accordion");
+var accordiontab_1 = require("../../components/accordion/accordiontab");
+var checkbox_1 = require("../../components/checkbox/checkbox");
+var button_1 = require("../../components/button/button");
+var overlaypanel_1 = require("../../components/overlaypanel/overlaypanel");
+var tooltip_1 = require("../../components/tooltip/tooltip");
+var common_2 = require("../../components/common");
+var inputtextarea_1 = require("../../components/inputtextarea/inputtextarea");
+var inputtext_1 = require('../../components/inputtext/inputtext');
+var selectbutton_1 = require("../../components/selectbutton/selectbutton");
 // DEBUG
 var mock_1 = require("../mock");
-var linky_pipe_1 = require("../../vendor/angular2-linky/linky-pipe");
 var CdtComponent = (function () {
-    function CdtComponent(_sync, _date, _parse, _notif, _route, _router) {
-        var _this = this;
+    function CdtComponent(_sync, _date, _parse, _notif, _route, _user) {
         this._sync = _sync;
         this._date = _date;
         this._parse = _parse;
         this._notif = _notif;
         this._route = _route;
-        this._router = _router;
-        // Archives ou Devoirs
+        this._user = _user;
+        // Sélection de la source à afficher TODO par variable et par défaut ?
         this.type = "devoirs";
         this.filtre = "";
         this.filtre_texte = "";
+        // Initialisation de la liste de fusion
+        this.merge = [];
+        // Initialisation de la liste de marqueurs
+        this.flags = ["grey", "blue", "orange", "red"];
+        // Initialisation de la liste de nouveaux commentaires
+        this.input = [];
+        // Aucun devoir sélectionné au départ pour les marqueurs
+        this.selectedDevoir = new devoir_1.Devoir();
+        // Aucun devoit sélectionné au départ pour les commentaires
+        this.selectedComm = new devoir_1.Devoir();
+        // Initialisation du formulaire de recherche
+        this.searchForm = new forms_1.FormGroup({
+            'term': new common_1.Control()
+        });
         this.filtres = [];
         this.selectedFiltres = [];
-        this.term = new common_1.Control(); // Input
-        this.merge = [];
-        this.flags = ["grey", "blue", "orange", "red"];
-        this.input = [];
-        this.selectedDevoir = new devoir_1.Devoir();
-        this.selectedComm = new devoir_1.Devoir();
-        this.term.valueChanges
-            .debounceTime(600)
-            .distinctUntilChanged()
-            .subscribe(function (term) { return _this.filtr(_this.filtre); });
     }
     CdtComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -100,16 +104,19 @@ var CdtComponent = (function () {
         window.localStorage.setItem("pendCOMM", JSON.stringify([]));
         window.localStorage.setItem("pendMERGE", JSON.stringify([]));
         // DEBUG
+        this.user = this._user.getUser();
         this.sub = this._route
             .params
             .subscribe(function (params) { return _this.filtre = (params['filter']); });
+        this.searchForm.valueChanges
+            .debounceTime(600)
+            .distinctUntilChanged()
+            .subscribe(function (term) { return _this.refresh(); });
         this.filtre = "";
         // DEBUG
-        console.log("* cdtController *");
+        console.log("* CdtController *");
         // TODO Vérifier si les variables (devoirs, archives, user, pending) sont dispo et si l'user est logged via un CanActivate
         this.refresh();
-        // On récupère les infos de l'utilisateur
-        this.user = this._sync.getUser(); // TODO user.service
         // TODO Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
         // On configure une synchronisation automatique régulière (ms)
         // this.interval = IntervalObservable.create(1000).subscribe((t) => this.sync()); // DEBUG
@@ -156,7 +163,7 @@ var CdtComponent = (function () {
         // Retour
         var sections = [];
         // Variables pour la boucle
-        var section;
+        var section = new section_1.Section();
         var lastDate = new Date();
         var premier = true;
         // Pour chaque devoir...
@@ -180,8 +187,6 @@ var CdtComponent = (function () {
                 else {
                     // ...On ajoute la section en cours au retour
                     sections.push(section);
-                    // On efface la section
-                    section = null;
                 }
                 // On initialise une nouvelle section
                 var day_num = devoir.date.getDate().toString();
@@ -194,7 +199,6 @@ var CdtComponent = (function () {
             }
             else if (premier) {
                 premier = false;
-                section = null;
                 section = {
                     "titre": devoir.date.getDate().toString(),
                     "sous_titre": "Ajd.",
@@ -213,7 +217,7 @@ var CdtComponent = (function () {
         // On créé les filtres appliquables
         if (this.filtre == "" && this.filtre_texte == "") {
             this.filtres = [];
-            filtres_name.forEach(function (name, index, array) {
+            filtres_name.forEach(function (name, index) {
                 this.filtres.push({
                     "label": "#" + name + " (" + filtres_count[index] + ")",
                     "value": "#" + name
@@ -225,6 +229,7 @@ var CdtComponent = (function () {
     };
     /**
      * Applique un filtre aux devoirs s'il y a eu lieu
+     * Remarque :
      * @return Devoir[]
      */
     CdtComponent.prototype.filtrage = function (devoirs) {
@@ -429,9 +434,11 @@ var CdtComponent = (function () {
         this.pend("COMM", { "id": devoir.id, "content": commentaire });
         this.input[index] = "";
     };
-    CdtComponent.prototype.unselect = function () {
-        this.selectedComm = new devoir_1.Devoir();
-    };
+    /* DEBUG : unused
+    private unselect():void {
+        this.selectedComm = new Devoir();
+    }
+    */
     CdtComponent.prototype.selectDevoir = function (event, devoir, overlaypanel) {
         this.selectedDevoir = devoir;
         overlaypanel.toggle(event);
@@ -476,7 +483,9 @@ var CdtComponent = (function () {
                 tooltip_1.Tooltip,
                 common_2.Header,
                 inputtextarea_1.InputTextarea,
-                selectbutton_1.SelectButton
+                selectbutton_1.SelectButton,
+                inputtext_1.InputText,
+                forms_1.REACTIVE_FORM_DIRECTIVES
             ],
             providers: [
                 synchronize_service_1.SyncService,
@@ -487,7 +496,7 @@ var CdtComponent = (function () {
                 linky_pipe_1.LinkyPipe
             ]
         }), 
-        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService, router_1.ActivatedRoute, router_1.Router])
+        __metadata('design:paramtypes', [synchronize_service_1.SyncService, date_service_1.DateService, parse_service_1.ParseService, notification_service_1.NotificationService, router_1.ActivatedRoute, user_service_1.UserService])
     ], CdtComponent);
     return CdtComponent;
 }());

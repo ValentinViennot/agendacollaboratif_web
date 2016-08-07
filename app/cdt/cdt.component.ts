@@ -17,22 +17,19 @@
     
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
-/**
- * Created by Valentin on 13/07/2016.
- */
 
 // TODO Améliorations, todos, DEBUG, relire code et erreurs, style
 
  // Angular2 components
  import {Component, OnInit, OnDestroy} from '@angular/core';
- import { Router, ActivatedRoute } from '@angular/router';
+ import { ActivatedRoute } from '@angular/router';
  import {Control} from "@angular/common";
-
+ import {REACTIVE_FORM_DIRECTIVES,FormGroup} from '@angular/forms';
 
  // RXJS : Observables
  import 'rxjs/add/operator/debounceTime';
  import 'rxjs/add/operator/distinctUntilChanged';
- import { IntervalObservable } from 'rxjs/observable/IntervalObservable'; // TODO
+ // import { IntervalObservable } from 'rxjs/observable/IntervalObservable'; // TODO
 
  // Modeles persos
  import {User} from "../concepts/user";
@@ -45,25 +42,26 @@
  import {DateService} from "../services/date.service";
  import {ParseService} from "../services/parse.service";
  import {NotificationService} from "../services/notification.service";
+ import {UserService} from "../services/user.service";
+ import {LinkyPipe} from "../../node_modules/angular2-linky/linky-pipe";
 
  // Prime UI / Prime NG directives
- import {SplitButton} from "../../vendor/primeng/components/splitbutton/splitbutton";
- import {SplitButtonItem} from "../../vendor/primeng/components/splitbutton/splitbuttonitem";
- import {Panel} from "../../vendor/primeng/components/panel/panel";
- import {Accordion} from "../../vendor/primeng/components/accordion/accordion";
- import {AccordionTab} from "../../vendor/primeng/components/accordion/accordiontab";
- import {Checkbox} from "../../vendor/primeng/components/checkbox/checkbox";
- import {Button} from "../../vendor/primeng/components/button/button";
- import {OverlayPanel} from "../../vendor/primeng/components/overlaypanel/overlaypanel";
- import {Tooltip} from "../../vendor/primeng/components/tooltip/tooltip";
- import {Header, SelectItem} from "../../vendor/primeng/components/common";
- import {InputTextarea} from "../../vendor/primeng/components/inputtextarea/inputtextarea";
- import {SelectButton} from "../../vendor/primeng/components/selectbutton/selectbutton";
+ import {SplitButton} from "../../components/splitbutton/splitbutton";
+ import {SplitButtonItem} from "../../components/splitbutton/splitbuttonitem";
+ import {Panel} from "../../components/panel/panel";
+ import {Accordion} from "../../components/accordion/accordion";
+ import {AccordionTab} from "../../components/accordion/accordiontab";
+ import {Checkbox} from "../../components/checkbox/checkbox";
+ import {Button} from "../../components/button/button";
+ import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
+ import {Tooltip} from "../../components/tooltip/tooltip";
+ import {Header, SelectItem} from "../../components/common";
+ import {InputTextarea} from "../../components/inputtextarea/inputtextarea";
+ import {InputText} from '../../components/inputtext/inputtext';
+ import {SelectButton} from "../../components/selectbutton/selectbutton";
 
  // DEBUG
  import {DEVOIRS} from "../mock";
- import {LinkyPipe} from "../../vendor/angular2-linky/linky-pipe";
-
 
  @Component({
      selector: 'agd-cdt',
@@ -80,7 +78,9 @@
          Tooltip,
          Header,
          InputTextarea,
-         SelectButton
+         SelectButton,
+         InputText,
+         REACTIVE_FORM_DIRECTIVES
      ],
      providers: [
          SyncService,
@@ -93,30 +93,30 @@
  })
  export class CdtComponent implements OnInit, OnDestroy {
 
-     // Archives ou Devoirs
-     private type:string = "devoirs";
-     // Utilisateur
-     public user: User;
+     // Sélection de la source à afficher TODO par variable et par défaut ?
+     type:string = "devoirs";
+     // utilisateur
+     user:User;
      // Devoirs
-     public devoirs: Devoir[];
-     public sections: Section[];
-     private interval: any; // Synchro auto
+     devoirs: Devoir[];
+     sections: Section[];
+     // private interval: any; // Synchro auto
      // Flag
-     public selectedDevoir:Devoir;
-     public flags:string[];
-     public flags_count:number[];
+     selectedDevoir:Devoir;
+     flags:string[];
+     flags_count:number[];
      // Merge
-     public merge: Devoir[];
+     merge: Devoir[];
      // Commentaire
-     public input:string[];
-     private selectedComm:Devoir;
+     input:string[];
+     selectedComm:Devoir;
      // Filtres
-     private sub: any; // URL
-     public filtre:string = "";
-     public filtre_texte:string = "";
-     public filtres: SelectItem[] = [];
-     public selectedFiltres:string[] = [];
-     public term = new Control(); // Input
+     searchForm: FormGroup;
+     sub: any; // URL
+     filtre:string = "";
+     filtre_texte:string= "";
+     filtres: SelectItem[];
+     selectedFiltres:string[];
 
      constructor(
          private _sync: SyncService,
@@ -124,17 +124,24 @@
          private _parse: ParseService,
          private _notif: NotificationService,
          private _route: ActivatedRoute,
-         private _router: Router
+         private _user:UserService
      ) {
+         // Initialisation de la liste de fusion
          this.merge = [];
+         // Initialisation de la liste de marqueurs
          this.flags = ["grey","blue","orange","red"];
+         // Initialisation de la liste de nouveaux commentaires
          this.input = [];
+         // Aucun devoir sélectionné au départ pour les marqueurs
          this.selectedDevoir=new Devoir();
+         // Aucun devoit sélectionné au départ pour les commentaires
          this.selectedComm=new Devoir();
-         this.term.valueChanges
-             .debounceTime(600)
-             .distinctUntilChanged()
-             .subscribe(term => this.filtr(this.filtre));
+         // Initialisation du formulaire de recherche
+         this.searchForm = new FormGroup({
+             'term': new Control()
+         });
+         this.filtres = [];
+         this.selectedFiltres = [];
      }
 
      ngOnInit() {
@@ -151,19 +158,24 @@
          window.localStorage.setItem("pendMERGE", JSON.stringify([]));
          // DEBUG
 
+         this.user = this._user.getUser();
+
          this.sub = this._route
              .params
              .subscribe(params => this.filtre=(params['filter'])
            );
 
+         this.searchForm.valueChanges
+             .debounceTime(600)
+             .distinctUntilChanged()
+             .subscribe(term => this.refresh());
+
          this.filtre= "";
 
          // DEBUG
-         console.log("* cdtController *");
+         console.log("* CdtController *");
          // TODO Vérifier si les variables (devoirs, archives, user, pending) sont dispo et si l'user est logged via un CanActivate
          this.refresh();
-         // On récupère les infos de l'utilisateur
-         this.user = this._sync.getUser(); // TODO user.service
          // TODO Pour le moment la SYNC est toujours effective donc la synchro ecrase tout le temps les données...
          // On configure une synchronisation automatique régulière (ms)
          // this.interval = IntervalObservable.create(1000).subscribe((t) => this.sync()); // DEBUG
@@ -215,7 +227,7 @@
          // Retour
          var sections:Section[] = [];
          // Variables pour la boucle
-         var section:Section;
+         var section:Section = new Section();
          var lastDate:Date = new Date();
          var premier:boolean=true;
          // Pour chaque devoir...
@@ -238,8 +250,6 @@
                  } else { // Sinon...
                      // ...On ajoute la section en cours au retour
                      sections.push(section);
-                     // On efface la section
-                     section = null;
                  }
                  // On initialise une nouvelle section
                  let day_num:string = devoir.date.getDate().toString();
@@ -251,7 +261,6 @@
                  };
              } else if (premier) {
                  premier = false;
-                 section=null;
                  section = {
                      "titre":devoir.date.getDate().toString(),
                      "sous_titre":"Ajd.",
@@ -271,7 +280,7 @@
          if (this.filtre==""&&this.filtre_texte=="") {
              this.filtres=[];
              filtres_name.forEach(
-                 function (name:string, index:number, array:string[]) {
+                 function (name:string, index:number) {
                      this.filtres.push({
                          "label": "#" + name + " (" + filtres_count[index] + ")",
                          "value": "#" + name
@@ -284,6 +293,7 @@
      }
      /**
       * Applique un filtre aux devoirs s'il y a eu lieu
+      * Remarque :
       * @return Devoir[]
       */
      private filtrage(devoirs:Devoir[]):Devoir[] {
@@ -508,9 +518,11 @@
          this.input[index]="";
      }
 
+     /* DEBUG : unused
      private unselect():void {
          this.selectedComm = new Devoir();
      }
+     */
 
      public selectDevoir(event,devoir: Devoir, overlaypanel: OverlayPanel) {
          this.selectedDevoir = devoir;

@@ -24,13 +24,16 @@
  import { HTTP_PROVIDERS, Http, Response, Headers, RequestOptions } from '@angular/http';
 
  import { DEVOIRS, ARCHIVES } from '../mock';
- import {User} from "../concepts/user";
- import {Groupe} from "../group/groupe";
+ import {Groupe} from "../concepts/groupe";
+ import {UserService} from "./user.service";
 
  @Injectable()
  export class SyncService {
 
-     constructor(private http:Http) {
+     constructor(
+         private http:Http,
+         private _user:UserService
+     ) {
      }
 
      /**
@@ -168,19 +171,6 @@
      // TODO Requete Archives & appeler seulement au début, une fois
      public getArchives():void {
          window.localStorage.setItem("archives", JSON.stringify(ARCHIVES)); // DEBUG
-     }
-
-     public getUser():User {
-         let USER = {
-             "id":1,
-             "auth":"46edb1262452d1cbe659601c43a7eb2c",
-             "nom":"Viennot",
-             "prenom":"Valentin",
-             "mail":"tinodu78@gmail.com",
-             "notifs":2,
-             "push":true
-         };
-         return USER; // DEBUG
      }
 
      public getGroups(index:number):Groupe[] {

@@ -17,16 +17,14 @@
     
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
-/**
- * Created by Valentin on 10/07/2016.
- */
 
  import { provideRouter, RouterConfig }  from '@angular/router';
 
  import { CdtComponent } from './cdt/cdt.component';
  import {GroupComponent} from "./group/group.component";
+ import {UserComponent} from "./user/user.component";
 
- const routes: RouterConfig = [
+ export const routes: RouterConfig = [
      {
          path: 'cdt',
          component: CdtComponent
@@ -34,6 +32,10 @@
      {
          path: 'group',
          component: GroupComponent
+     },
+     {
+         path: 'user',
+         component: UserComponent
      },
      {
          path: '',
@@ -44,6 +46,6 @@
  ];
  // Authentification https://angular.io/docs/ts/latest/guide/router.html : can activate
 
- export const appRouterProviders = [
+ export const APP_ROUTER_PROVIDERS = [
      provideRouter(routes)
  ];

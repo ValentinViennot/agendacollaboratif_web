@@ -1,0 +1,37 @@
+import { OnInit } from '@angular/core';
+import { SelectItem } from '../../../components/common';
+import { TreeNode } from '../../../components/common';
+import { Car } from '../domain/car';
+import { CarService } from '../service/carservice';
+import { NodeService } from '../service/nodeservice';
+import { CountryService } from '../service/countryservice';
+import { MenuItem } from '../../../components/common';
+export declare class ResponsiveDemo implements OnInit {
+    private carService;
+    private countryService;
+    private nodeService;
+    cities: SelectItem[];
+    files: TreeNode[];
+    sourceCars: Car[];
+    targetCars: Car[];
+    data: any;
+    selectedCity: string;
+    val: string;
+    options: SelectItem[];
+    selectedOption: string;
+    display: boolean;
+    cars: Car[];
+    cars1: Car[];
+    cars2: Car[];
+    cars3: Car[];
+    date: string;
+    text: string;
+    filteredCountriesSingle: any[];
+    items1: MenuItem[];
+    items2: MenuItem[];
+    showDialog(): void;
+    constructor(carService: CarService, countryService: CountryService, nodeService: NodeService);
+    ngOnInit(): void;
+    filterCountrySingle(event: any): void;
+    filterCountry(query: any, countries: any[]): any[];
+}

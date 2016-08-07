@@ -33,9 +33,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var http_1 = require('@angular/http');
 var mock_1 = require('../mock');
+var user_service_1 = require("./user.service");
 var SyncService = (function () {
-    function SyncService(http) {
+    function SyncService(http, _user) {
         this.http = http;
+        this._user = _user;
     }
     /**
      * Envoi les requêtes vers le serveur et récupère les nouvelles données
@@ -167,18 +169,6 @@ var SyncService = (function () {
     SyncService.prototype.getArchives = function () {
         window.localStorage.setItem("archives", JSON.stringify(mock_1.ARCHIVES)); // DEBUG
     };
-    SyncService.prototype.getUser = function () {
-        var USER = {
-            "id": 1,
-            "auth": "46edb1262452d1cbe659601c43a7eb2c",
-            "nom": "Viennot",
-            "prenom": "Valentin",
-            "mail": "tinodu78@gmail.com",
-            "notifs": 2,
-            "push": true
-        };
-        return USER; // DEBUG
-    };
     SyncService.prototype.getGroups = function (index) {
         // TODO
         return [
@@ -228,7 +218,7 @@ var SyncService = (function () {
     };
     SyncService = __decorate([
         core_1.Injectable(), 
-        __metadata('design:paramtypes', [http_1.Http])
+        __metadata('design:paramtypes', [http_1.Http, user_service_1.UserService])
     ], SyncService);
     return SyncService;
 }());

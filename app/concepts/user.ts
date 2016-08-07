@@ -23,11 +23,27 @@
  */
 
 export class User {
+    // Identification unique dans la base de données
     id: number;
+    // Version de l'utilisateur (incrémenté à chaque modification apportée, depuis l'API)
+    version: number;
+    // Token qui relie cette session à l'ID de l'utilisateur
     auth: string;
+    // Infos générales
     prenom: string;
     nom: string;
-    mail: string;
+    // NOTIFICATIONS
+    // Mail de contact
+    email: string;
+    // Horaire du rappel pour les devoirs non faits
     notifs:number;
-    push: boolean;
+    // Recevoir les notifications par email
+    mail: boolean;
+    // TODO Notifications navigateur et facebook
+    // AUTORISATION DE MODIFICATION IDENTITE
+    // Permettre aux détenteurs de sous domaines sécurisés d'autoriser ou non les modifications concernant le nom/prénom
+    // TODO Ajouter en BDD un boolean associé à chaque autorisation
+    // TODO Penser à effectuer le contrôle au niveau de l'API
+    // TODO Préparer un guide pour les acquéreurs de sous domaines
+    fake_identity:boolean;
 }

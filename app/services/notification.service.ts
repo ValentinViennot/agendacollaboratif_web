@@ -23,7 +23,7 @@
  */
 
  import {Injectable} from "@angular/core";
- import {Message} from "../../vendor/primeng/components/common";
+ import {Message} from "../../components/common";
 
  @Injectable()
 export class NotificationService {

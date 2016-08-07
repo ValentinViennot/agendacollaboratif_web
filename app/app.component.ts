@@ -17,33 +17,35 @@
     
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 */
-/**
- * Created by Valentin on 10/07/2016.
- */
+
  import {Component, Inject} from '@angular/core';
  import { ROUTER_DIRECTIVES } from '@angular/router';
 
+ // Affichage des notifications
+ import {Growl} from "../components/growl/growl";
+
+ // Gestion des notifications
  import {NotificationService} from "./services/notification.service";
- import {CdtComponent} from "./cdt/cdt.component";
- import {Growl} from "../vendor/primeng/components/growl/growl";
+ // Gestion de l'utilisateur
+ import {UserService} from "./services/user.service";
 
  @Component({
      selector: 'body',
      templateUrl: `app/app.html`,
-     styleUrls: ['app/app.css'],
      directives: [
-         CdtComponent,
          ROUTER_DIRECTIVES,
          Growl
      ],
      providers: [
-         NotificationService
+         NotificationService,
+         UserService
      ]
  })
  export class AppComponent {
 
      constructor(
-        private _notif:NotificationService
+        private _notif:NotificationService,
+        private _user:UserService
      ) {
      }
  }
