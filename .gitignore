@@ -1,9 +1,16 @@
+<<<<<<< HEAD
+# jet brains
+.idea/
+
+# angular 2
+=======
 # jet brains directory
 .idea
 .idea/
 
 # angular 2
 typings
+>>>>>>> refs/remotes/origin/master
 typings/
 
 # Logs
@@ -36,7 +43,11 @@ build/Release
 
 # Dependency directories
 node_modules
+<<<<<<< HEAD
+components
+=======
 node_modules/
+>>>>>>> refs/remotes/origin/master
 jspm_packages
 
 # Optional npm cache directory
