@@ -1,8 +1,8 @@
-# jet brains
-.idea/
+# jet brains directory
+.idea
 
 # angular 2
-typings/
+typings
 
 # Logs
 logs
@@ -35,7 +35,6 @@ build/Release
 # Dependency directories
 node_modules
 components
-jspm_packages
 
 # Optional npm cache directory
 .npm
