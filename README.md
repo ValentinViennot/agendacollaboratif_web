@@ -17,7 +17,7 @@
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 
 
-VERSION WEB - 3.0.0-PROTOTYPE
+VERSION WEB - 3.0.0-BETA
 
 
 Description
