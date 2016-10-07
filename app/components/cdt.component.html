@@ -1,0 +1,188 @@
+<p-overlayPanel #op1>
+    <!-- TODO Changer url -->
+    <p-fileUpload *ngIf="selectedDevoir"
+                  name="fichiers[]"
+                  [url]="'http://apis.groupesix.xyz/cdn/?devoir&id='+selectedDevoir.id+'&token='+token" (onUpload)="onUpload($event)"
+                  [multiple]="true"
+                  [maxFileSize]="1000000"
+                  [invalidFileSizeMessageSummary]="'Oups...'"
+                  [invalidFileSizeMessageDetail]="'Taille maximale atteinte : {0}'">
+    </p-fileUpload>
+    <p-fileUpload *ngIf="fileComm"
+                  name="fichiers[]"
+                  [url]="'http://apis.groupesix.xyz/cdn/?commentaire&id='+fileComm.id+'&token='+token" (onUpload)="onUpload($event)"
+                  [multiple]="true"
+                  [maxFileSize]="50000000"
+                  [invalidFileSizeMessageSummary]="'Oups...'"
+                  [invalidFileSizeMessageDetail]="'Taille maximale atteinte : {0}'">
+    </p-fileUpload>
+</p-overlayPanel>
+
+<div *ngIf="!online" class="ui-messages ui-widget ui-corner-all ui-messages-error" style="display:block">
+    <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
+    <ul>
+        <li>
+            <span class="ui-messages-summary">Pas de synchronisation</span>
+            <span class="ui-messages-detail">Impossible de se connecter à Internet</span>
+        </li>
+    </ul>
+</div>
+
+<form [formGroup]="searchForm">
+    <input pInputText formControlName="term" [(ngModel)]="filtre_texte" title="Rechercher" placeholder="Rechercher" type="search" size="30" />
+    <button type="button" [disabled]="filtre_texte.length+filtre.length+selectedFiltres.length*2<2" (click)="clear_filtr()" pButton icon="fa-close" label="Effacer les filtres"></button>
+
+    <a *ngFor="let flag of flags.slice().reverse()" (click)="filtr(':'+flag)">
+    <!--<a *ngFor="let flag of flags.slice().reverse()" (click)="filtre_texte=filtre_texte+'&&:'+flag">-->
+            <span *ngIf="flags_count[flags.indexOf(flag)]>0">
+                <i [style.color]="flag" class="fa fa-flag">
+                </i>
+                ({{flags_count[flags.indexOf(flag)]}})
+            </span>
+    </a>
+</form>
+
+<div>
+    <p>
+        <a style="float: right;" (click)="filtr('-0')"
+        pTooltip="Efface les filtres pour tout afficher" tooltipPosition="left">[Masquer les devoirs terminés]</a>
+    </p>
+</div>
+<div>
+    <p-selectButton [options]="filtres" [(ngModel)]="selectedFiltres" (onChange)="refresh()" [multiple]="true"></p-selectButton>
+</div>
+
+<!-- Formulaire de fusion de devoirs -->
+<section *ngIf="merge.length>0" class="merge">
+    <p-panel>
+        <header>
+            Devoirs à fusionner
+        </header>
+        <ul>
+            <li *ngFor="let devoir of merge">
+                <span [innerHTML]="devoir.texte"></span>
+            </li>
+        </ul>
+        <div>
+            <button pButton type="button" icon="fa-check" iconPos="left"
+                    label="Confirmer la fusion" (click)="doMerge()" [disabled]="merge.length<2"></button>
+            <button class="secondaire" pButton type="button" icon="fa-ban" iconPos="left"
+                    label="Annuler" (click)="clearMerge()"></button>
+        </div>
+    </p-panel>
+</section>
+
+<!-- sélection de flag -->
+
+<p-overlayPanel #op>
+    <ul *ngIf="selectedDevoir" class="flags">
+        <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
+            <i [style.color]="flags[flag]" class="fa fa-flag">
+            </i>
+        </li>
+    </ul>
+</p-overlayPanel>
+
+<!-- Sections des devoirs (core)  -->
+<section *ngFor="let section of sections" class="cdt flex-container">
+    <aside class="pam unstyled txtcenter">
+        <p>{{section.titre}}</p>
+        <p>{{section.sous_titre}}</p>
+    </aside>
+    <div role="main" class="flex-item-fluid pam">
+        <p-panel *ngFor="let devoir of section.devoirs; let i=index" [class]="(devoir.matiere_c?'matierecolor':'')+' '+(devoir.fait ? 'done' : 'undone')" [style.background-color]="'#'+devoir.matiere_c">
+            <header>
+                <div class="ui-helper-clearfix">
+                    <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">
+                        <a *ngIf="devoir.id" class="flag" (click)="selectDevoir($event,devoir,op)">
+                            <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur" tooltipPosition="top" class="fa fa-flag">
+                            </i>
+                        </a>
+                        <span (click)="filtr('#'+devoir.matiere)" class="matiere">#{{devoir.matiere | lowercase}}</span>
+                        <span (click)="filtr('@'+devoir.auteur)" class="auteur">@{{devoir.auteur | lowercase}}</span>
+                        <!--<span (click)="filtre_texte=filtre_texte+'&&@'+devoir.auteur" class="auteur">@{{devoir.auteur | lowercase}}</span>-->
+                    </span>
+                    <div *ngIf="devoir.id" class="ui-toolbar-group-right">
+                        <button pButton type="text" (click)="done(devoir)" icon="fa-check" [label]="devoir.fait ? 'Fait' : 'À faire'" ></button>
+                        <button pButton type="button" (click)="addToMerge(devoir)" icon="fa-code-fork" pTooltip="Fusionner ce devoir avec un autre" tooltipPosition="left"></button>
+                        <button pButton type="button" (click)="fileDevoir($event,devoir,op1)" icon="fa-upload" pTooltip="Joindre des fichiers" tooltipPosition="left"></button>
+                        <button *ngIf="devoir.user==user.id" (click)="supprimer(devoir)" pButton type="button" class="danger" icon="fa-trash" pTooltip="Supprimer" tooltipPosition="left"></button>
+                        <a *ngIf="devoir.user!=user.id" style="margin-left: 5px" class="supprimer" (click)="signaler(devoir)" pTooltip="Signaler ce devoir au modérateur" tooltipPosition="left">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </a>
+                    </div>
+
+                    <div *ngIf="!devoir.id" class="ui-toolbar-group-right">
+                        <button pButton type="text" icon="fa-refresh" label="Envoi en cours..." ></button>
+                    </div>
+
+                </div>
+            </header>
+            <span [innerHTML]="devoir.texte"></span>
+            <div class="files">
+                <div *ngFor="let file of devoir.pjs" class="file">
+                    <!-- TODO Chnager url -->
+                    <a target="_blank" [href]="'http://groupesix.xyz/apis/cdn/'+file.file" [download]="file.title">
+                        <span class="name">{{file.title}}</span>
+                        <span class="auteur">(@{{file.auteur}})</span>
+                    </a>
+                    <a *ngIf="user.id==file.user" class="supprimer" (click)="supprFile(file)">
+                        <i class="fa fa-trash-o"></i>
+                    </a>
+                </div>
+            </div>
+            <footer *ngIf="devoir.id" style="text-align: right;">
+                <b>{{devoir.nb_fait}}</b> <i class="fa fa-check"></i>
+                /
+                <b>{{devoir.commentaires.length}}</b> <i class="fa fa-comment"></i>
+
+                <br/>
+                <a (click)="selectComm(devoir)">{{selectedComm.id==devoir.id?'Masquer':'Afficher'}} les commentaires</a>
+            </footer>
+            <footer *ngIf="!devoir.id" style="text-align: right;">
+                En attente de synchronisation
+            </footer>
+            <div *ngIf="devoir.id&&selectedComm.id==devoir.id">
+
+                <div class="commentaire">
+                <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire" [autoResize]="true" [(ngModel)]="input[i]">
+                </textarea>
+                    <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
+                </div>
+                <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
+                    <p class="header">
+                        @{{commentaire.auteur}}
+                        <a class="delete" *ngIf="user.id==commentaire.user&&commentaire.id" (click)="supprimer_comm(devoir,commentaire)">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                        <a class="delete" *ngIf="user.id==commentaire.user&&commentaire.id" (click)="tofileComm($event,devoir,commentaire,op1)">
+                            <i class="fa fa-upload" ptooltip="Ajouter des fichiers"></i>
+                        </a>
+
+                        <a class="delete" *ngIf="!commentaire.id" (click)="sync()">
+                            <i class="fa fa-refresh"></i>
+                            Envoi en cours...
+                        </a>
+                    </p>
+                    <p>
+                        <span [innerHTML]="commentaire.texte"></span>
+                    </p>
+                    <div *ngFor="let file of commentaire.pjs" class="file">
+                        <!-- TODO Chnager url -->
+                        <a target="_blank" [href]="'http://groupesix.xyz/apis/cdn/'+file.file" [download]="file.title">
+                            <span class="name">{{file.title}}</span>
+                            <span class="auteur">(@{{file.auteur}})</span>
+                        </a>
+                        <a *ngIf="user.id==file.user" class="supprimer" (click)="supprFile(file)">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+                    </div>
+                    <p class="footer">
+                        <span class="date">{{_date.recentDateTime(commentaire.date)}}</span>
+                    </p>
+                </div>
+            </div>
+        </p-panel>
+    </div>
+</section>
+<!-- TODO PHP Links -->
