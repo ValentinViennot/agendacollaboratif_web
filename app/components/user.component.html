@@ -95,7 +95,7 @@
             Tu peux gérer les groupes auxquels tu es abonné en cliquant sur le bouton ci-dessous.
         </p>
         <p>
-            L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter également. L'abonnement à un dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de t'abonner aux nouvelles matières qui pourraient y être ajoutées. Pour y voir un peu plus clair, explore les groupes et matières en cliquant sur le bouton !
+            L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter. L'abonnement à un dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de te notifier des nouvelles matières qui pourraient y être ajoutées.
         </p>
         <nav role="navigation">
             <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-object-group" label="Gérer mes abonnements"></a>
@@ -103,4 +103,10 @@
         <p *ngIf="changed">Enregistre tes autres modifications avant de suivre le lien !</p>
     </p-panel>
 
+    <p id="logout" (click)="_sync.logout(true)">
+        <i class="fa fa-power-off" aria-hidden="true"></i>
+        Me déconnecter de tous les appareils
+    </p>
+
 </form>
+

@@ -11,3 +11,18 @@
 .ui-datagrid-content {
     margin: 0;
 }
+
+#conseils {
+    padding: 10px;
+}
+
+#conseils h3 {
+    font-family: 'Amatica SC';
+    font-size: 2em;
+}
+
+#conseils li {
+    padding: 5px;
+    font-family: 'Josefin Sans';
+    font-size: 1.3em
+}

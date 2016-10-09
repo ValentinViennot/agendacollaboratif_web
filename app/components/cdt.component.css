@@ -142,7 +142,9 @@ footer a {
 
 /* pieces jointes */
 .files {
-    display: block
+    display: block;
+    position: relative;
+    top: 20px
 }
 
 .file {

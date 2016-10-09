@@ -26,7 +26,7 @@ import {User} from "../concepts/user";
 import {Groupe} from "../concepts/groupe";
 import {MenuItem} from "../../components/common/api";
 import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
-import {isUndefined} from "util";
+import {Router} from "@angular/router";
 
 @Component({
     templateUrl: '/app/components/groupes.component.html',
@@ -50,7 +50,8 @@ export class GroupesComponent {
     constructor(
         private _notif:NotificationService,
         private _sync:SyncService,
-        private _parse:ParseService
+        private _parse:ParseService,
+        private router:Router
     ) {
         this.user = this._parse.parse("user");
         // Parcours parmi les dossiers (breadcrumb)
@@ -61,7 +62,8 @@ export class GroupesComponent {
 
     ngOnInit():void {
         console.log("* GroupController *");
-        // TODO canactivate navigator.online
+        if (!navigator.onLine)
+            this.router.navigate(['/']);
         // Récupère la version la plus récente de l'utilisateur
         this._sync.syncUser().then(
             result => this.user = this._parse.parse("user"),

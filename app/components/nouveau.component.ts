@@ -47,7 +47,7 @@ export class NouveauComponent {
         private _parse:ParseService,
         private router: Router
     ) {
-        this.user = new User();
+        this.user = this._parse.parse("user");
     }
 
     ngOnInit():void {

@@ -27,6 +27,7 @@ import {User} from "../concepts/user";
 import {PJ} from "../concepts/PJ";
 import {Groupe} from "../concepts/groupe";
 import {Router} from "@angular/router";
+import {Invitation} from "../concepts/invitation";
 
 @Injectable()
 export class SyncService {
@@ -74,7 +75,7 @@ export class SyncService {
     }
     private initUrls():void {
         //var base:string = "http://apis.agendapp.fr";
-        var base:string = "http://apis.groupesix.xyz"; // TODO Changer de domaine
+        var base:string = "http://apis.agendapp.fr";
         this.urls = [];
         this.urls.push(base+"/logout/"); // 0 logout
         this.urls.push(base+"/user/"); // 1 user
@@ -85,12 +86,19 @@ export class SyncService {
         this.urls.push(base+"/courses/"); // 6 courses (groupes souscrits)
         this.urls.push(base+"/groupes/"); // 7 groupes et matières
         this.urls.push(base+"/login/"); // 8 login
+        this.urls.push(base+"/invitations/"); // 9 invitations
     }
 
     public logout(every:boolean):void {
+        var th:any=this;
         this.http.get(this.urls[0]+"&all="+(every?1:0))
             .toPromise()
-            .then(result => window.localStorage.clear())
+            .then(
+                function () {
+                    window.localStorage.clear();
+                    th.router.navigate(['/connexion']);
+                }
+            )
             .catch(erreur => this.handleError(erreur));
     }
 
@@ -287,7 +295,7 @@ export class SyncService {
     // 5 cdn
 
     public supprFile(file:PJ):Promise<any> {
-        return this.http.get(this.urls[5]+"&delete&id="+file.id)
+        return this.http.get(this.urls[5]+"&delete&id="+file.file)
             .toPromise()
             .catch(erreur => this.handleError(erreur));
     }
@@ -363,5 +371,36 @@ export class SyncService {
             );
     }
 
+    // 9 invitations
+
+    public getInvitations():Promise<Invitation[]> {
+        return this.http.get(this.urls[9])
+            .toPromise()
+            .then(
+                response => response.json() as Invitation[],
+                erreur => this.handleError(erreur)
+            );
+    }
+
+    public acceptInvitation(invit:Invitation):Promise<any> {
+        return this.http.post(
+                this.urls[9]+"&id="+invit.id,
+                JSON.stringify({
+                    groupe:invit.groupeid
+                }),
+                this.headers
+            )
+            .toPromise()
+            .catch(erreur => this.handleError(erreur));
+    }
+
+    public declineInvitation(invit:Invitation):Promise<any> {
+        return this.http.delete(
+                this.urls[9]+"&id="+invit.id,
+                this.headers
+            )
+            .toPromise()
+            .catch(erreur => this.handleError(erreur));
+    }
 }
 

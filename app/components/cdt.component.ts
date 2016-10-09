@@ -36,6 +36,7 @@ import {Commentaire} from "../concepts/commentaire";
 import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
 import {PJ} from "../concepts/PJ";
 import {isUndefined} from "util";
+import {Invitation} from "../concepts/invitation";
 
 @Component({
     templateUrl: '/app/components/cdt.component.html',
@@ -80,6 +81,9 @@ export class CdtComponent {
     filtres: SelectItem[];
     selectedFiltres:string[];
 
+    // invitations à des groupes
+    invitations:Invitation[];
+
     constructor(
         private _sync:SyncService,
         private _notif:NotificationService,
@@ -109,6 +113,7 @@ export class CdtComponent {
         this.filtre = "";
         this.filtre_texte = "";
         this.selectedFiltres = [];
+        this.invitations = [];
     }
 
     ngOnInit():void {
@@ -142,6 +147,7 @@ export class CdtComponent {
             .debounceTime(600)
             .distinctUntilChanged()
             .subscribe(term => this.refresh());
+        this.getInvitations();
     }
 
     ngOnDestroy() {
@@ -247,7 +253,7 @@ export class CdtComponent {
                 filtres_count[filtres_name.indexOf(devoir.matiere)]++;
             // Si la date (jour) du devoir est différente de celle du précédent...
             //if (devoir.date.toDateString()!=lastDate.toDateString()) {
-            if (devoir.date.toISOString()!=lastDate.toISOString()) {
+            if (devoir.date.toLocaleDateString()!=lastDate.toLocaleDateString()) {
                 // ...S'il s'agit du premier élément...
                 if (premier) {
                     // ...alors le prochain ne sera plus le premier !
@@ -523,21 +529,25 @@ export class CdtComponent {
     }
 
     public sendComment(devoir:Devoir,input:string,index:number) {
-        // Création du commentaire
-        var commentaire:Commentaire = {
-            "id":0,
-            "user":this.user.id,
-            "auteur":this.user.prenom+this.user.nom,
-            "date": new Date(),
-            "texte": input,
-            "pjs": null
-        };
-        // On ajoute le commentaire au devoir
-        devoir.commentaires.splice(0,0,commentaire);
-        // Ajout à la liste d'attente
-        this.selectedComm=devoir;
-        this.pend("COMM", {"id":devoir.id,"content":commentaire});
-        this.input[index]="";
+        if (input.length>3) {
+            // Création du commentaire
+            var commentaire:Commentaire = {
+                "id":0,
+                "user":this.user.id,
+                "auteur":this.user.prenom+this.user.nom,
+                "date": new Date(),
+                "texte": input,
+                "pjs": null
+            };
+            // On ajoute le commentaire au devoir
+            devoir.commentaires.splice(0,0,commentaire);
+            // Ajout à la liste d'attente
+            this.selectedComm=devoir;
+            this.pend("COMM", {"id":devoir.id,"content":commentaire});
+            this.input[index]="";
+        } else {
+            this._notif.add(1,'Commentaire trop court !','minimum : 4 caractères');
+        }
     }
 
     private unselectComm():void {
@@ -614,5 +624,40 @@ export class CdtComponent {
                     th._notif.add(2,'Erreur','Le fichier n\'a pas été supprimé ('+erreur+')');
                 }
             )
+    }
+
+    acceptInvitation(invit:Invitation):void {
+        var th:any = this;
+        this._sync.acceptInvitation(invit).then(
+            function () {
+                th._notif.add(0,'Effectué','Tu es désormais membre de '+invit.groupe);
+                th.getInvitations();
+            },
+            function (erreur:string) {
+                th._notif.add(2,'Erreur',erreur);
+                th.getInvitations();
+            }
+        );
+    }
+
+    declineInvitation(invit:Invitation):void {
+        var th:any = this;
+        this._sync.declineInvitation(invit).then(
+            function () {
+                th._notif.add(0,'Invitation refusée','');
+                th.getInvitations();
+            },
+            function (erreur:string) {
+                th._notif.add(2,'Erreur',erreur);
+                th.getInvitations();
+            }
+        );
+    }
+
+    private getInvitations() {
+        this._sync.getInvitations().then(
+            invitations => this.invitations = invitations,
+            erreur => console.log("invitations : "+erreur)
+        );
     }
 }

@@ -23,7 +23,6 @@
  */
 
 export class PJ {
-    id:number;
     user:number;
     auteur:string;
     file:string;

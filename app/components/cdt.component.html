@@ -1,10 +1,9 @@
 <link rel="stylesheet" type="text/css" href="/app/components/cdt.component.css" />
 
 <p-overlayPanel #op1>
-    <!-- TODO Changer url -->
     <p-fileUpload *ngIf="selectedDevoir"
                   name="fichiers[]"
-                  [url]="'http://apis.groupesix.xyz/cdn/?devoir&id='+selectedDevoir.id+'&token='+token" (onUpload)="onUpload($event)"
+                  [url]="'http://apis.agendapp.fr/cdn/?devoir&id='+selectedDevoir.id+'&token='+token" (onUpload)="onUpload($event)"
                   [multiple]="true"
                   [maxFileSize]="50000000"
                   [invalidFileSizeMessageSummary]="'Oups...'"
@@ -12,7 +11,7 @@
     </p-fileUpload>
     <p-fileUpload *ngIf="fileComm"
                   name="fichiers[]"
-                  [url]="'http://apis.groupesix.xyz/cdn/?commentaire&id='+fileComm.id+'&token='+token" (onUpload)="onUpload($event)"
+                  [url]="'http://apis.agendapp.fr/cdn/?commentaire&id='+fileComm.id+'&token='+token" (onUpload)="onUpload($event)"
                   [multiple]="true"
                   [maxFileSize]="50000000"
                   [invalidFileSizeMessageSummary]="'Oups...'"
@@ -85,6 +84,18 @@
     </ul>
 </p-overlayPanel>
 
+<section *ngIf="invitations.length>0">
+    <p-panel *ngFor="let invitation of invitations">
+        <span>
+            {{invitation.de}} vient de créer le groupe <b>{{invitation.groupe}}</b>. Souhaites-tu le rejoindre ?
+        </span>
+        <footer>
+            <button pButton type="text" (click)="acceptInvitation(invitation)" icon="fa-check" label="Oui"></button>
+            <button pButton type="text" (click)="declineInvitation(invitation)" class="secondaire" label="Non"></button>
+        </footer>
+    </p-panel>
+</section>
+
 <section *ngIf="sections.length==0">
     <p id="aucundevoir">Il n'y a aucun devoir à afficher pour le moment. Clique sur "Paramètres" puis descend et clique sur "Gérer mes abonnements" pour rejoindre des matières et commencer à afficher et/ou ajouter des devoirs !</p>
 </section>
@@ -111,10 +122,10 @@
                         <button pButton type="button" (click)="addToMerge(devoir)" icon="fa-code-fork" pTooltip="Fusionner ce devoir avec un autre" tooltipPosition="left"></button>
                         <button pButton type="button" (click)="fileDevoir($event,devoir,op1)" icon="fa-upload" pTooltip="Joindre des fichiers" tooltipPosition="left"></button>
                         <button *ngIf="devoir.user==user.id" (click)="supprimer(devoir)" pButton type="button" class="danger" icon="fa-trash" pTooltip="Supprimer" tooltipPosition="left"></button>
+                        <button pButton type="text" (click)="done(devoir)" icon="fa-check" [label]="devoir.fait ? 'Fait' : 'À faire'" ></button>
                         <a *ngIf="devoir.user!=user.id" style="margin-left: 5px" class="supprimer" (click)="signaler(devoir)" pTooltip="Signaler ce devoir au modérateur" tooltipPosition="left">
                             <i class="fa fa-exclamation-triangle"></i>
-                        </a>           
-                        <button pButton type="text" (click)="done(devoir)" icon="fa-check" [label]="devoir.fait ? 'Fait' : 'À faire'" ></button>
+                        </a>
                     </div>
 
                     <div *ngIf="!devoir.id" class="ui-toolbar-group-right">
@@ -126,8 +137,7 @@
             <span [innerHTML]="devoir.texte"></span>
             <div class="files">
                 <div *ngFor="let file of devoir.pjs" class="file">
-                    <!-- TODO Chnager url -->
-                    <a target="_blank" [href]="'http://groupesix.xyz/apis/cdn/'+file.file" [download]="file.title">
+                    <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
                         <span class="name">{{file.title}}</span>
                         <span class="auteur">(@{{file.auteur}})</span>
                     </a>
@@ -173,8 +183,7 @@
                         <span [innerHTML]="commentaire.texte"></span>
                     </p>
                     <div *ngFor="let file of commentaire.pjs" class="file">
-                        <!-- TODO Chnager url -->
-                        <a target="_blank" [href]="'http://groupesix.xyz/apis/cdn/'+file.file" [download]="file.title">
+                        <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
                             <span class="name">{{file.title}}</span>
                             <span class="auteur">(@{{file.auteur}})</span>
                         </a>

@@ -20,6 +20,7 @@
 import {NgModule, Component} from "@angular/core";
 import {CommonModule} from "@angular/common";
 import {RouterModule} from "@angular/router";
+import {SyncService} from "../services/sync.service";
 
 @Component({
     selector: 'agd-menu',
@@ -28,7 +29,10 @@ import {RouterModule} from "@angular/router";
 })
 export class Menu {
 
-    constructor() {}
+    constructor(
+        private _sync:SyncService
+    ) {}
+
 }
 
 @NgModule({

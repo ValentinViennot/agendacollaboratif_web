@@ -1,7 +1,8 @@
 @charset "UTF-8";
 
 ng-component {
-  width: 70%
+  width: 70%;
+  padding-left: 10px;
 }
 
 html, body, agendapp {
@@ -18,12 +19,14 @@ a {
 agd-menu {
   background-color: #D32F2F;
   color: #212121;
+  height: auto;
 }
 
 agd-menu h1 {
   font-family: 'Amatica SC';
   font-size: 3.5em;
   text-align:center;
+  color:#fff;
 }
 
 agd-menu ul {
@@ -39,6 +42,7 @@ agd-menu li {
   border: 1px solid #B6B6B6;
   width: 100%;
   text-align: center;
+  transition: background-color 0.3s ease 0;
 }
 
 agd-menu li a {
@@ -46,8 +50,23 @@ agd-menu li a {
   height: 100%;
   padding: 10px;
   display: block;
+  
 }
 
 agd-menu li:hover {
   background-color: #FFCDD2
+}
+
+agd-menu > p {
+  cursor: pointer;
+  width: 100%;
+  color: #eee;
+  text-align: right;
+  padding: 10px;
+  margin-top: 50%;
+  transition: color 0.1s ease 0s;
+}
+
+agd-menu > p:hover {
+  color: #fff
 }

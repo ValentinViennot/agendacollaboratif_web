@@ -4,6 +4,7 @@ import { Devoir } from "../concepts/devoir";
 import { PJ } from "../concepts/PJ";
 import { Groupe } from "../concepts/groupe";
 import { Router } from "@angular/router";
+import { Invitation } from "../concepts/invitation";
 export declare class SyncService {
     private http;
     private router;
@@ -53,4 +54,7 @@ export declare class SyncService {
     getGroups(id: number): Promise<Groupe[]>;
     newGroup(group: Groupe): Promise<any>;
     getToken(infos: any): Promise<string>;
+    getInvitations(): Promise<Invitation[]>;
+    acceptInvitation(invit: Invitation): Promise<any>;
+    declineInvitation(invit: Invitation): Promise<any>;
 }
