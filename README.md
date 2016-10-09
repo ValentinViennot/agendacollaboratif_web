@@ -17,7 +17,11 @@
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 
 
+<<<<<<< HEAD
 VERSION WEB - 3.0.0-BETA
+=======
+VERSION WEB - 3.0.0-ALPHA
+>>>>>>> refs/remotes/origin/master
 
 
 Description
