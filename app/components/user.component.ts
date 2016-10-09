@@ -28,7 +28,6 @@ import {FormGroup, Validators, FormControl} from "@angular/forms";
 
 @Component({
     templateUrl: '/app/components/user.component.html',
-    styleUrls: ['app/components/user.component.css'],
     providers: [ParseService]
 })
 export class UserComponent {

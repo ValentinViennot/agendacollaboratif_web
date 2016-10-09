@@ -30,7 +30,6 @@ import {isUndefined} from "util";
 
 @Component({
     templateUrl: '/app/components/groupes.component.html',
-    styleUrls: ['app/components/groupes.component.css'],
     providers: [ParseService]
 })
 export class GroupesComponent {
@@ -161,7 +160,7 @@ export class GroupesComponent {
         this._sync.newGroup(this.newGroup).then(
             function() {
                 th.newGroup = null;
-                overlaypanel.toggle(event);
+                overlaypanel.hide();
                 th.refresh();
             },
             erreur => this._notif.add(2,'Erreur',erreur)

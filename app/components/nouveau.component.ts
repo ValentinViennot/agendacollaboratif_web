@@ -30,7 +30,6 @@ import {User} from "../concepts/user";
 
 @Component({
     templateUrl: '/app/components/nouveau.component.html',
-    styleUrls: ['app/components/nouveau.component.css'],
     providers: [ParseService]
 })
 export class NouveauComponent {

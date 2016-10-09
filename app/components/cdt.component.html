@@ -1,10 +1,12 @@
+<link rel="stylesheet" type="text/css" href="/app/components/cdt.component.css" />
+
 <p-overlayPanel #op1>
     <!-- TODO Changer url -->
     <p-fileUpload *ngIf="selectedDevoir"
                   name="fichiers[]"
                   [url]="'http://apis.groupesix.xyz/cdn/?devoir&id='+selectedDevoir.id+'&token='+token" (onUpload)="onUpload($event)"
                   [multiple]="true"
-                  [maxFileSize]="1000000"
+                  [maxFileSize]="50000000"
                   [invalidFileSizeMessageSummary]="'Oups...'"
                   [invalidFileSizeMessageDetail]="'Taille maximale atteinte : {0}'">
     </p-fileUpload>
@@ -83,6 +85,9 @@
     </ul>
 </p-overlayPanel>
 
+<section *ngIf="sections.length==0">
+    <p id="aucundevoir">Il n'y a aucun devoir à afficher pour le moment. Clique sur "Paramètres" puis descend et clique sur "Gérer mes abonnements" pour rejoindre des matières et commencer à afficher et/ou ajouter des devoirs !</p>
+</section>
 <!-- Sections des devoirs (core)  -->
 <section *ngFor="let section of sections" class="cdt flex-container">
     <aside class="pam unstyled txtcenter">
@@ -103,13 +108,13 @@
                         <!--<span (click)="filtre_texte=filtre_texte+'&&@'+devoir.auteur" class="auteur">@{{devoir.auteur | lowercase}}</span>-->
                     </span>
                     <div *ngIf="devoir.id" class="ui-toolbar-group-right">
-                        <button pButton type="text" (click)="done(devoir)" icon="fa-check" [label]="devoir.fait ? 'Fait' : 'À faire'" ></button>
                         <button pButton type="button" (click)="addToMerge(devoir)" icon="fa-code-fork" pTooltip="Fusionner ce devoir avec un autre" tooltipPosition="left"></button>
                         <button pButton type="button" (click)="fileDevoir($event,devoir,op1)" icon="fa-upload" pTooltip="Joindre des fichiers" tooltipPosition="left"></button>
                         <button *ngIf="devoir.user==user.id" (click)="supprimer(devoir)" pButton type="button" class="danger" icon="fa-trash" pTooltip="Supprimer" tooltipPosition="left"></button>
                         <a *ngIf="devoir.user!=user.id" style="margin-left: 5px" class="supprimer" (click)="signaler(devoir)" pTooltip="Signaler ce devoir au modérateur" tooltipPosition="left">
                             <i class="fa fa-exclamation-triangle"></i>
-                        </a>
+                        </a>           
+                        <button pButton type="text" (click)="done(devoir)" icon="fa-check" [label]="devoir.fait ? 'Fait' : 'À faire'" ></button>
                     </div>
 
                     <div *ngIf="!devoir.id" class="ui-toolbar-group-right">
@@ -185,4 +190,3 @@
         </p-panel>
     </div>
 </section>
-<!-- TODO PHP Links -->

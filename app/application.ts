@@ -82,7 +82,6 @@ import {CanActivateIsLogged} from "./services/islogged.canactivate";
     selector: 'agendapp',
     templateUrl: 'app/app.component.html',
     providers: [
-        SyncService,
         NotificationService
     ]
 })
@@ -184,7 +183,8 @@ export class AppComponent {
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         ConfirmationService,
         {provide: 'CanActivateIsLogged', useClass: CanActivateIsLogged},
-        CanActivateIsLogged
+        CanActivateIsLogged,
+        SyncService
         // services à ajouter ici pour dispo partout : notifs, sync
     ],
     bootstrap: [AppComponent]

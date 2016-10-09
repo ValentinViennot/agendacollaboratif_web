@@ -27,7 +27,6 @@ import {Router} from "@angular/router";
 
 @Component({
     templateUrl: '/app/components/login.component.html',
-    styleUrls: ['app/components/login.component.css'],
     providers: [ParseService]
 })
 export class LoginComponent {

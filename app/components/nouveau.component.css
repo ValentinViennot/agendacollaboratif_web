@@ -1,0 +1,21 @@
+ng-component {
+  padding: 3%;
+}
+
+div.grid-2 > * {
+  display: block;
+}
+
+option, select {
+  height: 30px;
+}
+
+div.grid-2 h3 {
+  font-size: 1.1em
+}
+
+#contenu {
+  display: block;
+  width: 90%;
+  padding-bottom: 10px;
+}

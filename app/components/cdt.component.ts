@@ -39,7 +39,6 @@ import {isUndefined} from "util";
 
 @Component({
     templateUrl: '/app/components/cdt.component.html',
-    styleUrls: ['app/components/cdt.component.css'],
     providers: [
         ParseService,
         DateService
@@ -129,29 +128,10 @@ export class CdtComponent {
         if (!window.localStorage.getItem("pendCOMM")) window.localStorage.setItem("pendCOMM", JSON.stringify([]));
         if (!window.localStorage.getItem("pendMERGE")) window.localStorage.setItem("pendMERGE", JSON.stringify([]));
 
-        // TODO CanActivate token et variables localStorage sinon login
-
-        // BEGIN DEBUG
-        // Normalement les vérifications que les variables existent avant d'arriver ici évitent la présence de ces lignes
-        // Récupère l'utilisateur (normalement chargé au moment du login)
-        this._sync.login(window.localStorage.getItem("token"));
-        var th = this;
-        this._sync.syncUser().then(
-            result => this.user = this._parse.parse("user"),
-            function (erreur:string) {
-                // On notifie l'utilisateur
-                th._notif.add(
-                    2, 'Problème de synchronisation',
-                    'Impossible de récupérer les données (' + erreur + ')');
-            }
-        );
-        // END DEBUG
-
         // affiche aussi rapidement que possible les données disponibles au localStorage
         this.refresh();
         // Initialise l'affichage des données
         this.init();
-
 
         // Observables
         // Synchronisation auto des données (millisecondes) - Pas sur la page archives
@@ -173,7 +153,7 @@ export class CdtComponent {
         // Récupère le token d'identification (nécessaire)
         this.token = window.localStorage.getItem("token");
         // Ajoute le token aux urls des apis
-        this._sync.login(this.token);
+        // this._sync.login(this.token);
         // Force la récupération des devoirs à l'ouverture
         if (this.type=="devoirs")
             // avec mise à jour de version

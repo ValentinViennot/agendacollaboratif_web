@@ -1,4 +1,4 @@
-@import 'https://fonts.googleapis.com/css?family=Amatica+SC:700|Josefin+Sans|Noto+Sans&subset=latin-ext';
+@import 'googlefonts.css';
 
 * {
     font-family: 'Noto Sans', sans-serif;
@@ -678,7 +678,7 @@ button.ui-button.ui-state-default.danger,
 
 .ui-togglebutton.ui-button.ui-state-active,
 .ui-selectbutton .ui-button.ui-state-active {
-   border: 1px solid #156090; background: #186ba0; color: #FFFFFF;
+   border: 1px solid #7C4DFF; background: #7C4DFF; color: #FFFFFF;
 }
 
 /* SelectOneMenu */
@@ -779,6 +779,10 @@ p-togglebutton.ng-dirty.ng-invalid .ui-button {
 
 textarea {
     width: 90%;
+}
+
+.ui-fileupload > * {
+  border: none;
 }
 
 .ui-fileupload-choose input {

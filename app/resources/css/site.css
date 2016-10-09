@@ -1,1 +1,53 @@
 @charset "UTF-8";
+
+ng-component {
+  width: 70%
+}
+
+html, body, agendapp {
+  height: 100%
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* menu */
+
+agd-menu {
+  background-color: #D32F2F;
+  color: #212121;
+}
+
+agd-menu h1 {
+  font-family: 'Amatica SC';
+  font-size: 3.5em;
+  text-align:center;
+}
+
+agd-menu ul {
+  display: block;
+  list-style: none;
+  width: 100%;
+  padding: 0;
+}
+
+agd-menu li {
+  display: block;
+  background-color: #B6B6B6;
+  border: 1px solid #B6B6B6;
+  width: 100%;
+  text-align: center;
+}
+
+agd-menu li a {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  display: block;
+}
+
+agd-menu li:hover {
+  background-color: #FFCDD2
+}
