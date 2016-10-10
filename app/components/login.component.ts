@@ -31,7 +31,7 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
-    regexp="([a-zA-Z0-9_.]{1}[a-zA-Z0-9_.]*)((@[a-zA-Z]{2}[a-zA-Z]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))";
+    regexp="([a-zA-Z0-9_.-]{1}[a-zA-Z0-9_.-]*)((@[a-zA-Z-]{2}[a-zA-Z-]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))";
     
     fr: any;
 

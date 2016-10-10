@@ -48,6 +48,25 @@
     <p-panel>
         <header>
             <div class="ui-helper-clearfix">
+                <span class="ui-panel-title" style="font-size:16px">Mes groupes (dossiers et matières)</span>
+                <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()" icon="fa-check" label="Enregistrer"></button>
+            </div>
+        </header>
+        <p>
+            Tu peux gérer les groupes auxquels tu es abonné en cliquant sur le bouton ci-dessous.
+        </p>
+        <p>
+            L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter. L'abonnement à un dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de te notifier des nouvelles matières qui pourraient y être ajoutées.
+        </p>
+        <nav role="navigation">
+            <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-object-group" label="Gérer mes abonnements"></a>
+        </nav>
+        <p *ngIf="changed">Enregistre tes autres modifications avant de suivre le lien !</p>
+    </p-panel>
+
+    <p-panel>
+        <header>
+            <div class="ui-helper-clearfix">
                 <span class="ui-panel-title" style="font-size:16px">Notifications</span>
                 <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()" icon="fa-check" label="Enregistrer"></button>
             </div>
@@ -82,25 +101,6 @@
             <p-toggleButton value="false" disabled="true" onLabel="Oui" offLabel="Non" >
             </p-toggleButton>
         </div>
-    </p-panel>
-
-    <p-panel>
-        <header>
-            <div class="ui-helper-clearfix">
-                <span class="ui-panel-title" style="font-size:16px">Mes groupes (dossiers et matières)</span>
-                <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()" icon="fa-check" label="Enregistrer"></button>
-            </div>
-        </header>
-        <p>
-            Tu peux gérer les groupes auxquels tu es abonné en cliquant sur le bouton ci-dessous.
-        </p>
-        <p>
-            L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter. L'abonnement à un dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de te notifier des nouvelles matières qui pourraient y être ajoutées.
-        </p>
-        <nav role="navigation">
-            <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-object-group" label="Gérer mes abonnements"></a>
-        </nav>
-        <p *ngIf="changed">Enregistre tes autres modifications avant de suivre le lien !</p>
     </p-panel>
 
     <p id="logout" (click)="_sync.logout(true)">

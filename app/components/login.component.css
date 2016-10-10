@@ -1,5 +1,5 @@
 body {
-  background: #ffffff url("http://www.deliacreates.com/wp-content/uploads/2014/05/Geometric-Lines-Desktop-Wallpaper.png") no-repeat fixed center;
+  background: #ffffff url("/app/resources/images/geometriclines.png") no-repeat fixed center;
   
 }
 
@@ -45,4 +45,14 @@ h1, h3 {
 
 h3 {
   margin-bottom: 20px;
+}
+
+@media (max-width: 1000px) {
+  form {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+  }
 }

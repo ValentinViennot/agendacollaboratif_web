@@ -13,16 +13,47 @@
 }
 
 #conseils {
-    padding: 10px;
+    padding: 15px;
 }
 
 #conseils h3 {
     font-family: 'Amatica SC';
-    font-size: 2em;
+    font-size: 1.8em;
 }
 
 #conseils li {
     padding: 5px;
     font-family: 'Josefin Sans';
-    font-size: 1.3em
+    font-size: 1.15em
+}
+
+.ui-panel-content {
+    text-align: center;
+}
+
+.ui-panel-content i {
+    padding: 10px;
+    cursor: pointer;
+    transition: color 0.2s ease 0s;
+}
+
+.ui-panel-content i:hover {
+    color: #727272;
+}
+
+#loading {
+    font-size: 1.5em;
+    padding: 10px
+}
+
+.ui-button {
+    cursor: default
+}
+
+@media (max-width: 900px) {
+    .fr {
+        position: absolute;
+        right:0;
+        top : 295px;
+    }
 }

@@ -2,20 +2,50 @@ ng-component {
   padding: 3%;
 }
 
-div.grid-2 > * {
-  display: block;
+h1,h3 {
+  font-family: 'Josefin Sans';
+  margin: 0
 }
 
 option, select {
   height: 30px;
 }
 
-div.grid-2 h3 {
-  font-size: 1.1em
+h3 {
+  font-size: 1.3em
 }
 
-#contenu {
+#agd-ajout > div {
+  margin-top: 10px
+}
+
+.infosmatiere {
+  display: inline-block;
+  width: 45%;
+  vertical-align: top
+}
+
+.contenu {
   display: block;
   width: 90%;
   padding-bottom: 10px;
+}
+
+.ui-datepicker-header .ui-icon {
+    width:100%;
+    height: 15px
+}
+
+@media (max-width: 900px) {
+  #contenu {
+    display: block;
+    width: 90%;
+    padding-bottom: 10px;
+  }
+
+  #agd-ajout > div,
+  #agd-ajout > div > div {
+    display: block;
+    min-width: 100%;
+  }
 }

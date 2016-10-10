@@ -19,11 +19,11 @@
 -->
 <link rel="stylesheet" type="text/css" href="/app/components/nouveau.component.css"/>
 <div id="agd-ajout">
-    <div class="grid-2">
+    <div >
         <h1>Ajouter un devoir</h1>
     </div>
-    <div class="grid-2">
-        <div class="grid-2 center">
+    <div >
+        <div class="infosmatiere">
             <label for="matiere">Matière dans lequel ce devoir sera partagé</label>
             <select id="matiere" [(ngModel)]="matiere">
                 <option *ngFor="let course of user.courses" [value]="getCourseValue(course)" [style.color]="course.color?('#'+course.color):'inherit'">
@@ -31,22 +31,22 @@
                 </option>
             </select>
         </div>
-        <div class="grid-2 center">
+        <div class="infosmatiere">
             <h3>À faire pour le</h3>
             <p-calendar [locale]="fr" [(ngModel)]="date" [inline]="true" ></p-calendar>
         </div>
     </div>
-    <div class="grid-2">
-        <div id="contenu">
+    <div >
+        <div class="contenu">
             <h3>Description</h3>
             <p>Donne ici le maximum d'informations à propos du contenu du devoir (exercice concerné, numéro de page, poly, à rendre sur feuille, etc.)</p>
         </div>
-        <div id="contenu">
+        <div class="contenu">
             <textarea id="textarea" title="Numéro d'exercice et de page, devoir à rendre ou non, toutes autres indications..."
                       pInputTextarea [(ngModel)]="texte">
             </textarea>
         </div>  
-    <div class="clear fr">
+    <div >
         <button
                 type="button" pButton icon="fa-floppy-o" iconPos="left" label="Ajouter" (click)="save()">
         </button>

@@ -77,7 +77,7 @@ export class UserComponent {
                 th.userForm = new FormGroup({
                     'prenom': new FormControl({value: th.user.prenom, disabled: !th.user.fake_identity}, Validators.required),
                     'nom': new FormControl({value: th.user.nom, disabled: !th.user.fake_identity}, Validators.required),
-                    'email': new FormControl(th.user.email, [Validators.required, Validators.pattern("([a-zA-Z0-9_.]{1}[a-zA-Z0-9_.]*)((@[a-zA-Z]{2}[a-zA-Z]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))")]),
+                    'email': new FormControl(th.user.email, [Validators.required, Validators.pattern("([a-zA-Z0-9_.-]{1}[a-zA-Z0-9_.-]*)((@[a-zA-Z-]{2}[a-zA-Z-]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))")]),
                     'mdp1': new FormControl('', [Validators.required, Validators.minLength(6)]),
                     'mdp2': new FormControl('', [Validators.required, Validators.minLength(6)]),
                     'mail': new FormControl(th.user.mail),
