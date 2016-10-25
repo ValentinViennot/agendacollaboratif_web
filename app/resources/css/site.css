@@ -23,7 +23,7 @@ agd-menu {
 }
 
 agd-menu h1 {
-  font-family: 'Amatica SC';
+  font-family: 'Amatica SC',sans-serif;
   font-size: 3.5em;
   margin: 0;
   text-align:center;
@@ -31,14 +31,14 @@ agd-menu h1 {
 }
 
 agd-menu h5 {
-  font-family: 'Amatica SC';
-  font-size: 2em;
+  font-family: 'Amatica SC',sans-serif;
+  font-size: 1em;
   margin: 0;
-  text-align:right;
-  color:#fff;
-  position:relative;
-  right: 20px;
-  top: -20px;
+  text-align: right;
+  color: #fff;
+  position: relative;
+  right: 2em;
+  top: -15px;
 }
 
 agd-menu ul {
@@ -62,7 +62,7 @@ agd-menu li a {
   height: 100%;
   padding: 10px;
   display: block;
-  
+  text-align: left;
 }
 
 agd-menu li:hover {
@@ -83,31 +83,41 @@ agd-menu > p:hover {
   color: #fff
 }
 
+agd-menu i {
+  margin-right: 15px;
+  margin-left: 10%;
+}
+
 @media (max-width: 900px) {
   html {
+    width: 100%;
+    min-width: 100%;
     max-width: 100%
   }
   body {
+    width: 100%;
+    min-width: 100%;
     max-width: 100%;
     display: table
   }
   agd-menu h1 {
     margin: 0;
+    padding-top: 15px;
   }
   agd-menu {
-    min-width: 99.9%;
-    height: 280px;
+    width: 100%;
+    min-width: 100%;
+    margin-bottom:15px;
     display: table-row;
-    margin-bottom: 10px;
   }
   #logout {
     position: absolute;
     top:0;
     left: 0;
-    margin-top: -5px;
+    margin-top: -10px;
   }
   ng-component {
-    display: block;
+    display: table-row;
     width: 100%
   }
 }

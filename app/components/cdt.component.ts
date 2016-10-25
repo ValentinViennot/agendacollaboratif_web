@@ -51,7 +51,7 @@ export class CdtComponent {
 
     // Synchronisation auto régulière
     interval:any;
-    // Sélection de la source à afficher TODO par variable url ou non par défaut
+    // Sélection de la source à afficher
     type:string;
 
     // Utilisateur connecté
@@ -80,6 +80,7 @@ export class CdtComponent {
     filtre_texte:string;
     filtres: SelectItem[];
     selectedFiltres:string[];
+    filtrdone:boolean;
 
     // invitations à des groupes
     invitations:Invitation[];
@@ -109,11 +110,15 @@ export class CdtComponent {
         this.searchForm = new FormGroup({
             'term': new FormControl()
         });
+        // Initialisation des filtres
         this.filtres = [];
         this.filtre = "";
         this.filtre_texte = "";
         this.selectedFiltres = [];
         this.invitations = [];
+        if(!window.localStorage.getItem("filtrdone"))
+            window.localStorage.setItem("filtrdone",JSON.stringify(false));
+        this.filtrdone = JSON.parse(window.localStorage.getItem("filtrdone"));
     }
 
     ngOnInit():void {
@@ -267,6 +272,7 @@ export class CdtComponent {
                 let day_texte:string = this._date.getDayTiny(devoir.date);
                 section = {
                     "titre":day_num,
+                    "mois":(devoir.date.getMonth()!=lastDate.getMonth()?this._date.getMonth(devoir.date):null),
                     "sous_titre":day_texte,
                     "devoirs": []
                 };
@@ -274,6 +280,7 @@ export class CdtComponent {
                 premier = false;
                 section = {
                     "titre":devoir.date.getDate().toString(),
+                    "mois":(devoir.date.getMonth()!=lastDate.getMonth()?this._date.getMonth(devoir.date):null),
                     "sous_titre":"Ajd.",
                     "devoirs": []
                 };
@@ -315,9 +322,15 @@ export class CdtComponent {
                 filtre_full+="&&";
             filtre_full += this.filtre_texte;
         }
+        if (this.filtrdone) {
+            if (filtre_full.length>0)
+                filtre_full+="&&";
+            filtre_full += "-0";
+        }
         if (this.filtre.length>0) {
             filtre_full+=this.filtre;
         }
+        // Filtre complet établi
         if (filtre_full.length<2) {
             this.selectedFiltres = [];
             return devoirs;
@@ -405,6 +418,11 @@ export class CdtComponent {
         this.selectedFiltres=[];
         this.filtre="";
         this.filtre_texte="";
+        this.refresh();
+    }
+    public invertdone():void {
+        this.filtrdone=!this.filtrdone;
+        window.localStorage.setItem("filtrdone",JSON.stringify(this.filtrdone));
         this.refresh();
     }
 

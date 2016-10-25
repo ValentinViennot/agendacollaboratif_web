@@ -37,6 +37,7 @@ export declare class CdtComponent {
     filtre_texte: string;
     filtres: SelectItem[];
     selectedFiltres: string[];
+    filtrdone: boolean;
     invitations: Invitation[];
     constructor(_sync: SyncService, _notif: NotificationService, route: ActivatedRoute, _date: DateService, _parse: ParseService);
     ngOnInit(): void;
@@ -65,6 +66,7 @@ export declare class CdtComponent {
     private filtrage(devoirs);
     filtr(filtr: string): void;
     clear_filtr(): void;
+    invertdone(): void;
     done(devoir: Devoir): void;
     /**
      * Ajoute un devoir à la liste de "merge"

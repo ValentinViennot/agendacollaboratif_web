@@ -1,12 +1,16 @@
-form * {
-  margin: 5px
+#userForm > *, #userForm .ui-panel-content-wrapper > *, #userForm .ui-panel-content > * {
+  margin: 10px;
 }
 
 @media (max-width: 900px) {
-  ng-component, form, .ui-panel {
+  #userForm {
+    display: table-row;
+  }
+
+  #userForm, .ui-panel {
     max-width: 100%
   }
-  #logout {
+  #userForm #logout {
     color: #fff;
   }
 }

@@ -17,9 +17,8 @@
     
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 -->
-<link rel="stylesheet" type="text/css" href="/app/components/user.component.css"/>
 
-<form [formGroup]="userForm">
+<form [formGroup]="userForm" id="userForm">
 
     <p-panel>
         <header>
@@ -59,7 +58,7 @@
             L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter. L'abonnement à un dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de te notifier des nouvelles matières qui pourraient y être ajoutées.
         </p>
         <nav role="navigation">
-            <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-object-group" label="Gérer mes abonnements"></a>
+            <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-graduation-cap" label="Gérer mes abonnements"></a>
         </nav>
         <p *ngIf="changed">Enregistre tes autres modifications avant de suivre le lien !</p>
     </p-panel>

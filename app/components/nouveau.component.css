@@ -1,17 +1,17 @@
-ng-component {
+#agd-ajout {
   padding: 3%;
 }
 
-h1,h3 {
-  font-family: 'Josefin Sans';
+#agd-ajout h1,#agd-ajout h3 {
+  font-family: 'Josefin Sans', sans-serif;
   margin: 0
 }
 
-option, select {
+#agd-ajout option, #agd-ajout select {
   height: 30px;
 }
 
-h3 {
+#agd-ajout h3 {
   font-size: 1.3em
 }
 
@@ -19,25 +19,29 @@ h3 {
   margin-top: 10px
 }
 
-.infosmatiere {
+#agd-ajout .infosmatiere {
   display: inline-block;
   width: 45%;
   vertical-align: top
 }
 
-.contenu {
+#agd-ajout .contenu {
   display: block;
   width: 90%;
   padding-bottom: 10px;
 }
 
-.ui-datepicker-header .ui-icon {
+#agd-ajout .ui-datepicker-header .ui-icon {
     width:100%;
     height: 15px
 }
 
 @media (max-width: 900px) {
-  #contenu {
+  #agd-ajout {
+    display: table-row;
+  }
+
+  #agd-ajout #contenu {
     display: block;
     width: 90%;
     padding-bottom: 10px;

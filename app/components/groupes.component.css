@@ -2,13 +2,13 @@
     color:inherit;
 }
 
-.fr {
+.groupes .fr {
     position: fixed;
     right:0;
     top : 3px;
 }
 
-.ui-datagrid-content {
+.groupes .ui-datagrid-content {
     margin: 0;
 }
 
@@ -17,41 +17,45 @@
 }
 
 #conseils h3 {
-    font-family: 'Amatica SC';
+    font-family: 'Amatica SC', sans-serif;
     font-size: 1.8em;
 }
 
 #conseils li {
     padding: 5px;
-    font-family: 'Josefin Sans';
+    font-family: 'Josefin Sans', sans-serif;
     font-size: 1.15em
 }
 
-.ui-panel-content {
+.groupes .ui-panel-content {
     text-align: center;
 }
 
-.ui-panel-content i {
+.groupes .ui-panel-content i {
     padding: 10px;
     cursor: pointer;
     transition: color 0.2s ease 0s;
 }
 
-.ui-panel-content i:hover {
+.groupes .ui-panel-content i:hover {
     color: #727272;
 }
 
 #loading {
     font-size: 1.5em;
-    padding: 10px
+    padding: 10px;
 }
 
-.ui-button {
+#loading > * {
+    vertical-align: middle;
+}
+
+.groupes .ui-button {
     cursor: default
 }
 
 @media (max-width: 900px) {
-    .fr {
+    .groupes .fr {
         position: absolute;
         right:0;
         top : 295px;

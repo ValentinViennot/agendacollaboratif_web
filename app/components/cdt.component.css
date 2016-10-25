@@ -1,4 +1,13 @@
 /* dates des sections */
+.cdt p.mois {
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    text-align:center;
+    font-size: 2em;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
 .cdt aside {
     height: 5em;    
     min-width: 80px;
@@ -22,8 +31,8 @@
     color: #B6B6B6;
 }
 
-p-panel:first-child > .ui-widget {
-    margin-top: 50px;
+.cdt p-panel:first-child > .ui-widget {
+    margin-top: 40px;
 }
 
 .flag {
@@ -33,13 +42,13 @@ p-panel:first-child > .ui-widget {
 #aucundevoir {
   padding: 60px;
   text-align: justify;
-  font-family: 'Josefin Sans';
+  font-family: 'Josefin Sans', sans-serif;
   font-size: 1.6em
 }
 
 /* devoir */
-.ui-panel {
-  margin-top: 20px;
+.cdt .ui-panel {
+  margin-top: 15px;
   border: 2px solid #B6B6B6;
   border-radius: 5px;
 }
@@ -48,21 +57,21 @@ p-panel:first-child > .ui-widget {
   font-weight: normal
 }
 
-footer a {
-  font-family: 'Josefin Sans'
+.cdt footer a {
+  font-family: 'Josefin Sans', sans-serif;
 }
 
-.ui-toolbar-group-right .ui-button {
+.cdt .ui-toolbar-group-right .ui-button {
   opacity: 0.2;
   transition: opacity 0.3s ease 0s;
 }
 
-.ui-toolbar-group-right:hover .ui-button {
+.cdt .ui-toolbar-group-right:hover .ui-button {
   opacity: 0.45
 }
 
-.ui-toolbar-group-right .ui-button:last-of-type,
-.ui-toolbar-group-right .ui-button:hover {
+.cdt .ui-toolbar-group-right .ui-button:last-of-type,
+.cdt .ui-toolbar-group-right .ui-button:hover {
   opacity: 1;
 }
 
@@ -119,16 +128,16 @@ footer a {
 
 /* marqueurs */
 
-.ui-overlaypanel {
+.cdt .ui-overlaypanel {
   box-shadow: none;
 }
 
-.ui-overlaypanel-content ul {
+.cdt .ui-overlaypanel-content ul {
   list-style: none;
   padding:0;
 }
 
-.ui-overlaypanel-content li {
+.cdt .ui-overlaypanel-content li {
   display: inline-block;
   padding: 2px;
   cursor: pointer;
@@ -136,7 +145,7 @@ footer a {
   transition: opacity 0.2s ease 0s;
 }
 
-.ui-overlaypanel-content li:hover {
+.cdt .ui-overlaypanel-content li:hover {
   opacity: 1;
 }
 
@@ -168,8 +177,19 @@ footer a {
 }
 
 /* filtres mati�re */
-ng-component > div:nth-of-type(2) * {
+#filtrmatieres {
+    padding-top:10px;
+    padding-bottom: 10px;
+}
+#filtrmatieres .ui-button {
   margin: 5px;
+  padding: 3px;
+}
+
+#filtrdone {
+   text-align: left;
+    padding-top: 15px;
+   padding-left:20px;
 }
 
 @media (max-width: 900px) {

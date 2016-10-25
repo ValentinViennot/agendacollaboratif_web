@@ -112,7 +112,7 @@ export class AppComponent {
         CalendarModule,
         //CarouselModule,
         //ChartModule,
-        //CheckboxModule,
+        CheckboxModule,
         //CodeHighlighterModule,
         SharedModule,
         //ContextMenuModule,
