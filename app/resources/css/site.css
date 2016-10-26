@@ -2,10 +2,12 @@
 
 html, body {
   height: 100%;
+  width: 100%;
 }
 
 html, body, agendapp  {
   min-height: 100% !important;
+  min-width: 100% !important;
 }
 
 ng-component {
@@ -78,7 +80,6 @@ agd-menu #logout {
   color: #DDD;
   text-align: center;
   padding: 10px;
-  margin-top: 50%;
   transition: color 0.1s ease 0s;
 }
 agd-menu #logout:hover {
@@ -116,8 +117,5 @@ agd-menu i {
   ng-component {
     display: table-row;
     width: 100%
-  }
-  agd-menu #logout {
-    margin-top: 0;
   }
 }

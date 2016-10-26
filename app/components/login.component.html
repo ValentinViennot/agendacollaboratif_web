@@ -17,22 +17,24 @@
     
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 -->
-<link rel="stylesheet" type="text/css" href="/app/components/login.component.css"/>
-<form [formGroup]="loginForm">
-    <h1>Connexion</h1>
-    <h3>l'Agenda Collaboratif</h3>
-    <div *ngIf="isActions()" class="ui-messages ui-widget ui-corner-all ui-messages-error" style="display:block">
-        <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
-        <ul>
-            <li (click)="clear()">
-                <span class="ui-messages-summary">Il reste des opérations en attente</span>
-                <span class="ui-messages-detail">Lors de ta reconnexion, les opérations vont être réalisées ({{isActions()}}). Pour annuler ces opérations, clique sur ce message avant de te connecter.</span>
-            </li>
-        </ul>
-    </div>
-    <label for="email">Adresse mail</label>
-    <input pInputText formControlName="email" id="email" title="Adresse email" type="text" size="30" />
-    <label for="mdp">Mot de passe</label>
-    <input pInputText formControlName="mdp" id="mdp" title="Mot de passe" type="password" size="30" />
-    <button pButton [disabled]="!ready()" type="text" (click)="login()" icon="fa-check" label="Connexion"></button>
-</form>
+<div id="login">
+    <form [formGroup]="loginForm">
+        <h1>Connexion</h1>
+        <h3>l'Agenda Collaboratif</h3>
+        <div *ngIf="isActions()" class="ui-messages ui-widget ui-corner-all ui-messages-error" style="display:block">
+            <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
+            <ul>
+                <li (click)="clear()">
+                    <span class="ui-messages-summary">Il reste des opérations en attente</span>
+                    <span class="ui-messages-detail">Lors de ta reconnexion, les opérations vont être réalisées ({{isActions()}}). Pour annuler ces opérations, clique sur ce message avant de te connecter.</span>
+                </li>
+            </ul>
+        </div>
+        <label for="email">Adresse mail</label>
+        <input pInputText formControlName="email" id="email" title="Adresse email" type="text" size="30" />
+        <label for="mdp">Mot de passe</label>
+        <input pInputText formControlName="mdp" id="mdp" title="Mot de passe" type="password" size="30" />
+        <button pButton [disabled]="!ready()" type="text" (click)="login()" icon="fa-check" label="Connexion"></button>
+        <a id="inscription" class="ui-button secondaire" href="http://agendapp.fr/inscription/">Inscription</a>
+    </form>
+</div>

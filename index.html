@@ -21,6 +21,7 @@
         <link rel="stylesheet" type="text/css" href="app/resources/css/site.css">
 
         <!-- Styles des composants -->
+        <link rel="stylesheet" type="text/css" href="/app/components/login.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/groupes.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/nouveau.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/user.component.css"/>
@@ -36,17 +37,233 @@
 
     <body>
         <agendapp  id="main" role="main" class="flex-container">
-            <link rel="stylesheet" href="app/resources/css/loader.css">
-            <div class="cssload-wrap">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
+            <style>
+                .cssload-container {
+                    position: relative;
+                    width: 250px;
+                    height: 250px;
+                    display:block;
+                    margin: auto;
+                    perspective: 1250px;
+                    -o-perspective: 1250px;
+                    -ms-perspective: 1250px;
+                    -webkit-perspective: 1250px;
+                    -moz-perspective: 1250px;
+                    perspective: 1250px;
+                    -o-perspective: 1250px;
+                    -ms-perspective: 1250px;
+                    -webkit-perspective: 1250px;
+                    -moz-perspective: 1250px;
+                    overflow: hidden;
+                    margin-bottom: -130px;
+                    margin-top: -50px;
+                }
+
+                .cube {
+                    position: absolute;
+                    bottom: 50%;
+                    left: 50%;
+                    width: 38px;
+                    height: 38px;
+                    margin-left: -19px;
+                    margin-top: 0;
+                }
+
+                .cube-2d {
+                    background-color: rgb(0,0,0);
+                }
+                .cssload-arc {
+                    position: absolute;
+                    bottom: 50%;
+                    left: 50%;
+                    margin-left: -88px;
+                    width: 175px;
+                    height: 88px;
+                    overflow: hidden;
+                }
+
+                .cssload-arc-cube {
+                    position: absolute;
+                    bottom: -88px;
+                    left: 50%;
+                    margin-left: -88px;
+                    width: 175px;
+                    height: 175px;
+                    border-style: solid;
+                    border-top-color: transparent;
+                    border-right-color: rgb(0,0,0);
+                    border-left-color: transparent;
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    -o-border-radius: 50%;
+                    -ms-border-radius: 50%;
+                    -webkit-border-radius: 50%;
+                    -moz-border-radius: 50%;
+                    box-sizing: border-box;
+                    -o-box-sizing: border-box;
+                    -ms-box-sizing: border-box;
+                    -webkit-box-sizing: border-box;
+                    -moz-box-sizing: border-box;
+                    animation: cssload-arc 2.3s ease-in-out infinite;
+                    -o-animation: cssload-arc 2.3s ease-in-out infinite;
+                    -ms-animation: cssload-arc 2.3s ease-in-out infinite;
+                    -webkit-animation: cssload-arc 2.3s ease-in-out infinite;
+                    -moz-animation: cssload-arc 2.3s ease-in-out infinite;
+                    transform: rotate(-200deg);
+                    -o-transform: rotate(-200deg);
+                    -ms-transform: rotate(-200deg);
+                    -webkit-transform: rotate(-200deg);
+                    -moz-transform: rotate(-200deg);
+                }
+
+                @keyframes cssload-arc {
+                    0% {
+                        border-width: 38px;
+                    }
+                    25% {
+                        border-width: 19px;
+                    }
+                    50% {
+                        transform: rotate(27deg);
+                        border-width: 38px;
+                    }
+                    75% {
+                        border-width: 19px;
+                    }
+                    100% {
+                        border-width: 38px;
+                    }
+                }
+
+                @-o-keyframes cssload-arc {
+                    0% {
+                        border-width: 38px;
+                    }
+                    25% {
+                        border-width: 19px;
+                    }
+                    50% {
+                        -o-transform: rotate(27deg);
+                        border-width: 38px;
+                    }
+                    75% {
+                        border-width: 19px;
+                    }
+                    100% {
+                        border-width: 38px;
+                    }
+                }
+
+                @-ms-keyframes cssload-arc {
+                    0% {
+                        border-width: 38px;
+                    }
+                    25% {
+                        border-width: 19px;
+                    }
+                    50% {
+                        -ms-transform: rotate(27deg);
+                        border-width: 38px;
+                    }
+                    75% {
+                        border-width: 19px;
+                    }
+                    100% {
+                        border-width: 38px;
+                    }
+                }
+
+                @-webkit-keyframes cssload-arc {
+                    0% {
+                        border-width: 38px;
+                    }
+                    25% {
+                        border-width: 19px;
+                    }
+                    50% {
+                        -webkit-transform: rotate(27deg);
+                        border-width: 38px;
+                    }
+                    75% {
+                        border-width: 19px;
+                    }
+                    100% {
+                        border-width: 38px;
+                    }
+                }
+
+                @-moz-keyframes cssload-arc {
+                    0% {
+                        border-width: 38px;
+                    }
+                    25% {
+                        border-width: 19px;
+                    }
+                    50% {
+                        -moz-transform: rotate(27deg);
+                        border-width: 38px;
+                    }
+                    75% {
+                        border-width: 19px;
+                    }
+                    100% {
+                        border-width: 38px;
+                    }
+                }
+            </style>
+            <script>
+                $(function(){
+                    var defilv = $('.defilv li');
+                    var ul_height = $('.defilv').outerHeight();
+                    $('.defilv').append(defilv.clone());
+                    var i = 0;
+                    (function displayDefil(i){
+                        setTimeout(function(){
+                            if( $('.defilv').css('top') == (-1 * ul_height) + 'px'){
+                                $('.defilv').css('top', '0');
+                            }
+                            var li_height = $(defilv[i]).outerHeight();
+                            $('.defilv').animate({
+                                top: '-=' + li_height + 'px'}, 500);
+                            if( i == defilv.length - 1){
+                                i = 0;
+                            }else{
+                                i++;
+                            }
+                            displayDefil(i);
+                        }, 3000);
+                    })(i);
+                });
+            </script>
+            <div id="login">
+                <form>
+                    <h1>Connexion</h1>
+                    <h3>l'Agenda Collaboratif</h3>
+                    <div id="loading">
+                        <div class="cssload-container">
+                            <div class="cssload-arc">
+                                <div class="cssload-arc-cube"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="defilv-contain">
+                        <ul class="defilv">
+                            <li>Chargement en cours...</li>
+                            <li>Arrivée de nouveaux élèves...</li>
+                            <li>Coloriage des matières...</li>
+                            <li>Repassage des petits drapeaux...</li>
+                            <li>Vérification des devoirs faits...</li>
+                            <li>Installation de fonctionnalités...</li>
+                            <li>Adoration du développeur...</li>
+                            <li>En réflexion philosophique...</li>
+                            <li>Téléchargement de nouvelles idées...</li>
+                            <li>Juxtaposition des propositions...</li>
+                            <li>Envoi de données au FBI...</li>
+                            <li>Composition du numéro minitel...</li>
+                        </ul>
+                    </div>
+                    <a id="inscription" class="ui-button secondaire" href="http://agendapp.fr/inscription/">Inscription</a>
+                </form>
             </div>
         </agendapp>
         
