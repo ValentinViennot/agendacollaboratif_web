@@ -333,7 +333,7 @@ a {
  *
  * http://docs.jquery.com/UI/Button#theming
  */
-.ui-button .ui-icon { background-image: url("images/ui-icons_ffffff_256x240.png"); }
+/*.ui-button .ui-icon { background-image: url("images/ui-icons_ffffff_256x240.png"); }*/
 /*
  * jQuery UI Dialog 1.8.16
  *
@@ -561,8 +561,8 @@ button.ui-button.ui-state-default.danger,
 .ui-chkbox-box.ui-state-focus.ui-state-active,
 .ui-radiobutton-box.ui-state-active,
 .ui-radiobutton-box.ui-state-focus.ui-state-active{
-    border: 1px solid #156090;
-    background: #186ba0;
+    border: 1px solid #5A2BDD;
+    background: #7C4DFF;
     color: #FFFFFF;
 }
 
@@ -791,12 +791,16 @@ textarea {
 
 /* Couleurs des matières */
 
-.matierecolor.undone .ui-panel {
+.matierecolor .ui-panel {
     background-color: inherit;
 }
 
 .cdt .ui-panel-content-wrapper {
     background-color: rgba(255,255,255,0.8)
+}
+
+.cdt .done .ui-panel-content-wrapper {
+    background-color: rgba(255,255,255,0.9)
 }
 
 .groupe .ui-panel,.groupe .ui-panel-content-wrapper,.groupe .ui-panel-content,.groupe i {

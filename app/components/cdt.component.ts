@@ -558,7 +558,7 @@ export class CdtComponent {
                 "pjs": null
             };
             // On ajoute le commentaire au devoir
-            devoir.commentaires.splice(0,0,commentaire);
+            devoir.commentaires.splice(devoir.commentaires.length,0,commentaire);
             // Ajout à la liste d'attente
             this.selectedComm=devoir;
             this.pend("COMM", {"id":devoir.id,"content":commentaire});

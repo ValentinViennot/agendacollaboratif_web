@@ -1,5 +1,16 @@
 <!--<link rel="stylesheet" type="text/css" href="/app/components/cdt.component.css" />-->
 <div class="cdt">
+    <!-- Sélection de flag -->
+    <p-overlayPanel #op>
+        <ul *ngIf="selectedDevoir" class="flags">
+            <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
+                <i [style.color]="flags[flag]" class="fa fa-flag">
+                </i>
+            </li>
+        </ul>
+    </p-overlayPanel>
+
+    <!-- Ajout de pièces jointes -->
     <p-overlayPanel #op1>
         <p-fileUpload *ngIf="selectedDevoir"
                       name="fichiers[]"
@@ -19,6 +30,7 @@
         </p-fileUpload>
     </p-overlayPanel>
 
+    <!-- Message d'alerte HORS CONNEXION -->
     <div *ngIf="!online" class="ui-messages ui-widget ui-corner-all ui-messages-error" style="display:block">
         <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
         <ul>
@@ -28,6 +40,9 @@
             </li>
         </ul>
     </div>
+
+
+    <!-- Filtres et recherche -->
 
     <form [formGroup]="searchForm">
         <input pInputText formControlName="term" [(ngModel)]="filtre_texte" title="Rechercher" placeholder="Rechercher" type="search" size="30" />
@@ -54,10 +69,23 @@
         </p>
     </div>
 
-
     <div id="filtrmatieres">
         <p-selectButton [options]="filtres" [(ngModel)]="selectedFiltres" (onChange)="refresh()" [multiple]="true"></p-selectButton>
     </div>
+
+
+    <!-- Invitations à des nouveaux groupes des dossiers suivis -->
+    <section *ngIf="invitations.length>0">
+        <p-panel *ngFor="let invitation of invitations">
+            <header>
+                <span style="color:#555">{{invitation.de}} vient de créer le groupe </span>{{invitation.groupe}}<span style="color:#555">. Souhaites-tu le rejoindre ?</span>
+            </header>
+            <footer>
+                <button pButton type="text" (click)="acceptInvitation(invitation)" icon="fa-check" label="Oui"></button>
+                <button pButton type="text" (click)="declineInvitation(invitation)" class="secondaire" label="Non"></button>
+            </footer>
+        </p-panel>
+    </section>
 
     <!-- Formulaire de fusion de devoirs -->
     <section *ngIf="merge.length>0" class="merge">
@@ -70,6 +98,9 @@
                     <span [innerHTML]="devoir.texte"></span>
                 </li>
             </ul>
+            <p>
+                Assure-toi qu'il s'agisse exactement de la même chose avant de fusionner plusieurs devoirs entre eux !
+            </p>
             <div>
                 <button pButton type="button" icon="fa-check" iconPos="left"
                         label="Confirmer la fusion" (click)="doMerge()" [disabled]="merge.length<2"></button>
@@ -79,29 +110,7 @@
         </p-panel>
     </section>
 
-    <!-- sélection de flag -->
-
-    <p-overlayPanel #op>
-        <ul *ngIf="selectedDevoir" class="flags">
-            <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
-                <i [style.color]="flags[flag]" class="fa fa-flag">
-                </i>
-            </li>
-        </ul>
-    </p-overlayPanel>
-
-    <section *ngIf="invitations.length>0">
-        <p-panel *ngFor="let invitation of invitations">
-            <span>
-                {{invitation.de}} vient de créer le groupe <b>{{invitation.groupe}}</b>. Souhaites-tu le rejoindre ?
-            </span>
-            <footer>
-                <button pButton type="text" (click)="acceptInvitation(invitation)" icon="fa-check" label="Oui"></button>
-                <button pButton type="text" (click)="declineInvitation(invitation)" class="secondaire" label="Non"></button>
-            </footer>
-        </p-panel>
-    </section>
-
+    <!-- Affichage des devoirs - gestion du cas où il n'y a pas de devoirs à afficher -->
     <section *ngIf="sections.length==0">
         <p id="aucundevoir">Il n'y a aucun devoir à afficher pour le moment. Clique sur "Paramètres" puis descend et clique sur "Gérer mes abonnements" pour rejoindre des matières et commencer à afficher et/ou ajouter des devoirs !</p>
     </section>
@@ -165,12 +174,6 @@
                     En attente de synchronisation
                 </footer>
                 <div *ngIf="devoir.id&&selectedComm.id==devoir.id">
-
-                    <div class="commentaire">
-                    <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire" [autoResize]="true" [(ngModel)]="input[i]">
-                    </textarea>
-                        <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
-                    </div>
                     <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
                         <p class="header">
                             @{{commentaire.auteur}}
@@ -201,6 +204,11 @@
                         <p class="footer">
                             <span class="date">{{_date.recentDateTime(commentaire.date)}}</span>
                         </p>
+                    </div>
+                    <div class="commentaire">
+                        <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire" [autoResize]="true" [(ngModel)]="input[i]">
+                        </textarea>
+                        <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
                     </div>
                 </div>
             </p-panel>

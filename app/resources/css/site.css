@@ -1,12 +1,16 @@
 @charset "UTF-8";
 
+html, body {
+  height: 100%;
+}
+
+html, body, agendapp  {
+  min-height: 100% !important;
+}
+
 ng-component {
   width: 70%;
   padding-left: 10px;
-}
-
-html, body, agendapp {
-  height: 100%
 }
 
 a {
@@ -19,7 +23,6 @@ a {
 agd-menu {
   background-color: #D32F2F;
   color: #212121;
-  height: auto;
 }
 
 agd-menu h1 {
@@ -69,18 +72,18 @@ agd-menu li:hover {
   background-color: #FFCDD2
 }
 
-agd-menu > p {
+agd-menu #logout {
   cursor: pointer;
   width: 100%;
-  color: #eee;
-  text-align: right;
+  color: #DDD;
+  text-align: center;
   padding: 10px;
   margin-top: 50%;
   transition: color 0.1s ease 0s;
 }
-
-agd-menu > p:hover {
-  color: #fff
+agd-menu #logout:hover {
+  color: #FFF;
+  transition: color 0.1s ease 0s;
 }
 
 agd-menu i {
@@ -110,14 +113,11 @@ agd-menu i {
     margin-bottom:15px;
     display: table-row;
   }
-  #logout {
-    position: absolute;
-    top:0;
-    left: 0;
-    margin-top: -10px;
-  }
   ng-component {
     display: table-row;
     width: 100%
+  }
+  agd-menu #logout {
+    margin-top: 0;
   }
 }
