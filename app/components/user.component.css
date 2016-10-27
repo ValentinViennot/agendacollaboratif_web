@@ -2,6 +2,10 @@
   margin: 10px;
 }
 
+#userForm #logout {
+  cursor: pointer;
+}
+
 @media (max-width: 900px) {
   #userForm {
     display: table-row;
