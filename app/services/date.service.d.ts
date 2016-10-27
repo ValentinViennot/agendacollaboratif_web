@@ -5,4 +5,5 @@ export declare class DateService {
     getDayTiny(date: Date): string;
     recentDateTime(date: Date): string;
     jjmm(date: Date): string;
+    getMonth(date: Date): string;
 }

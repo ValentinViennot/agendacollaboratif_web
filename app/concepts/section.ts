@@ -25,6 +25,7 @@ import {Devoir} from "./devoir";
 
 export class Section {
     titre: string;
+    mois:string;
     sous_titre:string;
     devoirs: Devoir[];
 }

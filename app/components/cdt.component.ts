@@ -36,10 +36,10 @@ import {Commentaire} from "../concepts/commentaire";
 import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
 import {PJ} from "../concepts/PJ";
 import {isUndefined} from "util";
+import {Invitation} from "../concepts/invitation";
 
 @Component({
     templateUrl: '/app/components/cdt.component.html',
-    styleUrls: ['app/components/cdt.component.css'],
     providers: [
         ParseService,
         DateService
@@ -51,7 +51,7 @@ export class CdtComponent {
 
     // Synchronisation auto régulière
     interval:any;
-    // Sélection de la source à afficher TODO par variable url ou non par défaut
+    // Sélection de la source à afficher
     type:string;
 
     // Utilisateur connecté
@@ -80,6 +80,10 @@ export class CdtComponent {
     filtre_texte:string;
     filtres: SelectItem[];
     selectedFiltres:string[];
+    filtrdone:boolean;
+
+    // invitations à des groupes
+    invitations:Invitation[];
 
     constructor(
         private _sync:SyncService,
@@ -106,10 +110,15 @@ export class CdtComponent {
         this.searchForm = new FormGroup({
             'term': new FormControl()
         });
+        // Initialisation des filtres
         this.filtres = [];
         this.filtre = "";
         this.filtre_texte = "";
         this.selectedFiltres = [];
+        this.invitations = [];
+        if(!window.localStorage.getItem("filtrdone"))
+            window.localStorage.setItem("filtrdone",JSON.stringify(false));
+        this.filtrdone = JSON.parse(window.localStorage.getItem("filtrdone"));
     }
 
     ngOnInit():void {
@@ -129,29 +138,10 @@ export class CdtComponent {
         if (!window.localStorage.getItem("pendCOMM")) window.localStorage.setItem("pendCOMM", JSON.stringify([]));
         if (!window.localStorage.getItem("pendMERGE")) window.localStorage.setItem("pendMERGE", JSON.stringify([]));
 
-        // TODO CanActivate token et variables localStorage sinon login
-
-        // BEGIN DEBUG
-        // Normalement les vérifications que les variables existent avant d'arriver ici évitent la présence de ces lignes
-        // Récupère l'utilisateur (normalement chargé au moment du login)
-        this._sync.login(window.localStorage.getItem("token"));
-        var th = this;
-        this._sync.syncUser().then(
-            result => this.user = this._parse.parse("user"),
-            function (erreur:string) {
-                // On notifie l'utilisateur
-                th._notif.add(
-                    2, 'Problème de synchronisation',
-                    'Impossible de récupérer les données (' + erreur + ')');
-            }
-        );
-        // END DEBUG
-
         // affiche aussi rapidement que possible les données disponibles au localStorage
         this.refresh();
         // Initialise l'affichage des données
         this.init();
-
 
         // Observables
         // Synchronisation auto des données (millisecondes) - Pas sur la page archives
@@ -162,6 +152,7 @@ export class CdtComponent {
             .debounceTime(600)
             .distinctUntilChanged()
             .subscribe(term => this.refresh());
+        this.getInvitations();
     }
 
     ngOnDestroy() {
@@ -173,7 +164,7 @@ export class CdtComponent {
         // Récupère le token d'identification (nécessaire)
         this.token = window.localStorage.getItem("token");
         // Ajoute le token aux urls des apis
-        this._sync.login(this.token);
+        // this._sync.login(this.token);
         // Force la récupération des devoirs à l'ouverture
         if (this.type=="devoirs")
             // avec mise à jour de version
@@ -267,7 +258,7 @@ export class CdtComponent {
                 filtres_count[filtres_name.indexOf(devoir.matiere)]++;
             // Si la date (jour) du devoir est différente de celle du précédent...
             //if (devoir.date.toDateString()!=lastDate.toDateString()) {
-            if (devoir.date.toISOString()!=lastDate.toISOString()) {
+            if (devoir.date.toLocaleDateString()!=lastDate.toLocaleDateString()) {
                 // ...S'il s'agit du premier élément...
                 if (premier) {
                     // ...alors le prochain ne sera plus le premier !
@@ -281,6 +272,7 @@ export class CdtComponent {
                 let day_texte:string = this._date.getDayTiny(devoir.date);
                 section = {
                     "titre":day_num,
+                    "mois":(devoir.date.getMonth()!=lastDate.getMonth()?this._date.getMonth(devoir.date):null),
                     "sous_titre":day_texte,
                     "devoirs": []
                 };
@@ -288,6 +280,7 @@ export class CdtComponent {
                 premier = false;
                 section = {
                     "titre":devoir.date.getDate().toString(),
+                    "mois":(devoir.date.getMonth()!=lastDate.getMonth()?this._date.getMonth(devoir.date):null),
                     "sous_titre":"Ajd.",
                     "devoirs": []
                 };
@@ -329,9 +322,15 @@ export class CdtComponent {
                 filtre_full+="&&";
             filtre_full += this.filtre_texte;
         }
+        if (this.filtrdone) {
+            if (filtre_full.length>0)
+                filtre_full+="&&";
+            filtre_full += "-0";
+        }
         if (this.filtre.length>0) {
             filtre_full+=this.filtre;
         }
+        // Filtre complet établi
         if (filtre_full.length<2) {
             this.selectedFiltres = [];
             return devoirs;
@@ -419,6 +418,11 @@ export class CdtComponent {
         this.selectedFiltres=[];
         this.filtre="";
         this.filtre_texte="";
+        this.refresh();
+    }
+    public invertdone():void {
+        this.filtrdone=!this.filtrdone;
+        window.localStorage.setItem("filtrdone",JSON.stringify(this.filtrdone));
         this.refresh();
     }
 
@@ -543,21 +547,25 @@ export class CdtComponent {
     }
 
     public sendComment(devoir:Devoir,input:string,index:number) {
-        // Création du commentaire
-        var commentaire:Commentaire = {
-            "id":0,
-            "user":this.user.id,
-            "auteur":this.user.prenom+this.user.nom,
-            "date": new Date(),
-            "texte": input,
-            "pjs": null
-        };
-        // On ajoute le commentaire au devoir
-        devoir.commentaires.splice(0,0,commentaire);
-        // Ajout à la liste d'attente
-        this.selectedComm=devoir;
-        this.pend("COMM", {"id":devoir.id,"content":commentaire});
-        this.input[index]="";
+        if (input.length>3) {
+            // Création du commentaire
+            var commentaire:Commentaire = {
+                "id":0,
+                "user":this.user.id,
+                "auteur":this.user.prenom+this.user.nom,
+                "date": new Date(),
+                "texte": input,
+                "pjs": null
+            };
+            // On ajoute le commentaire au devoir
+            devoir.commentaires.splice(devoir.commentaires.length,0,commentaire);
+            // Ajout à la liste d'attente
+            this.selectedComm=devoir;
+            this.pend("COMM", {"id":devoir.id,"content":commentaire});
+            this.input[index]="";
+        } else {
+            this._notif.add(1,'Commentaire trop court !','minimum : 4 caractères');
+        }
     }
 
     private unselectComm():void {
@@ -634,5 +642,40 @@ export class CdtComponent {
                     th._notif.add(2,'Erreur','Le fichier n\'a pas été supprimé ('+erreur+')');
                 }
             )
+    }
+
+    acceptInvitation(invit:Invitation):void {
+        var th:any = this;
+        this._sync.acceptInvitation(invit).then(
+            function () {
+                th._notif.add(0,'Effectué','Tu es désormais membre de '+invit.groupe);
+                th.getInvitations();
+            },
+            function (erreur:string) {
+                th._notif.add(2,'Erreur',erreur);
+                th.getInvitations();
+            }
+        );
+    }
+
+    declineInvitation(invit:Invitation):void {
+        var th:any = this;
+        this._sync.declineInvitation(invit).then(
+            function () {
+                th._notif.add(0,'Invitation refusée','');
+                th.getInvitations();
+            },
+            function (erreur:string) {
+                th._notif.add(2,'Erreur',erreur);
+                th.getInvitations();
+            }
+        );
+    }
+
+    private getInvitations() {
+        this._sync.getInvitations().then(
+            invitations => this.invitations = invitations,
+            erreur => console.log("invitations : "+erreur)
+        );
     }
 }

@@ -30,7 +30,6 @@ import {User} from "../concepts/user";
 
 @Component({
     templateUrl: '/app/components/nouveau.component.html',
-    styleUrls: ['app/components/nouveau.component.css'],
     providers: [ParseService]
 })
 export class NouveauComponent {
@@ -48,7 +47,7 @@ export class NouveauComponent {
         private _parse:ParseService,
         private router: Router
     ) {
-        this.user = new User();
+        this.user = this._parse.parse("user");
     }
 
     ngOnInit():void {

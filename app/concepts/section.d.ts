@@ -4,6 +4,7 @@ import { Devoir } from "./devoir";
  */
 export declare class Section {
     titre: string;
+    mois: string;
     sous_titre: string;
     devoirs: Devoir[];
 }

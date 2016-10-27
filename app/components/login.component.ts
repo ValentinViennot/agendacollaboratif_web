@@ -27,12 +27,11 @@ import {Router} from "@angular/router";
 
 @Component({
     templateUrl: '/app/components/login.component.html',
-    styleUrls: ['app/components/login.component.css'],
     providers: [ParseService]
 })
 export class LoginComponent {
 
-    regexp="([a-zA-Z0-9_.]{1}[a-zA-Z0-9_.]*)((@[a-zA-Z]{2}[a-zA-Z]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))";
+    regexp="([a-zA-Z0-9_.-]{1}[a-zA-Z0-9_.-]*)((@[a-zA-Z-]{2}[a-zA-Z-]*)[\\\.]([a-zA-Z]{2}|[a-zA-Z]{3}))";
     
     fr: any;
 
@@ -81,11 +80,9 @@ export class LoginComponent {
     }
 
     private token(response:any):void {
+        var th:any = this;
         if (response.token) {
-            if (response.message)
-                this._notif.add(0,response.message,'');
-            // On enregistre le token reçu dans le navigateur du client
-            window.localStorage.setItem("token", response.token);
+            this._notif.add(0,'Connexion en cours...','');
             // Et on l'applique aux urls des apis
             this._sync.login(response.token);
             // On initialise les variables stockant les devoirs
@@ -103,7 +100,14 @@ export class LoginComponent {
                     erreur => Promise.reject(erreur)
                 )
                 .then(
-                    result => this.router.navigate(['/']),
+                    function () {
+                        th._notif.msgs = [];
+                        if (response.message)
+                            th._notif.add(0,response.message,'');
+                        // On enregistre le token reçu dans le navigateur du client
+                        window.localStorage.setItem("token", response.token);
+                        th.router.navigate(['/']);
+                    },
                     erreur => this._notif.add(2,'Erreur',erreur)
                 );
         }

@@ -24,12 +24,14 @@
 
  import { Injectable } from '@angular/core';
  import {CanActivate, Router} from '@angular/router';
+ import {SyncService} from "./sync.service";
 
  @Injectable()
  export class CanActivateIsLogged implements CanActivate {
 
      constructor(
-         private router:Router
+         private router:Router,
+         private _sync:SyncService
      ) {}
 
      canActivate() {
@@ -37,6 +39,8 @@
              &&window.localStorage.getItem("devoirs")!=null
              &&window.localStorage.getItem("archives")!=null
              &&window.localStorage.getItem("user")!=null) {
+             // Ajoute le token aux urls des apis
+             this._sync.login(window.localStorage.getItem("token"));
              return true;
          } else {
              this.router.navigate(['/connexion']);

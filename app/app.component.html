@@ -1,6 +1,4 @@
 <p-growl [value]="_notif.msgs" [life]="7000"></p-growl>
 <p-confirmDialog header="Confirmation" width="425" acceptLabel="Oui" rejectLabel="Non"></p-confirmDialog>
-<div>
-    <agd-menu *ngIf="getToken()"></agd-menu>
-    <router-outlet></router-outlet>
-</div>
+<agd-menu *ngIf="getToken()" class="w30 aside"></agd-menu>
+<router-outlet></router-outlet>

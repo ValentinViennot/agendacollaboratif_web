@@ -4,10 +4,12 @@ import { ParseService } from "../services/parse.service";
 import { User } from "../concepts/user";
 import { Groupe } from "../concepts/groupe";
 import { OverlayPanel } from "../../components/overlaypanel/overlaypanel";
+import { Router } from "@angular/router";
 export declare class GroupesComponent {
     private _notif;
     private _sync;
     private _parse;
+    private router;
     user: User;
     private path;
     private pathGroups;
@@ -15,7 +17,7 @@ export declare class GroupesComponent {
     private group;
     private selectedGroup;
     private newGroup;
-    constructor(_notif: NotificationService, _sync: SyncService, _parse: ParseService);
+    constructor(_notif: NotificationService, _sync: SyncService, _parse: ParseService, router: Router);
     ngOnInit(): void;
     private init();
     /**

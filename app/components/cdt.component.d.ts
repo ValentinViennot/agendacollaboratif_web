@@ -11,6 +11,7 @@ import { DateService } from "../services/date.service";
 import { Commentaire } from "../concepts/commentaire";
 import { OverlayPanel } from "../../components/overlaypanel/overlaypanel";
 import { PJ } from "../concepts/PJ";
+import { Invitation } from "../concepts/invitation";
 export declare class CdtComponent {
     private _sync;
     private _notif;
@@ -36,6 +37,8 @@ export declare class CdtComponent {
     filtre_texte: string;
     filtres: SelectItem[];
     selectedFiltres: string[];
+    filtrdone: boolean;
+    invitations: Invitation[];
     constructor(_sync: SyncService, _notif: NotificationService, route: ActivatedRoute, _date: DateService, _parse: ParseService);
     ngOnInit(): void;
     ngOnDestroy(): void;
@@ -63,6 +66,7 @@ export declare class CdtComponent {
     private filtrage(devoirs);
     filtr(filtr: string): void;
     clear_filtr(): void;
+    invertdone(): void;
     done(devoir: Devoir): void;
     /**
      * Ajoute un devoir à la liste de "merge"
@@ -98,4 +102,7 @@ export declare class CdtComponent {
     fileDevoir(event: any, devoir: Devoir, overlaypanel: OverlayPanel): void;
     tofileComm(event: any, devoir: Devoir, comm: Commentaire, overlaypanel: OverlayPanel): void;
     supprFile(file: PJ): void;
+    acceptInvitation(invit: Invitation): void;
+    declineInvitation(invit: Invitation): void;
+    private getInvitations();
 }
