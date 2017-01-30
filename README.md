@@ -1,6 +1,6 @@
 # agendacollaboratif_web
 
-    "l'Agenda Collaboratif"
+    "AGENDAPP - l'Agenda Collaboratif"
     Copyright (C)  2016  Valentin VIENNOT
     Contact : vviennot@orange.fr
     This program is free software: you can redistribute it and/or modify
@@ -17,21 +17,19 @@
     FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 
 
-VERSION WEB - 3.0.0-BETA
+VERSION WEB - 3.0.0
 
 Description
 
 Le projet "l'Agenda Collaboratif" offre un espace et des fonctionnalités pour partager des informations sur les devoirs / exercices et choses à faire liées à l'école. L'objectif est de permettre aux étudiants de collaborer sur leurs devoirs et d'être facilement informés de ce qu'ils ont à faire pour les jours suivants. En outre, d'autres fonctionnalités sont et seront progressivement ajoutées pour rendre l'interface plus facile et plus riche. Par exemple, les étudiants peuvent désormais marquer un exercice comme «fait» pour avoir un aperçu rapide de ce qu'ils ont accompli et de ce qui leur reste à faire, ou, autre exemple, ils ont la possibilité d'ajouter et activer des rappels sur les événements et sur les devoirs non fait du lendemain.
 
   REMARQUE
-  Les projets présentés sur GitHub ne sont que les versions "client" (frontend) web et mobile (app/android&iOS). Le projet ne peut fonctionner sans un accès aux APIS présentes sur le serveur (backend).
+  Les projets présentés sur GitHub ne sont que les versions "client" (frontend) web et mobile (app/ionic). Le projet ne peut fonctionner sans un accès aux APIS présentes sur le serveur (backend).
 
 Tout développeur est invité à collaborer / modifier sur ce projet dans les termes de la license à laquelle il est soumise.
 https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
 Merci de me contacter pour de plus amples informations et, si vous le souhaitez, pour apporter votre collaboration.
 
-
 Valentin VIENNOT
 vviennot@orange.fr
-valentin.viennot@insa-lyon.fr
 

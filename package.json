@@ -1,6 +1,6 @@
 {
   "name": "agenda-collaboratif",
-  "version": "3.0.0-BETA",
+  "version": "3.0.0-BETA.3",
   "scripts": {
     "postinstall": "typings install",
     "tsc": "tsc",
