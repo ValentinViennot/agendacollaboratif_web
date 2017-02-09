@@ -17,7 +17,6 @@
 
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
-
 import {Component} from "@angular/core";
 import {NotificationService} from "../services/notification.service";
 import {SyncService} from "../services/sync.service";
@@ -85,8 +84,6 @@ export class GroupesComponent {
         this.group.type = 2;
         // Définir la racine comme groupe actuel de la navigation
         this.push(this.group);
-        // TODO delete Récupération des groupes et matières du groupe racine
-        // this.refresh();
     }
 
     /**

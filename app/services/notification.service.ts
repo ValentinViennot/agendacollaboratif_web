@@ -1,4 +1,3 @@
-
 /*
  "l'Agenda Collaboratif"
  Copyright (C)  2016  Valentin VIENNOT
@@ -21,7 +20,6 @@
 /**
  * Created by Valentin on 17/07/2016.
  */
-
 import {Injectable} from "@angular/core";
 import {Message, ConfirmationService} from "../../components/common/api";
 
@@ -36,7 +34,7 @@ export class NotificationService {
     private wait = $.Deferred();
 
     public add(level:number, titre:string, message:string):void {
-        var levels = ["info","warn","error"];
+        let levels = ["info","warn","error"];
         this.msgs.push({severity:levels[level], summary:titre, detail:message});
     }
 
