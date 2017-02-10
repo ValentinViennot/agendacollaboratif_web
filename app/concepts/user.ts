@@ -1,4 +1,3 @@
-
 /*
  "l'Agenda Collaboratif"
  Copyright (C)  2016  Valentin VIENNOT
@@ -19,6 +18,7 @@
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
 import {Groupe} from "./groupe";
+
 /**
  * Created by Valentin on 14/07/2016.
  */
@@ -41,9 +41,6 @@ export class User {
     // TODO Notifications navigateur et facebook
     // AUTORISATION DE MODIFICATION IDENTITE
     // Permettre aux détenteurs de sous domaines sécurisés d'autoriser ou non les modifications concernant le nom/prénom
-    // TODO Ajouter en BDD un boolean associé à chaque autorisation
-    // TODO Penser à effectuer le contrôle au niveau de l'API
-    // TODO Préparer un guide pour les acquéreurs de sous domaines
     fake_identity:boolean;
     courses:Groupe[];
     root:number;

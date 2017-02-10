@@ -100,7 +100,7 @@ export class GroupesComponent {
 
     private push(group:Groupe) {
         this.group = group;
-        var i = this.pathGroups.length;
+        let i = this.pathGroups.length;
         this.path.push({label:group.nom, command: () => {
             this.toGroup(i);
         }});
@@ -111,7 +111,7 @@ export class GroupesComponent {
     private back(prev:number):void {
         if (this.pathGroups.length>=prev) {
             // On retient le groupe qui va être affiché (precedent)
-            var group:Groupe = this.pathGroups[this.pathGroups.length-prev];
+            let group:Groupe = this.pathGroups[this.pathGroups.length-prev];
             // On enlève à l'historique le groupe actuel et le précédent
             this.path.splice(-prev,prev);
             this.pathGroups.splice(-prev,prev);
@@ -155,7 +155,7 @@ export class GroupesComponent {
     }
 
     public createGroup(event:any,overlaypanel: OverlayPanel) {
-        var th:any = this;
+        let th:any = this;
         this._sync.newGroup(this.newGroup).then(
             function() {
                 th.newGroup = null;
@@ -188,7 +188,8 @@ export class GroupesComponent {
                     erreur => this._notif.add(2,'Erreur',erreur)
                 ),
                 non => console.log("non")
-            );
+            )
+            .done();
     }
 
     public clickColor(color:string,a:number,b:number):void {
