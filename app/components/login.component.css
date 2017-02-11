@@ -73,6 +73,12 @@
   padding-left: 2rem;
 }
 
+#login #mdpoublie a {
+  font-size: 0.5em;
+  margin: 0 15% 0 0;
+  float: right;
+}
+
 @media (max-width: 1000px) {
   #login form {
     position: absolute;
