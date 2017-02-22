@@ -16,12 +16,10 @@
  GNU General Public License for more details.
 
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
-*/
-
-import { Injectable } from '@angular/core';
+ */
+import {Injectable} from "@angular/core";
 import {Http, Headers} from "@angular/http";
-
-import 'rxjs/add/operator/toPromise';
+import "rxjs/add/operator/toPromise";
 import {Devoir} from "../concepts/devoir";
 import {User} from "../concepts/user";
 import {PJ} from "../concepts/PJ";
@@ -75,7 +73,7 @@ export class SyncService {
     }
     private initUrls():void {
         //var base:string = "http://apis.agendapp.fr";
-        var base:string = "http://apis.agendapp.fr";
+        let base:string = "https://apis.agendapp.fr";
         this.urls = [];
         this.urls.push(base+"/logout/"); // 0 logout
         this.urls.push(base+"/user/"); // 1 user
@@ -90,7 +88,7 @@ export class SyncService {
     }
 
     public logout(every:boolean):void {
-        var th:any=this;
+        let th:any=this;
         this.http.get(this.urls[0]+"&all="+(every?1:0))
             .toPromise()
             .then(
