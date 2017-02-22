@@ -1,4 +1,4 @@
-import {NgModule, Component} from "@angular/core";
+import {NgModule, Component, enableProdMode} from "@angular/core";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpModule} from "@angular/http";
 import {BrowserModule} from "@angular/platform-browser";
@@ -161,5 +161,5 @@ export class AppComponent {
 export class AppModule { }
 
 // TODO enable/disable
-//enableProdMode();
+enableProdMode();
 platformBrowserDynamic().bootstrapModule(AppModule);
