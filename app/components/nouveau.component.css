@@ -25,6 +25,10 @@
   vertical-align: top
 }
 
+#agd-ajout .infosmatiere select {
+  max-width: 85%;
+}
+
 #agd-ajout .contenu {
   display: block;
   width: 90%;

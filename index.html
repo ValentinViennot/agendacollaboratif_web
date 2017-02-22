@@ -8,31 +8,33 @@
         
         <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <title>l'Agenda Collaboratif</title>
+        <title>AGENDAPP - l'Agenda Collaboratif</title>
         <meta charset="UTF-8">
         <link rel="icon" type="image/png" href="app/resources/favicon/favicon.png" />
 
         <link rel="stylesheet" type="text/css" href="app/resources/css/knacss.css">
         <link rel="stylesheet" type="text/css" href="app/resources/css/theme.css" />
         <link rel="stylesheet" type="text/css" href="app/resources/icons/css/font-awesome.min.css">
-        <!--<link rel="stylesheet" type="text/css" href="app/resources/css/fullcalendar.min.css">-->
-        <!--<link rel="stylesheet" type="text/css" href="app/resources/css/primeui-ng-all.min.css">-->
         <link rel="stylesheet" type="text/css" href="app/resources/css/primeng.min.css">
+        <!--
         <link rel="stylesheet" type="text/css" href="app/resources/css/site.css">
 
         <!-- Styles des composants -->
+        <!--
         <link rel="stylesheet" type="text/css" href="/app/components/login.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/groupes.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/nouveau.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/user.component.css"/>
         <link rel="stylesheet" type="text/css" href="/app/components/cdt.component.css" />
 
+        <!-- TODO enableprodmode - Style de l'application - https://cssminifier.com/ -->
+        <link rel="stylesheet" type="text/css" href="app/resources/css/style.min.css">
+
         <!-- Datetimepicker, Slider, Schedule -->
         <script src="app/resources/js/jquery-2.2.4.min.js"></script>
         <script src="app/resources/js/jquery-ui.min.js"></script>
         <script src="app/resources/js/jquery-ui-timepicker-addon.min.js"></script>
-        <script src="app/resources/js/moment.min.js"></script>
-        <script src="app/resources/js/fullcalendar.min.js"></script>
+
     </head>
 
     <body>
@@ -211,30 +213,7 @@
                     }
                 }
             </style>
-            <script>
-                $(function(){
-                    var defilv = $('.defilv li');
-                    var ul_height = $('.defilv').outerHeight();
-                    $('.defilv').append(defilv.clone());
-                    var i = 0;
-                    (function displayDefil(i){
-                        setTimeout(function(){
-                            if( $('.defilv').css('top') == (-1 * ul_height) + 'px'){
-                                $('.defilv').css('top', '0');
-                            }
-                            var li_height = $(defilv[i]).outerHeight();
-                            $('.defilv').animate({
-                                top: '-=' + li_height + 'px'}, 500);
-                            if( i == defilv.length - 1){
-                                i = 0;
-                            }else{
-                                i++;
-                            }
-                            displayDefil(i);
-                        }, 3000);
-                    })(i);
-                });
-            </script>
+
             <div id="login">
                 <form>
                     <h1>Connexion</h1>
@@ -249,20 +228,9 @@
                     <div class="defilv-contain">
                         <ul class="defilv">
                             <li>Chargement en cours...</li>
-                            <li>Arrivée de nouveaux élèves...</li>
-                            <li>Coloriage des matières...</li>
-                            <li>Repassage des petits drapeaux...</li>
-                            <li>Vérification des devoirs faits...</li>
-                            <li>Installation de fonctionnalités...</li>
-                            <li>Adoration du développeur...</li>
-                            <li>En réflexion philosophique...</li>
-                            <li>Téléchargement de nouvelles idées...</li>
-                            <li>Juxtaposition des propositions...</li>
-                            <li>Envoi de données au FBI...</li>
-                            <li>Composition du numéro minitel...</li>
                         </ul>
                     </div>
-                    <a id="inscription" class="ui-button secondaire" href="http://agendapp.fr/inscription/">Inscription</a>
+                    <a id="inscription" class="ui-button secondaire" href="https://agendapp.fr/inscription/">Inscription</a>
                 </form>
             </div>
         </agendapp>

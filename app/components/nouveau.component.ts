@@ -17,7 +17,6 @@
 
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
-
 import {Component} from "@angular/core";
 import {NotificationService} from "../services/notification.service";
 import {Devoir} from "../concepts/devoir";
@@ -91,28 +90,28 @@ export class NouveauComponent {
         if (isUndefined(this.texte)||isUndefined(this.date)||isUndefined(this.matiere)) {
             this._notif.add(1,'Champs requis','Il faut tout compléter avant de pouvoir enregistrer (matière, date et texte)');
         } else {
-            var devoirs:Devoir[] = this._parse.parse("devoirs");
-            var devoir:Devoir = new Devoir();
-            var matiere:Groupe = JSON.parse(this.matiere);
+            let devoirs:Devoir[] = this._parse.parse("devoirs");
+            let devoir:Devoir = new Devoir();
+            let matiere:Groupe = JSON.parse(this.matiere);
             devoir.texte = this.texte;
             devoir.matiere = matiere.nom;
             devoir.matiere_c = matiere.color;
             devoir.user = matiere.id;
             devoir.fait = false;
             devoir.nb_fait = 0;
-            devoir.auteur = "moi";
+            devoir.auteur = this.user.prenom+""+this.user.nom;
             devoir.flag = 0;
             devoir.date = new Date(this.date);
             //devoir.date.setFullYear(+(this.date.substr(6,4)),(+this.date.substr(3,2)-1),+this.date.substr(0,2));
             devoir.date.setHours(20);devoir.date.setMinutes(0);devoir.date.setSeconds(0);
-            var i:number;
+            let i:number;
             for (i =0; i<=devoirs.length; i++) {
                 if (i==devoirs.length||devoir.date<=devoirs[i].date)
                     break;
             }
             devoirs.splice(i,0,devoir);
             window.localStorage.setItem("devoirs",JSON.stringify(devoirs));
-            var pending = this._parse.parse("pendADD");
+            let pending = this._parse.parse("pendADD");
             pending.push(devoir);
             window.localStorage.setItem("pendADD",JSON.stringify(pending));
             this.router.navigate(['/']);

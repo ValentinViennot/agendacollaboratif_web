@@ -1,4 +1,3 @@
-
 /*
  "l'Agenda Collaboratif"
  Copyright (C)  2016  Valentin VIENNOT
@@ -21,7 +20,6 @@
 /**
  * Created by Valentin on 17/07/2016.
  */
-
 import {Injectable} from "@angular/core";
 import {Message, ConfirmationService} from "../../components/common/api";
 
@@ -36,25 +34,27 @@ export class NotificationService {
     private wait = $.Deferred();
 
     public add(level:number, titre:string, message:string):void {
-        var levels = ["info","warn","error"];
+        let levels = ["info","warn","error"];
         this.msgs.push({severity:levels[level], summary:titre, detail:message});
     }
 
-    public ask(titre:string, message:string, confirmer:string, annuler:string):Promise<any> {
+    public ask(titre:string, message:string, confirmer:string, annuler:string):JQueryPromise<void> {
         this.wait = $.Deferred();
         this.confirmationService.confirm({
             message: message,
             header: titre,
             accept: () => {
-                this.wait.resolve("oui");
+                this.wait.resolve();
             },
             reject: () => {
-                this.wait.reject("non");
+                this.wait.reject();
             }
         });
         return $.when(this.wait)
-            .then(result => Promise.resolve())
-            .fail(result => Promise.reject(result));
-
+            .then(
+                oui => Promise.resolve(),
+                non => Promise.reject("non")
+            )
+            .done();
     }
 }

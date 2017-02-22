@@ -1,17 +1,17 @@
-import { ActivatedRoute } from "@angular/router";
-import { SyncService } from "../services/sync.service";
-import { NotificationService } from "../services/notification.service";
-import { ParseService } from "../services/parse.service";
-import { User } from "../concepts/user";
-import { Devoir } from "../concepts/devoir";
-import { Section } from "../concepts/section";
-import { FormGroup } from "@angular/forms";
-import { SelectItem } from "../../components/common/api";
-import { DateService } from "../services/date.service";
-import { Commentaire } from "../concepts/commentaire";
-import { OverlayPanel } from "../../components/overlaypanel/overlaypanel";
-import { PJ } from "../concepts/PJ";
-import { Invitation } from "../concepts/invitation";
+import {ActivatedRoute} from "@angular/router";
+import {SyncService} from "../services/sync.service";
+import {NotificationService} from "../services/notification.service";
+import {ParseService} from "../services/parse.service";
+import {User} from "../concepts/user";
+import {Devoir} from "../concepts/devoir";
+import {Section} from "../concepts/section";
+import {FormGroup} from "@angular/forms";
+import {SelectItem} from "../../components/common/api";
+import {DateService} from "../services/date.service";
+import {Commentaire} from "../concepts/commentaire";
+import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
+import {PJ} from "../concepts/PJ";
+import {Invitation} from "../concepts/invitation";
 export declare class CdtComponent {
     private _sync;
     private _notif;
@@ -64,6 +64,7 @@ export declare class CdtComponent {
      * @return Devoir[]
      */
     private filtrage(devoirs);
+    selectFiltr(filtr: string): void;
     filtr(filtr: string): void;
     clear_filtr(): void;
     invertdone(): void;

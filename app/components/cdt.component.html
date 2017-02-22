@@ -130,7 +130,7 @@
                                 <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur" tooltipPosition="top" class="fa fa-flag">
                                 </i>
                             </a>
-                            <span (click)="filtr('#'+devoir.matiere)" class="matiere">#{{devoir.matiere | lowercase}}</span>
+                            <span (click)="selectFiltr(devoir.matiere)" class="matiere">#{{devoir.matiere | lowercase}}</span>
                             <span (click)="filtr('@'+devoir.auteur)" class="auteur">@{{devoir.auteur | lowercase}}</span>
                             <!--<span (click)="filtre_texte=filtre_texte+'&&@'+devoir.auteur" class="auteur">@{{devoir.auteur | lowercase}}</span>-->
                         </span>

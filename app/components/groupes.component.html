@@ -19,7 +19,6 @@
 -->
 <div class="groupes">
     <p-breadcrumb [model]="path"></p-breadcrumb>
-    <!-- TODO Icones "up", "retour" et "ajouter" (click)="toParent()" -->
     <p-overlayPanel #op>
         <div *ngIf="selectedGroup" style="text-align:center;">
             <div style="margin:auto;width:236px;">
@@ -38,10 +37,7 @@
     <p id="loading" *ngIf="!groups">
         <i class="fa fa-spinner fa-pulse fa-3x fa-fw"></i>  Chargement en cours...
     </p>
-    <div class="fr">
-        <button pButton icon="fa-book" iconPos="left" (click)="preCreateGroup($event,op,2)" label="Matière"></button>
-        <button pButton icon="fa-folder" iconPos="left" (click)="preCreateGroup($event,op,1)" label="Dossier"></button>
-    </div>
+
     <p-dataGrid *ngIf="groups" [value]="groups">
         <template let-ce>
             <div style="padding:3px">
@@ -55,6 +51,12 @@
             </div>
         </template>
     </p-dataGrid>
+
+    <br/>
+    <button class="secondaire" pButton type="text" (click)="toParent()" label="Précédent"></button>
+    <button pButton icon="fa-book" iconPos="left" (click)="preCreateGroup($event,op,2)" label="Nouvelle matière"></button>
+    <button pButton icon="fa-folder" iconPos="left" (click)="preCreateGroup($event,op,1)" label="Nouveau dossier"></button>
+    <hr/>
 
     <div id="conseils">
         <h3>Comment ça marche ? </h3>

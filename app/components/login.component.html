@@ -34,6 +34,7 @@
         <input pInputText formControlName="email" id="email" title="Adresse email" type="text" size="30" />
         <label for="mdp">Mot de passe</label>
         <input pInputText formControlName="mdp" id="mdp" title="Mot de passe" type="password" size="30" />
+        <p id="mdpoublie"><a href="https://agendapp.fr/inscription/mdp/oublie/" target="_BLANK">Mot de passe oublié ?</a></p>
         <button pButton [disabled]="!ready()" type="text" (click)="login()" icon="fa-check" label="Connexion"></button>
         <a id="inscription" class="ui-button secondaire" href="http://agendapp.fr/inscription/">Inscription</a>
     </form>
