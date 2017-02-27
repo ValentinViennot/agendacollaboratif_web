@@ -1,0 +1,239 @@
+<!--<link rel="stylesheet" type="text/css" href="/app/components/cdt.component.css" />-->
+<div class="cdt">
+  <!-- Sélection de flag -->
+  <p-overlayPanel #op>
+    <ul *ngIf="selectedDevoir" class="flags">
+      <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
+        <i [style.color]="flags[flag]" class="fa fa-flag">
+        </i>
+      </li>
+    </ul>
+  </p-overlayPanel>
+
+  <!-- Ajout de pièces jointes -->
+  <p-overlayPanel #op1>
+    <p-fileUpload *ngIf="selectedDevoir"
+                  name="fichiers[]"
+                  [url]="'http://apis.agendapp.fr/cdn/?devoir&id='+selectedDevoir.id+'&token='+token"
+                  (onUpload)="onUpload($event)"
+                  [multiple]="true"
+                  [maxFileSize]="50000000"
+                  [invalidFileSizeMessageSummary]="'Oups...'"
+                  [invalidFileSizeMessageDetail]="'Taille maximale atteinte : {0}'">
+    </p-fileUpload>
+    <p-fileUpload *ngIf="fileComm"
+                  name="fichiers[]"
+                  [url]="'http://apis.agendapp.fr/cdn/?commentaire&id='+fileComm.id+'&token='+token"
+                  (onUpload)="onUpload($event)"
+                  [multiple]="true"
+                  [maxFileSize]="50000000"
+                  [invalidFileSizeMessageSummary]="'Oups...'"
+                  [invalidFileSizeMessageDetail]="'Taille maximale atteinte : {0}'">
+    </p-fileUpload>
+  </p-overlayPanel>
+
+  <!-- Message d'alerte HORS CONNEXION -->
+  <div *ngIf="!online" class="ui-messages ui-widget ui-corner-all ui-messages-error" style="display:block">
+    <span class="ui-messages-icon fa fa-2x fa-info-circle"></span>
+    <ul>
+      <li>
+        <span class="ui-messages-summary">Pas de synchronisation</span>
+        <span class="ui-messages-detail">Impossible de se connecter à Internet</span>
+      </li>
+    </ul>
+  </div>
+
+
+  <!-- Filtres et recherche -->
+
+  <form [formGroup]="searchForm">
+    <input pInputText formControlName="term" [(ngModel)]="filtre_texte" title="Rechercher" placeholder="Rechercher"
+           type="search" size="30"/>
+    <button type="button" style="margin-right:20px"
+            [disabled]="filtre_texte.length+filtre.length+selectedFiltres.length*2<2" (click)="clear_filtr()" pButton
+            icon="fa-close" label="Effacer les filtres"></button>
+
+    <a *ngFor="let flag of flags.slice().reverse()" (click)="filtr(':'+flag)">
+      <!--<a *ngFor="let flag of flags.slice().reverse()" (click)="filtre_texte=filtre_texte+'&&:'+flag">-->
+      <span *ngIf="flags_count[flags.indexOf(flag)]>0">
+                    <i [style.color]="flag" class="fa fa-flag">
+                    </i>
+                    ({{flags_count[flags.indexOf(flag)]}})
+                </span>
+    </a>
+  </form>
+
+  <div id="filtrdone">
+    <!--<p>
+        <a style="float: right;" (click)="filtr('-0')"
+           pTooltip="Efface les filtres pour tout afficher" tooltipPosition="left">[Masquer les devoirs terminés]</a>
+    </p>
+    -->
+    <p>
+      <p-checkbox [ngModel]="filtrdone" (click)="invertdone()" binary="true"
+                  label="Masquer les devoirs terminés"></p-checkbox>
+    </p>
+  </div>
+
+  <div id="filtrmatieres">
+    <p-selectButton [options]="filtres" [(ngModel)]="selectedFiltres" (onChange)="refresh()"
+                    [multiple]="true"></p-selectButton>
+  </div>
+
+
+  <!-- Invitations à des nouveaux groupes des dossiers suivis -->
+  <section *ngIf="invitations.length>0">
+    <p-panel *ngFor="let invitation of invitations">
+      <header>
+        <span style="color:#555">{{invitation.de}} vient de créer le groupe </span>{{invitation.groupe}}<span
+        style="color:#555">. Souhaites-tu le rejoindre ?</span>
+      </header>
+      <footer>
+        <button pButton type="text" (click)="acceptInvitation(invitation)" icon="fa-check" label="Oui"></button>
+        <button pButton type="text" (click)="declineInvitation(invitation)" class="secondaire" label="Non"></button>
+      </footer>
+    </p-panel>
+  </section>
+
+  <!-- Formulaire de fusion de devoirs -->
+  <section *ngIf="merge.length>0" class="merge">
+    <p-panel>
+      <p-header>
+        Devoirs à fusionner
+      </p-header>
+      <ul>
+        <li *ngFor="let devoir of merge">
+          <span [innerHTML]="devoir.texte"></span>
+        </li>
+      </ul>
+      <p>
+        Assure-toi qu'il s'agisse exactement de la même chose avant de fusionner plusieurs devoirs entre eux !
+      </p>
+      <div>
+        <button pButton type="button" icon="fa-check" iconPos="left"
+                label="Confirmer la fusion" (click)="doMerge()" [disabled]="merge.length<2"></button>
+        <button class="secondaire" pButton type="button" icon="fa-ban" iconPos="left"
+                label="Annuler" (click)="clearMerge()"></button>
+      </div>
+    </p-panel>
+  </section>
+
+  <!-- Affichage des devoirs - gestion du cas où il n'y a pas de devoirs à afficher -->
+  <section *ngIf="sections.length==0">
+    <p id="aucundevoir">Il n'y a aucun devoir à afficher pour le moment. Clique sur "Paramètres" puis descend et clique
+      sur "Gérer mes abonnements" pour rejoindre des matières et commencer à afficher et/ou ajouter des devoirs !</p>
+  </section>
+  <!-- Sections des devoirs (core)  -->
+  <section *ngFor="let section of sections" class="cdt flex-container">
+    <p *ngIf="section.mois" class="mois">{{section.mois}}</p>
+    <aside class="pam unstyled txtcenter">
+      <p>{{section.titre}}</p>
+      <p>{{section.sous_titre}}</p>
+    </aside>
+    <div role="main" class="flex-item-fluid pam">
+      <p-panel *ngFor="let devoir of section.devoirs; let i=index"
+               [class]="(devoir.matiere_c?'matierecolor':'')+' '+(devoir.fait ? 'done' : 'undone')"
+               [style.background-color]="'#'+devoir.matiere_c">
+        <p-header>
+          <div class="ui-helper-clearfix">
+                        <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">
+                            <a *ngIf="devoir.id" class="flag" (click)="selectDevoir($event,devoir,op)">
+                                <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur"
+                                   tooltipPosition="top" class="fa fa-flag">
+                                </i>
+                            </a>
+                            <span (click)="selectFiltr(devoir.matiere)"
+                                  class="matiere">#{{devoir.matiere | lowercase}}</span>
+                            <span (click)="filtr('@'+devoir.auteur)"
+                                  class="auteur">@{{devoir.auteur | lowercase}}</span>
+                          <!--<span (click)="filtre_texte=filtre_texte+'&&@'+devoir.auteur" class="auteur">@{{devoir.auteur | lowercase}}</span>-->
+                        </span>
+            <div *ngIf="devoir.id" class="ui-toolbar-group-right">
+              <button pButton type="button" (click)="addToMerge(devoir)" icon="fa-clone"
+                      pTooltip="Fusionner ce devoir avec un autre" tooltipPosition="left"></button>
+              <button pButton type="button" (click)="fileDevoir($event,devoir,op1)" icon="fa-upload"
+                      pTooltip="Joindre des fichiers" tooltipPosition="left"></button>
+              <button *ngIf="devoir.user==user.id" (click)="supprimer(devoir)" pButton type="button" class="danger"
+                      icon="fa-trash" pTooltip="Supprimer" tooltipPosition="left"></button>
+              <button pButton type="text" (click)="done(devoir)" icon="fa-check"
+                      [label]="devoir.fait ? 'Fait' : 'À faire'"></button>
+              <a *ngIf="devoir.user!=user.id" style="margin-left: 5px" class="supprimer" (click)="signaler(devoir)"
+                 pTooltip="Signaler ce devoir au modérateur" tooltipPosition="left">
+                <i class="fa fa-exclamation-triangle"></i>
+              </a>
+            </div>
+
+            <div *ngIf="!devoir.id" class="ui-toolbar-group-right">
+              <button pButton type="text" icon="fa-refresh" label="Envoi en cours..."></button>
+            </div>
+
+          </div>
+        </p-header>
+        <span [innerHTML]="devoir.texte"></span>
+        <div class="files">
+          <div *ngFor="let file of devoir.pjs" class="file">
+            <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
+              <span class="name">{{file.title}}</span>
+              <span class="auteur">(@{{file.auteur}})</span>
+            </a>
+            <a *ngIf="user.id==file.user" class="supprimer" (click)="supprFile(file)">
+              <i class="fa fa-trash-o"></i>
+            </a>
+          </div>
+        </div>
+        <footer *ngIf="devoir.id" style="text-align: right;">
+          <b>{{devoir.nb_fait}}</b> <i class="fa fa-check"></i>
+          /
+          <b>{{devoir.commentaires.length}}</b> <i class="fa fa-comment"></i>
+
+          <br/>
+          <a (click)="selectComm(devoir)">{{selectedComm.id==devoir.id?'Masquer':'Afficher'}} les commentaires</a>
+        </footer>
+        <footer *ngIf="!devoir.id" style="text-align: right;">
+          En attente de synchronisation
+        </footer>
+        <div *ngIf="devoir.id&&selectedComm.id==devoir.id">
+          <div class="commentaire" *ngFor="let commentaire of devoir.commentaires">
+            <p class="header">
+              @{{commentaire.auteur}}
+              <a class="delete" *ngIf="user.id==commentaire.user&&commentaire.id"
+                 (click)="supprimer_comm(devoir,commentaire)">
+                <i class="fa fa-trash-o"></i>
+              </a>
+              <a class="delete" *ngIf="user.id==commentaire.user&&commentaire.id"
+                 (click)="tofileComm($event,devoir,commentaire,op1)">
+                <i class="fa fa-upload" ptooltip="Ajouter des fichiers"></i>
+              </a>
+
+              <a class="delete" *ngIf="!commentaire.id" (click)="sync()">
+                <i class="fa fa-refresh"></i>
+                Envoi en cours...
+              </a>
+            </p>
+            <p>
+              <span [innerHTML]="commentaire.texte"></span>
+            </p>
+            <div *ngFor="let file of commentaire.pjs" class="file">
+              <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
+                <span class="name">{{file.title}}</span>
+                <span class="auteur">(@{{file.auteur}})</span>
+              </a>
+              <a *ngIf="user.id==file.user" class="supprimer" (click)="supprFile(file)">
+                <i class="fa fa-trash-o"></i>
+              </a>
+            </div>
+            <p class="footer">
+              <span class="date">{{_date.recentDateTime(commentaire.date)}}</span>
+            </p>
+          </div>
+          <div class="commentaire">
+                        <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire"
+                                  [autoResize]="true" [(ngModel)]="input[i]">
+                        </textarea>
+            <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
+          </div>
+        </div>
+      </p-panel>
+    </div>
+  </section>
+</div>
