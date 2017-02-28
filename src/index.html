@@ -14,7 +14,16 @@
   <link rel="stylesheet" type="text/css" href="app/resources/icons/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="app/resources/css/primeng.min.css">
 
-  <link rel="stylesheet" type="text/css" href="app/resources/css/style.min.css">
+  <!-- TODO compiler puis n'utiliser que ce style -->
+  <!--<link rel="stylesheet" type="text/css" href="app/resources/css/style.min.css">-->
+  <link rel="stylesheet" type="text/css" href="app/pages/cdt.component.css">
+  <link rel="stylesheet" type="text/css" href="app/pages/groupes.component.css">
+  <link rel="stylesheet" type="text/css" href="app/pages/login.component.css">
+  <link rel="stylesheet" type="text/css" href="app/pages/menu.module.css">
+  <link rel="stylesheet" type="text/css" href="app/pages/nouveau.component.css">
+  <link rel="stylesheet" type="text/css" href="app/pages/user.component.css">
+  <link rel="stylesheet" type="text/css" href="app/resources/css/site.css">
+
 
   <!-- Polyfill(s) for older browsers -->
   <script src="node_modules/core-js/client/shim.min.js"></script>
@@ -215,10 +224,8 @@
           </div>
         </div>
       </div>
-      <div class="defilv-contain">
-        <ul class="defilv">
-          <li>Chargement en cours...</li>
-        </ul>
+      <div id="textload">
+        Chargement en cours...
       </div>
       <a id="inscription" class="ui-button secondaire" href="https://agendapp.fr/inscription/">Inscription</a>
     </form>
