@@ -17,27 +17,10 @@
 
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
-import {NgModule, Component} from "@angular/core";
-import {CommonModule} from "@angular/common";
-import {RouterModule} from "@angular/router";
-import {SyncService} from "../services/sync.service";
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/debounceTime";
+import "rxjs/add/operator/distinctUntilChanged";
+import {AppModule} from "./app/app.module";
 
-@Component({
-  moduleId: module.id,
-  selector: 'agd-menu',
-  templateUrl: './menu.module.html'
-})
-export class Menu {
-
-  constructor(public _sync: SyncService) {
-  }
-
-}
-
-@NgModule({
-  imports: [CommonModule, RouterModule],
-  exports: [Menu],
-  declarations: [Menu]
-})
-export class MenuAgdModule {
-}
+platformBrowserDynamic().bootstrapModule(AppModule);

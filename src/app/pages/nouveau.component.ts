@@ -27,7 +27,8 @@ import {Router} from "@angular/router";
 import {User} from "../concepts/user";
 
 @Component({
-  templateUrl: '/app/pages/nouveau.component.html',
+  moduleId: module.id,
+  templateUrl: './nouveau.component.html',
   providers: [ParseService]
 })
 export class NouveauComponent implements OnInit {

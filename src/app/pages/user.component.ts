@@ -26,7 +26,8 @@ import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {PushService} from "../services/push.service";
 
 @Component({
-  templateUrl: '/app/pages/user.component.html',
+  moduleId: module.id,
+  templateUrl: './user.component.html',
   providers: [ParseService]
 })
 export class UserComponent implements OnInit {
@@ -44,7 +45,7 @@ export class UserComponent implements OnInit {
   hours: number[]; // heures de rappel
 
   constructor(private _notif: NotificationService,
-              private _sync: SyncService,
+              public _sync: SyncService,
               private _push: PushService,
               private _parse: ParseService) {
     this.hours = Array.from(Array(24).keys());
@@ -121,7 +122,7 @@ export class UserComponent implements OnInit {
       if (!this.push) this._notif.add(1, "Notifications Push", "Le choix effectué n'est valable que pour cette session, sur cet appareil.");
       else this._notif.add(0, "Désactivation des notifications push...", "");
       this._push.registerPush().then(
-        (token) => this._sync.saveUser({"push": token}).then(
+        (token) => this._sync.saveUser({"push": this._push.isActivated() ? token : null}).then(
           () => this.init(false)
         ).catch(() => this._notif.add(0, "Pense à enregistrer tes modifications ! ;)", ""))
       ).catch(

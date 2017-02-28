@@ -28,7 +28,8 @@ import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
 import {Router} from "@angular/router";
 
 @Component({
-  templateUrl: '/app/pages/groupes.component.html',
+  moduleId: module.id,
+  templateUrl: './groupes.component.html',
   providers: [ParseService]
 })
 export class GroupesComponent implements OnInit {
@@ -36,15 +37,15 @@ export class GroupesComponent implements OnInit {
   user: User;
 
   // Chemin d'accès au groupe en cours
-  private path: MenuItem[];
+  public path: MenuItem[];
   private pathGroups: Groupe[];
   // Groupes (et matières) dans le groupe actuel
-  private groups: Groupe[];
+  public groups: Groupe[];
   // Groupe actuel
   private group: Groupe;
   // Groupe sélectionné (choix couleur)
-  private selectedGroup: Groupe;
-  private newGroup: Groupe;
+  public selectedGroup: Groupe;
+  public newGroup: Groupe;
 
   constructor(private _notif: NotificationService,
               private _sync: SyncService,

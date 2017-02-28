@@ -3,8 +3,9 @@ import {NotificationService} from "./services/notification.service";
 import {PushService} from "./services/push.service";
 
 @Component({
+  moduleId: module.id,
   selector: 'agendapp',
-  templateUrl: 'app/app.component.html'
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit {
   constructor(public _notif: NotificationService,

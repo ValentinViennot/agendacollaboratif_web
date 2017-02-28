@@ -25,7 +25,8 @@ import {FormGroup, Validators, FormControl} from "@angular/forms";
 import {Router} from "@angular/router";
 
 @Component({
-  templateUrl: '/app/pages/login.component.html',
+  moduleId: module.id,
+  templateUrl: './login.component.html',
   providers: [ParseService]
 })
 export class LoginComponent implements OnInit {

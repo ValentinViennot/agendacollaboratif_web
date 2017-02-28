@@ -14,3 +14,7 @@ src/components/**/*.js
 .DS_STORE
 
 .idea
+/src/build.js
+/aot/
+/src/main-jit.js
+/src/main.js

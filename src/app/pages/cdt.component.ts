@@ -39,7 +39,8 @@ import {Invitation} from "../concepts/invitation";
 import {PushService} from "../services/push.service";
 
 @Component({
-  templateUrl: '/app/pages/cdt.component.html',
+  moduleId: module.id,
+  templateUrl: './cdt.component.html',
   providers: [
     ParseService,
     DateService
@@ -223,7 +224,7 @@ export class CdtComponent implements OnInit {
       );
   }
 
-  private refresh(): void {
+  public refresh(): void {
     this.devoirs = this.getDevoirs();
     this.recalcSections();
   }

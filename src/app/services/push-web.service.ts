@@ -20,11 +20,13 @@
 import {Injectable} from "@angular/core";
 import {PushService} from "./push.service";
 import {NotificationService} from "./notification.service";
-import * as firebase from "firebase/app";
+import firebase from "firebase/app";
 import "firebase/messaging";
 
 /**
  * Created by Valentin on 26/02/2017.
+ * import * as firebase from "firebase/app";
+ * import "firebase/messaging";
  */
 
 @Injectable()
