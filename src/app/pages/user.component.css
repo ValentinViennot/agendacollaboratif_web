@@ -1,0 +1,21 @@
+#userForm > *, #userForm .ui-panel-content-wrapper > *, #userForm .ui-panel-content > * {
+  margin: 10px;
+}
+
+#userForm #logout {
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  #userForm {
+    display: table-row;
+  }
+
+  #userForm, .ui-panel {
+    max-width: 100%
+  }
+
+  #userForm #logout {
+    color: #fff;
+  }
+}

@@ -1,0 +1,175 @@
+@charset "UTF-8";
+
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+html, body, agendapp {
+  min-height: 100% !important;
+  min-width: 100% !important;
+}
+
+ng-component {
+  width: 70%;
+  padding-left: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* menu */
+
+agd-menu {
+  background-color: #D32F2F;
+  color: #212121;
+}
+
+agd-menu h1 {
+  font-family: 'Amatica SC', sans-serif;
+  font-size: 3.5em;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+}
+
+agd-menu h5 {
+  font-family: 'Amatica SC', sans-serif;
+  font-size: 1em;
+  margin: 0;
+  text-align: right;
+  color: #fff;
+  position: relative;
+  right: 2em;
+  top: -15px;
+}
+
+agd-menu ul {
+  display: block;
+  list-style: none;
+  width: 100%;
+  padding: 0;
+  font-size: 1.1em;
+}
+
+agd-menu li {
+  display: block;
+  background-color: #B6B6B6;
+  width: 100%;
+  text-align: center;
+  transition: background-color 0.3s ease 0s;
+}
+
+agd-menu li a {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  display: block;
+  text-align: left;
+}
+
+agd-menu li:hover, agd-menu .p-selected {
+  background-color: #FFCDD2
+}
+
+agd-menu #logout {
+  cursor: pointer;
+  width: 100%;
+  color: #DDD;
+  text-align: center;
+  padding: 10px 10px 10px 0;
+  transition: color 0.1s ease 0s;
+}
+
+agd-menu #logout:hover {
+  color: #FFF;
+  transition: color 0.1s ease 0s;
+}
+
+agd-menu i {
+  margin-right: 15px;
+  margin-left: 10%;
+}
+
+#menu-semainier {
+  position: sticky;
+  background-color: inherit;
+  top: 0px;
+  width: 100%;
+  display: block;
+  padding: 2% 2% 2% 9%;
+  margin-top: 10%;
+}
+
+.s-jour {
+  display: inline-block;
+  margin: 1.6%;
+  width: 30%;
+  min-height: 50px;
+  height: auto;
+  vertical-align: top;
+}
+
+.s-jour p span {
+  color: white;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 1.5em;
+}
+
+.s-devoir {
+  background-color: white;
+  width: 14px;
+  height: 14px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+#menu-semainier h3 {
+  color: white;
+  font-family: 'Amatica SC', sans-serif;
+  font-size: 2.2em;
+  text-align: left;
+  width: 100%;
+  display: block;
+}
+
+#menu-semainier h3 i {
+  font-size: 0.8em;
+  vertical-align: middle
+}
+
+
+@media (max-width: 900px) {
+  html {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%
+  }
+
+  body {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    display: table
+  }
+
+  agd-menu h1 {
+    margin: 0;
+    padding-top: 15px;
+  }
+
+  agd-menu {
+    width: 100%;
+    min-width: 100%;
+    margin-bottom: 15px;
+    display: table-row;
+  }
+
+  ng-component {
+    display: table-row;
+    width: 100%
+  }
+}

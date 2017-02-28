@@ -1,0 +1,126 @@
+<!--
+    "l'Agenda Collaboratif"
+    Copyright (C)  2016  Valentin VIENNOT
+    Contact : vviennot@orange.fr
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    You have to put a copy of this program's license into your project.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
+-->
+
+<form [formGroup]="userForm" id="userForm">
+
+  <p-panel>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <span class="ui-panel-title" style="font-size:16px">Compte</span>
+        <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()"
+                icon="fa-check" label="Enregistrer"></button>
+      </div>
+    </p-header>
+    <!-- Informations générales sur le compte -->
+    <div class="ligne">
+      <i
+        [pTooltip]="user.fake_identity ? 'Identité affichée' : 'Les modifications sur ces paramètres sont désactivées' "
+        class="fa fa-user"></i>
+      <input pInputText formControlName="prenom" title="Prénom" type="text" size="30"/>
+      <input pInputText formControlName="nom" title="Nom" type="text" size="30"/>
+    </div>
+    <div class="ligne">
+      <i pTooltip="Adresse mail pour te joindre (Nous ne diffusons pas de publicité)" class="fa fa-envelope"></i>
+      <input title="Email" type="text" size="70" pInputText formControlName="email"/>
+    </div>
+    <div>
+      <i pTooltip="Modifie ton mot de passe" class="fa fa-lock"></i>
+      <input formControlName="mdp1" title="Nouveau mot de passe" placeholder="Nouveau mot de passe" type="password"
+             size="30" pInputText/>
+      <input formControlName="mdp2" title="Confirmer le nouveau mot de passe" placeholder="Confirmer" type="password"
+             size="30" pInputText/>
+    </div>
+  </p-panel>
+
+  <p-panel>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <span class="ui-panel-title" style="font-size:16px">Mes groupes (dossiers et matières)</span>
+        <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()"
+                icon="fa-check" label="Enregistrer"></button>
+      </div>
+    </p-header>
+    <p>
+      Tu peux gérer les groupes auxquels tu es abonné en cliquant sur le bouton ci-dessous.
+    </p>
+    <p>
+      L'abonnement à une matière te permet d'afficher les devoirs qui y sont ajoutés et d'en ajouter. L'abonnement à un
+      dossier a pour effet de t'abonner aux matières qui se trouvent dedans et surtout de te notifier des nouvelles
+      matières qui pourraient y être ajoutées.
+    </p>
+    <nav role="navigation">
+      <a pButton [routerLink]="['/groupes']" routerLinkActive="active" pButton type="text" icon="fa-graduation-cap"
+         label="Gérer mes abonnements"></a>
+    </nav>
+    <p *ngIf="changed">Enregistre tes autres modifications avant de suivre le lien !</p>
+  </p-panel>
+
+  <p-panel>
+    <p-header>
+      <div class="ui-helper-clearfix">
+        <span class="ui-panel-title" style="font-size:16px">Notifications</span>
+        <button pButton styleClass="floatRight" [class.secondaire]="!changed" type="text" (click)="save()"
+                icon="fa-check" label="Enregistrer"></button>
+      </div>
+    </p-header>
+    <h5>Recevoir des notifications</h5>
+    <div>
+      <p-toggleButton formControlName="mail" onLabel="Notifications par mail activées"
+                      offLabel="Notifications par mail désactivées" onIcon="fa-envelope-o" offIcon="fa-envelope">
+      </p-toggleButton>
+      <p-toggleButton (click)="setPush()" formControlName="push" onLabel="Notifications navigateur activées"
+                      offLabel="Notifications navigateur désactivées" onIcon="fa-desktop" offIcon="fa-desktop">
+      </p-toggleButton>
+    </div>
+
+    <h5>Mes notifications</h5>
+    <p>Sélectionne ici quelles notifications seront envoyées sur les supports choisis ci dessus.</p>
+    <div>
+      <i pTooltip="Reçois chaque jour une synthèse des devoirs pour le lendemain que tu n'as pas marqué comme terminés"
+         class="fa fa-calendar-check-o">
+      </i>
+      <label for="matiere">Rappel des devoirs non faits pour le lendemain (heure du rappel):</label>
+      <select id="matiere" formControlName="notifs">
+        <option [value]="-1">
+          NON
+        </option>
+        <option *ngFor="let hour of hours" [value]="hour">
+          {{hour}}h
+        </option>
+      </select>
+    </div>
+    <div>
+      <i pTooltip="Maximum une notification par heure" class="fa fa-bell">
+      </i>
+      Notification à l'ajout d'un devoir
+      <!--<p-toggleButton formControlName="rappels" onLabel="Oui" offLabel="Non" >
+      </p-toggleButton>-->
+      <p-toggleButton value="false" disabled="true" onLabel="Oui" offLabel="Non">
+      </p-toggleButton>
+    </div>
+  </p-panel>
+
+  <p id="logout" (click)="_sync.logout(true)">
+    <i class="fa fa-power-off" aria-hidden="true"></i>
+    Me déconnecter de tous les appareils
+  </p>
+
+</form>
+
