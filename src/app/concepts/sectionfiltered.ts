@@ -17,30 +17,14 @@
 
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
-import {Groupe} from "./groupe";
-
+import {Section} from "./section";
+import {SelectItem} from "../../components/common/api";
 /**
- * Created by Valentin on 14/07/2016.
+ * Created by Valentin on 28/02/2017.
  */
 
-export class User {
-  // Identification unique dans la base de données
-  id: number;
-  // Infos générales
-  prenom: string;
-  nom: string;
-  // NOTIFICATIONS
-  // Mail de contact
-  email: string;
-  // Horaire du rappel pour les devoirs non faits
-  notifs: number;
-  // Notification des rappels
-  rappels: boolean;
-  // Recevoir les notifications par email
-  mail: boolean;
-  // AUTORISATION DE MODIFICATION IDENTITE
-  // Permettre aux détenteurs de sous domaines sécurisés d'autoriser ou non les modifications concernant le nom/prénom
-  fake_identity: boolean;
-  courses: Groupe[];
-  root: number;
+export class SectionFiltered {
+  sections: Section[];
+  subjectfilters: SelectItem[];
+  flagcount: number[];
 }

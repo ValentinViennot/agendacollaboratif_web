@@ -64,10 +64,7 @@ export class NouveauComponent implements OnInit {
       }
     );
     this.fr = {
-      closeText: "Fermer",
-      prevText: "Préc.",
-      nextText: "Suiv.",
-      currentText: "Aujourd'hui",
+      firstDayOfWeek: 1,
       monthNames: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
         "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
       monthNamesShort: ["jan", "fev", "mar", "avr", "mai", "jun",
@@ -75,9 +72,7 @@ export class NouveauComponent implements OnInit {
       dayNames: ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
       dayNamesShort: ["dim", "lun", "mar", "mer", "jeu", "ven", "sam"],
       dayNamesMin: ["D", "L", "Ma", "Me", "J", "V", "S"],
-      weekHeader: "semaine",
       dateFormat: "mm/dd/yy",
-      firstDay: 1,
       isRTL: false,
       showMonthAfterYear: false,
       yearSuffix: ""

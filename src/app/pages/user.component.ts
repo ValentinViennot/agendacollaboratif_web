@@ -105,7 +105,6 @@ export class UserComponent implements OnInit {
     if (this.userForm.value.mdp1 == this.userForm.value.mdp2) {
       let infos: any = this.userForm.value;
       infos.push = this.push_value;
-      console.log(infos);//TODO enlever
       this._sync.saveUser(infos).then(
         result => this.init(true),
         erreur => this._notif.add(2, 'Erreur', erreur)

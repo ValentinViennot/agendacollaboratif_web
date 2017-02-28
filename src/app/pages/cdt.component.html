@@ -4,7 +4,7 @@
   <p-overlayPanel #op>
     <ul *ngIf="selectedDevoir" class="flags">
       <li *ngFor="let flag of getFlags()" (click)="setFlag(flag,op)">
-        <i [style.color]="flags[flag]" class="fa fa-flag">
+        <i [style.color]="getStaticFlags()[flag]" class="fa fa-flag">
         </i>
       </li>
     </ul>
@@ -14,7 +14,7 @@
   <p-overlayPanel #op1>
     <p-fileUpload *ngIf="selectedDevoir"
                   name="fichiers[]"
-                  [url]="'http://apis.agendapp.fr/cdn/?devoir&id='+selectedDevoir.id+'&token='+token"
+                  [url]="'https://apis.agendapp.fr/cdn/?devoir&id='+selectedDevoir.id+'&token='+token"
                   (onUpload)="onUpload($event)"
                   [multiple]="true"
                   [maxFileSize]="50000000"
@@ -23,7 +23,7 @@
     </p-fileUpload>
     <p-fileUpload *ngIf="fileComm"
                   name="fichiers[]"
-                  [url]="'http://apis.agendapp.fr/cdn/?commentaire&id='+fileComm.id+'&token='+token"
+                  [url]="'https://apis.agendapp.fr/cdn/?commentaire&id='+fileComm.id+'&token='+token"
                   (onUpload)="onUpload($event)"
                   [multiple]="true"
                   [maxFileSize]="50000000"
@@ -53,12 +53,11 @@
             [disabled]="filtre_texte.length+filtre.length+selectedFiltres.length*2<2" (click)="clear_filtr()" pButton
             icon="fa-close" label="Effacer les filtres"></button>
 
-    <a *ngFor="let flag of flags.slice().reverse()" (click)="filtr(':'+flag)">
-      <!--<a *ngFor="let flag of flags.slice().reverse()" (click)="filtre_texte=filtre_texte+'&&:'+flag">-->
-      <span *ngIf="flags_count[flags.indexOf(flag)]>0">
+    <a *ngFor="let flag of getStaticFlags().slice().reverse()" (click)="filtr(':'+flag)">
+      <span *ngIf="flags_count[getStaticFlags().indexOf(flag)]>0">
                     <i [style.color]="flag" class="fa fa-flag">
                     </i>
-                    ({{flags_count[flags.indexOf(flag)]}})
+                    ({{flags_count[getStaticFlags().indexOf(flag)]}})
                 </span>
     </a>
   </form>
@@ -133,7 +132,7 @@
           <div class="ui-helper-clearfix">
                         <span class="ui-panel-title" style="font-size:16px;display:inline-block;margin-top:2px">
                             <a *ngIf="devoir.id" class="flag" (click)="selectDevoir($event,devoir,op)">
-                                <i [style.color]="flags[devoir.flag]" pTooltip="Ajouter un marqueur"
+                                <i [style.color]="getStaticFlags()[devoir.flag]" pTooltip="Ajouter un marqueur"
                                    tooltipPosition="top" class="fa fa-flag">
                                 </i>
                             </a>
@@ -224,9 +223,9 @@
             </p>
           </div>
           <div class="commentaire">
-                        <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire"
-                                  [autoResize]="true" [(ngModel)]="input[i]">
-                        </textarea>
+            <textarea placeholder="Ajouter un commentaire" pInputTextarea title="Ajouter un commentaire"
+                      [autoResize]="true" [(ngModel)]="input[i]">
+            </textarea>
             <button pButton (click)="sendComment(devoir,input[i],i)" [icon]="'fa-paper-plane'"></button>
           </div>
         </div>

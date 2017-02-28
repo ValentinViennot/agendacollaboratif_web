@@ -89,7 +89,7 @@ export class SyncService {
   }
 
   public logout(every: boolean): void {
-    this.http.get(this.urls[0] + "&all=" + (every ? 1 : 0), this.headers)
+    this.http.get(this.urls[0] + "&all=" + (every ? "1" : "0"), this.headers)
       .toPromise()
       .then(
         () => {

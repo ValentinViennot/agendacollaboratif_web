@@ -20,7 +20,7 @@
 /**
  * Created by Valentin on 29/09/2016.
  */
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, OnDestroy} from "@angular/core";
 import {IntervalObservable} from "rxjs/observable/IntervalObservable";
 import {ActivatedRoute} from "@angular/router";
 import {SyncService} from "../services/sync.service";
@@ -37,6 +37,7 @@ import {OverlayPanel} from "../../components/overlaypanel/overlaypanel";
 import {PJ} from "../concepts/PJ";
 import {Invitation} from "../concepts/invitation";
 import {PushService} from "../services/push.service";
+import {SectionFiltered} from "../concepts/sectionfiltered";
 
 @Component({
   moduleId: module.id,
@@ -46,7 +47,7 @@ import {PushService} from "../services/push.service";
     DateService
   ]
 })
-export class CdtComponent implements OnInit {
+export class CdtComponent implements OnInit, OnDestroy {
   token: string;
   online: boolean;
 
@@ -72,7 +73,7 @@ export class CdtComponent implements OnInit {
   fileComm: Commentaire;
 
   // Marqueurs
-  flags: string[];
+  public static flags: string[] = ["grey", "blue", "orange", "red"];
   flags_count: number[];
 
   // Filtres
@@ -86,20 +87,19 @@ export class CdtComponent implements OnInit {
   // invitations à des groupes
   invitations: Invitation[];
 
-  constructor(private _sync: SyncService,
-              private _notif: NotificationService,
-              private _push: PushService,
-              private route: ActivatedRoute,
-              private _date: DateService,
-              private _parse: ParseService) {
+  constructor(public _sync: SyncService,
+              public _notif: NotificationService,
+              public _push: PushService,
+              public route: ActivatedRoute,
+              public _date: DateService,
+              public _parse: ParseService) {
     this.type = null;
     this.online = navigator.onLine;
     // Récupère l'utilisateur actuel depuis le localStorage
     this.user = this._parse.parse("user");
     // Initialisation de la liste de fusion
     this.merge = [];
-    // Initialisation de la liste de marqueurs
-    this.flags = ["grey", "blue", "orange", "red"];
+    // Compteurs de drapeaux
     this.flags_count = [0];
     // Initialisation de la liste de nouveaux commentaires
     this.input = [];
@@ -148,7 +148,7 @@ export class CdtComponent implements OnInit {
     // Observables
     // Synchronisation auto des données (millisecondes) - Pas sur la page archives
     if (this.type != "archives")
-      this.interval = IntervalObservable.create(30000).subscribe((t) => this.sync());
+      this.interval = IntervalObservable.create(15000).subscribe((t) => this.sync());
     // Recherche dynamique
     this.searchForm.valueChanges
       .debounceTime(600)
@@ -243,79 +243,12 @@ export class CdtComponent implements OnInit {
    */
   private recalcSections(): void {
     console.log("SECTIONS");
-    let devoirs = this.filtrage(this.devoirs);
-    let filtres_name: string[] = [];
-    let filtres_count: number[] = [];
-    this.flags_count = Array.apply(null, Array(this.flags.length)).map(Number.prototype.valueOf, 0);
-    // Retour
-    let sections: Section[] = [];
-    // Variables pour la boucle
-    let section: Section = new Section();
-    let lastDate: Date = new Date();
-    let premier: boolean = true;
-    // Pour chaque devoir...
-    devoirs.forEach(function (devoir) {
-      // Compte les flags
-      this.flags_count[devoir.flag]++;
-      // Enregistre les filtres appliquables
-      if (filtres_name.indexOf(devoir.matiere) < 0) {
-        filtres_name.push(devoir.matiere);
-        filtres_count[filtres_name.indexOf(devoir.matiere)] = 1;
-      }
-      else
-        filtres_count[filtres_name.indexOf(devoir.matiere)]++;
-      // Si la date (jour) du devoir est différente de celle du précédent...
-      //if (devoir.date.toDateString()!=lastDate.toDateString()) {
-      if (devoir.date.toLocaleDateString() != lastDate.toLocaleDateString()) {
-        // ...S'il s'agit du premier élément...
-        if (premier) {
-          // ...alors le prochain ne sera plus le premier !
-          premier = false;
-        } else { // Sinon...
-          // ...On ajoute la section en cours au retour
-          sections.push(section);
-        }
-        // On initialise une nouvelle section
-        let day_num: string = devoir.date.getDate().toString();
-        let day_texte: string = this._date.getDayTiny(devoir.date);
-        section = {
-          "titre": day_num,
-          "mois": (devoir.date.getMonth() != lastDate.getMonth() ? this._date.getMonth(devoir.date) : null),
-          "sous_titre": day_texte,
-          "devoirs": []
-        };
-      } else if (premier) {
-        premier = false;
-        section = {
-          "titre": devoir.date.getDate().toString(),
-          "mois": (devoir.date.getMonth() != lastDate.getMonth() ? this._date.getMonth(devoir.date) : null),
-          "sous_titre": "Ajd.",
-          "devoirs": []
-        };
-      }
-      // On ajoute le devoir à la section en cours
-      section.devoirs.push(devoir);
-      // On remplace la "date du dernier devoir" par celle de celui en cours
-      lastDate = devoir.date;
-      // Puis on passe au suivant !
-    }, this);
-    // On ajoute la dernière section créée aux sections
-    if (!premier)
-      sections.push(section);
-    // On créé les filtres appliquables
+    let sectionfiltered: SectionFiltered = Section.getSections(this.filtrage(this.devoirs), this._date);
+    this.sections = sectionfiltered.sections;
+    this.flags_count = sectionfiltered.flagcount;
     if (this.filtre == "" && this.filtre_texte == "" && this.selectedFiltres.length == 0) {
-      this.filtres = [];
-      filtres_name.forEach(
-        function (name: string, index: number) {
-          this.filtres.push({
-            "label": "#" + name + " (" + filtres_count[index] + ")",
-            "value": "#" + name
-          });
-        }, this
-      );
+      this.filtres = sectionfiltered.subjectfilters;
     }
-    // Et on renvoi les sections !
-    this.sections = sections;
   }
 
   /**
@@ -348,77 +281,6 @@ export class CdtComponent implements OnInit {
       console.log("FILTREDEVOIRS : " + filtre_full); // DEBUG
       // Devoirs renvoyés
       let retour: Devoir[] = [];
-      /*
-       Méthode 1 : Bouclage par condition puis par devoir
-
-       // On récupère les conditions "ET"
-       let filtresET:string[] = filtre_full.trim().split("&&");
-       // Trouve le premier tableau non vide
-       let nonvide:number = 0;
-       let premier:boolean = true;
-       // Pour chaque condition "ET"
-       for (let i:number = 0; i<filtresET.length; i++) {
-       // On récupère les conditions "OU"
-       let filtresOU:string[] = filtresET[i].trim().split("||");
-       // Sélection des devoirs pour ce groupement "ET"
-       let retourTEMP:Devoir[] = [];
-       // Pour chaque condition "OU"
-       for (let j:number = 0; j < filtresET[i].length; j++) {
-       if (filtresOU[j]!=null && filtresOU[j] != "") {
-       nonvide++;
-       // On récupère le type de filtrage
-       let type:string = filtresOU[j].substr(0,1);
-       let search:string = filtresOU[j].substr(1);
-       // Pour chaque devoir
-       for (let k:number = 0; k < devoirs.length; k++) {
-       // On teste s'il correspond à la condition selon le type de filtre
-       // Si le devoir répond à la condition (selon le type de filtre)
-       if (
-       (type == "@" && devoirs[k].auteur.toLowerCase().match("^" + search.toLowerCase())) ||
-       (type == "#" && devoirs[k].matiere.toLowerCase().match("^" + search.toLowerCase())) ||
-       (type == "?" && devoirs[k].date.toLocaleDateString() == search) ||
-       (type == ":" && devoirs[k].flag == this.flags.indexOf(search)) ||
-       (type == "-" && (parseInt(search)==1)==devoirs[k].fait) ||
-       (devoirs[k].texte.toLowerCase().match(filtresOU[j].toLowerCase()))
-       ) {
-       // En évitant les doublons, on l'ajoute aux résultats retournés de la sous condition en cours
-       if (retourTEMP.indexOf(devoirs[k]) < 0) {
-       retourTEMP.push(devoirs[k]);
-       }
-       // Pour parfaire l'affichage, on met à jour les filtres appliqués
-       if (type == "#" && this.selectedFiltres.indexOf(filtresOU[j]) < 0)
-       this.selectedFiltres.push(filtresOU[j]);
-       }
-       }
-       }
-       }
-       // A ce stade tous les devoirs répondant à au moins une condition du groupe "OU"
-       // sont ajoutés au tableau retourTEMP (sans doublon)
-       // Ajout au tableau de retour final
-       // S'il s'agit du premier tour, on copie tout simplement le contenu
-       if (premier&&nonvide>0) {
-       premier=false;
-       retour = retourTEMP.slice();
-       }
-       // Sinon, on supprime les éléments qui ne sont pas présents dans les deux
-       else if(retourTEMP.length>0) {
-       let length:number = retour.length;
-       let todelete:Devoir[] =[];
-       for (let l:number=0;l<length;l++) {
-       let et:boolean = false;
-       for (let k:number = 0;!et&&k<retourTEMP.length;k++)
-       if (retour[l]==retourTEMP[k])
-       et = true;
-       if (!et)
-       todelete.push(retour[l]);
-       }
-       for (let k:number=0;k<todelete.length;k++)
-       retour.splice(retour.indexOf(todelete[k]),1);
-       } else if (nonvide>0) {
-       retour = [];
-       }
-       }
-       */
       /*
        Méthode 2 : Filtrer par devoir puis par condition
        */
@@ -453,7 +315,7 @@ export class CdtComponent implements OnInit {
               ( t == "@" && devoirs[k].auteur.toLowerCase().match("^" + s.toLowerCase()) ) ||
               ( t == "#" && devoirs[k].matiere.toLowerCase().match("^" + s.toLowerCase()) ) ||
               ( t == "=" && devoirs[k].date.toLocaleDateString() == s ) ||
-              ( t == ":" && devoirs[k].flag == this.flags.indexOf(s) ) ||
+              ( t == ":" && devoirs[k].flag == CdtComponent.flags.indexOf(s) ) ||
               ( t == "-" && devoirs[k].fait == (parseInt(s) == 1) ) ||
               ( devoirs[k].texte.toLowerCase().match(filtres[i][j].toLowerCase()) )
             ) {
@@ -659,7 +521,7 @@ export class CdtComponent implements OnInit {
 
   public getFlags(): number[] {
     let retour: number[] = [];
-    for (let i: number = 0; i < this.flags.length; i++)
+    for (let i: number = 0; i < CdtComponent.flags.length; i++)
       if (i != this.selectedDevoir.flag)
         retour.push(i);
     return retour;
@@ -750,5 +612,9 @@ export class CdtComponent implements OnInit {
       invitations => this.invitations = invitations,
       erreur => console.log("invitations : " + erreur)
     );
+  }
+
+  getStaticFlags(): string[] {
+    return CdtComponent.flags;
   }
 }

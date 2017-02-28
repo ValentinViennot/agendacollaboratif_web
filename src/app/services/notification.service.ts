@@ -37,7 +37,6 @@ export class NotificationService {
   }
 
   public ask(titre: string, message: string, confirmer: string, annuler: string): Promise<any> {
-    // TODO tester
     return new Promise(
       (resolve, reject) => {
         this.confirmationService.confirm({
