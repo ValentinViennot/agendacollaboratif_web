@@ -46,7 +46,7 @@ export abstract class PushService {
   abstract registerPush(): Promise<string>;
 
   /**
-   * @return Promise<string> Jeton d'inscription
+   * @return Promise<string> Jeton d'inscription ou "" si non inscrit
    * Resolve si l'action demandée a été effectuée
    * Reject sinon
    */

@@ -135,7 +135,7 @@ export class WebPushService extends PushService {
                 this.registerPush().then(
                   (token) => {
                     this._notif.add(0, "Ok !", "Les notifications seront bientôt actives...");
-                    resolve(token);
+                    resolve("F" + token);
                   }
                 ).catch(
                   (erreur) => {
@@ -147,13 +147,13 @@ export class WebPushService extends PushService {
             ).catch(
               () => {
                 this._notif.add(0, "Choix enregistré !", "");
-                resolve(null);
+                resolve("");
               }
             );
           }
         );
       });
     } else
-      return Promise.resolve(null);
+      return Promise.resolve("");
   }
 }

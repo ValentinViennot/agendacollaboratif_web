@@ -18,7 +18,7 @@
  FULL LICENSE FILE : https://github.com/misterw97/agendacollaboratif/edit/master/LICENSE
  */
 import {Injectable} from "@angular/core";
-import {Http, Headers} from "@angular/http";
+import {Http, Headers, RequestOptions} from "@angular/http";
 import "rxjs/add/operator/toPromise";
 import {Devoir} from "../concepts/devoir";
 import {User} from "../concepts/user";
@@ -32,11 +32,11 @@ export class SyncService {
 
   // urls des apis
   private urls: string[];
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private headers: RequestOptions;
 
   constructor(private http: Http,
               private router: Router) {
-    this.initUrls();
+    this.login("");
   }
 
   // Gestion des codes erreur HTTP
@@ -62,18 +62,15 @@ export class SyncService {
     }
   }
 
-  // Ajout du token aux urls
+  // Ajout du token
   public login(token: string): void {
     this.initUrls();
-    for (let i: number = 0; i < this.urls.length; i++)
-      if (this.urls[i].substr(-1) == "/")
-        this.urls[i] += "?token=" + token;
-      else
-        this.urls[i] += "&token=" + token;
+    let headers = new Headers({'Content-Type': 'application/json'});
+    headers.append('Authorization', token);
+    this.headers = new RequestOptions({headers: headers});
   }
 
   private initUrls(): void {
-    //var base:string = "http://apis.agendapp.fr";
     let base: string = "https://apis.agendapp.fr";
     this.urls = [];
     this.urls.push(base + "/logout/"); // 0 logout
@@ -86,16 +83,18 @@ export class SyncService {
     this.urls.push(base + "/groupes/"); // 7 groupes et matières
     this.urls.push(base + "/login/"); // 8 login
     this.urls.push(base + "/invitations/"); // 9 invitations
+    for (let i: number = 0; i < this.urls.length; i++)
+      // "nt" = "no token" : pour des raisons historiques et de compatibilité
+      this.urls[i] += "?nt";
   }
 
   public logout(every: boolean): void {
-    let th: any = this;
-    this.http.get(this.urls[0] + "&all=" + (every ? 1 : 0))
+    this.http.get(this.urls[0] + "&all=" + (every ? 1 : 0), this.headers)
       .toPromise()
       .then(
-        function () {
+        () => {
           window.localStorage.clear();
-          th.router.navigate(['/connexion']);
+          this.router.navigate(['/connexion']);
         }
       )
       .catch(erreur => this.handleError(erreur));
@@ -104,22 +103,20 @@ export class SyncService {
   // 1 user
 
   public syncUser(): Promise<any> {
-    var th = this;
-    return this.http.get(this.urls[1])
+    return this.http.get(this.urls[1], this.headers)
       .toPromise()
       .then(
-        function (response): Promise<any> {
+        (response) => {
           window.localStorage.setItem("user", JSON.stringify(response.json() as User));
-          return Promise.resolve();
         },
-        function (erreur): Promise<any> {
-          return th.handleError(erreur);
+        (erreur) => {
+          return this.handleError(erreur);
         }
       );
   }
 
   public saveUser(user: any): Promise<any> {
-    return this.http.post(
+    return this.http.put(
       this.urls[1],
       JSON.stringify(user), this.headers)
       .toPromise()
@@ -134,7 +131,7 @@ export class SyncService {
    * @return resolve avec 1 si la version a changé, 0 sinon et reject s'il y a eu une erreur
    */
   public syncDevoirs(type: string): Promise<any> {
-    var th: any = this;
+    let th: any = this;
     // Si l'utilisateur n'est pas connecté, on s'évite des étapes inutiles
     if (navigator.onLine) {
       // On commence par envoyer les requêtes
@@ -156,7 +153,7 @@ export class SyncService {
    * @return {Promise<Devoir[]>} Devoirs
    */
   public getDevoirs(type: string): Promise<Devoir[]> {
-    return this.http.get(this.urls[2] + "&" + type)
+    return this.http.get(this.urls[2] + "&" + type, this.headers)
       .toPromise()
       .then(
         response => response.json() as Devoir[],
@@ -170,7 +167,7 @@ export class SyncService {
    * @return {Promise<any>}
    */
   public getDevoirsIf(type: string): Promise<any> {
-    var th = this;
+    let th = this;
     // Récupère la version des devoirs (plus exactement des matières et groupes souscrits)
     return this.getVersion()
       .then(
@@ -205,7 +202,7 @@ export class SyncService {
    * @return Resolve si pas de file d'attente ou si réussite, reject sinon
    */
   public sendPending(): Promise<any> {
-    var th = this;
+    let th = this;
     // On vérifie la présence des variables dans le stockage local
     if (
       window.localStorage.getItem("pendALERT")
@@ -218,7 +215,7 @@ export class SyncService {
       && window.localStorage.getItem("pendMERGE")
     ) {
       // On stocke temporairement les pending list
-      var pendings = {
+      let pendings = {
         pendADD: JSON.parse(window.localStorage.getItem("pendADD")),
         pendALERT: JSON.parse(window.localStorage.getItem("pendALERT")),
         pendCOMM: JSON.parse(window.localStorage.getItem("pendCOMM")),
@@ -282,7 +279,7 @@ export class SyncService {
    * @return {Promise<String>} Concaténation (DELIMITER #) des versions des matières de l'utilisateur
    */
   public getVersion(): Promise<string> {
-    return this.http.get(this.urls[4])
+    return this.http.get(this.urls[4], this.headers)
       .toPromise()
       .then(
         response => response.json() as String,
@@ -293,7 +290,7 @@ export class SyncService {
   // 5 cdn
 
   public supprFile(file: PJ): Promise<any> {
-    return this.http.get(this.urls[5] + "&delete&id=" + file.file)
+    return this.http.get(this.urls[5] + "&delete&id=" + file.file, this.headers)
       .toPromise()
       .catch(erreur => this.handleError(erreur));
   }
@@ -301,7 +298,7 @@ export class SyncService {
   // 6 courses (groupes souscrits)
 
   public getCourses(): Promise<Groupe[]> {
-    return this.http.get(this.urls[6])
+    return this.http.get(this.urls[6], this.headers)
       .toPromise()
       .then(
         response => response.json() as Groupe[],
@@ -339,7 +336,7 @@ export class SyncService {
   // 7 groupes et matières
 
   public getGroups(id: number): Promise<Groupe[]> {
-    return this.http.get(this.urls[7] + "&id=" + id)
+    return this.http.get(this.urls[7] + "&id=" + id, this.headers)
       .toPromise()
       .then(
         response => response.json() as Groupe[],
@@ -348,7 +345,7 @@ export class SyncService {
   }
 
   public newGroup(group: Groupe): Promise<any> {
-    return this.http.put(
+    return this.http.post(
       this.urls[7],
       JSON.stringify(group), this.headers)
       .toPromise()
@@ -372,7 +369,7 @@ export class SyncService {
   // 9 invitations
 
   public getInvitations(): Promise<Invitation[]> {
-    return this.http.get(this.urls[9])
+    return this.http.get(this.urls[9], this.headers)
       .toPromise()
       .then(
         response => response.json() as Invitation[],

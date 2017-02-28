@@ -122,7 +122,7 @@ export class UserComponent implements OnInit {
       if (!this.push) this._notif.add(1, "Notifications Push", "Le choix effectué n'est valable que pour cette session, sur cet appareil.");
       else this._notif.add(0, "Désactivation des notifications push...", "");
       this._push.registerPush().then(
-        (token) => this._sync.saveUser({"push": this._push.isActivated() ? token : null}).then(
+        (token) => this._sync.saveUser({"push": this._push.isActivated() ? token : ""}).then(
           () => this.init(false)
         ).catch(() => this._notif.add(0, "Pense à enregistrer tes modifications ! ;)", ""))
       ).catch(

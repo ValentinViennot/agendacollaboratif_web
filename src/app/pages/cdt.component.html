@@ -64,11 +64,6 @@
   </form>
 
   <div id="filtrdone">
-    <!--<p>
-        <a style="float: right;" (click)="filtr('-0')"
-           pTooltip="Efface les filtres pour tout afficher" tooltipPosition="left">[Masquer les devoirs terminés]</a>
-    </p>
-    -->
     <p>
       <p-checkbox [ngModel]="filtrdone" (click)="invertdone()" binary="true"
                   label="Masquer les devoirs terminés"></p-checkbox>
@@ -172,7 +167,8 @@
         <span [innerHTML]="devoir.texte"></span>
         <div class="files">
           <div *ngFor="let file of devoir.pjs" class="file">
-            <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
+            <a target="_blank" [href]="'https://apis.agendapp.fr/cdn/?token='+token+'&get='+file.file"
+               [download]="file.title">
               <span class="name">{{file.title}}</span>
               <span class="auteur">(@{{file.auteur}})</span>
             </a>
@@ -214,7 +210,8 @@
               <span [innerHTML]="commentaire.texte"></span>
             </p>
             <div *ngFor="let file of commentaire.pjs" class="file">
-              <a target="_blank" [href]="'http://agendapp.fr/apis/cdn/'+file.file" [download]="file.title">
+              <a target="_blank" [href]="'https://apis.agendapp.fr/cdn/?token='+token+'&get='+file.file"
+                 [download]="file.title">
                 <span class="name">{{file.title}}</span>
                 <span class="auteur">(@{{file.auteur}})</span>
               </a>

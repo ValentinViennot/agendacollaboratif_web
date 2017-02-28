@@ -78,11 +78,10 @@ export class LoginComponent implements OnInit {
   }
 
   private token(response: any): void {
-    var th: any = this;
+    let th: any = this;
     if (response.token) {
-      this._notif.add(0, 'Connexion en cours...', '');
-      // Et on l'applique aux urls des apis
       this._sync.login(response.token);
+      this._notif.add(0, 'Connexion en cours...', '');
       // On initialise les variables stockant les devoirs
       window.localStorage.setItem("devoirs", "[]");
       window.localStorage.setItem("archives", "[]");
@@ -125,7 +124,7 @@ export class LoginComponent implements OnInit {
 
   public isActions(): string {
     if (this.pending != null) {
-      var actions = "";
+      let actions = "";
       if (this.pending.pendADD != null && this.pending.pendADD.length > 0) {
         actions += this.pending.pendADD.length + " devoir(s) ajouté(s)";
       }
