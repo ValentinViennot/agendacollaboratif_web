@@ -50,7 +50,8 @@ export class Menu implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.sync();
-    this.interval = IntervalObservable.create(60000).subscribe((t) => this.sync());
+    setTimeout(this.sync(),10000);
+    this.interval = IntervalObservable.create(30000).subscribe((t) => this.sync());
   }
 
   ngOnDestroy(): void {

@@ -117,7 +117,6 @@ export class UserComponent implements OnInit {
   public setPush(): void {
     // ne pas prendre en compte l'initialisation auto
     if (this.changed) {
-      console.log("Trying to set Push");
       if (!this.push) this._notif.add(1, "Notifications Push", "Le choix effectué n'est valable que pour cette session, sur cet appareil.");
       else this._notif.add(0, "Désactivation des notifications push...", "");
       this._push.registerPush().then(

@@ -27,8 +27,9 @@ export abstract class PushService {
   activated: boolean;
 
   constructor(public _notif: NotificationService) {
-    if (!window.localStorage.getItem("pushservice"))
+    if (window.localStorage.getItem("pushservice")==null)
       window.localStorage.setItem("pushservice", JSON.stringify(false));
+    this.activated=window.localStorage.getItem("pushservice");
   }
 
   /**
@@ -53,6 +54,7 @@ export abstract class PushService {
   abstract getPushToken(): Promise<string>;
 
   public isActivated(): boolean {
+    console.log(this.activated);
     return this.activated;
   }
 
