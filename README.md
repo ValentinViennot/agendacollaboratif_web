@@ -1,4 +1,4 @@
-# agendacollaboratif_app
+# agendacollaboratif_web
 
     "AGENDAPP - l'Agenda Collaboratif"
     Copyright (C)  2016  Valentin VIENNOT
@@ -22,14 +22,14 @@ VERSION APPLICATION WEB - 3.0.0
 Comment initialiser le projet ?
 
 Depuis les ressources disponibles sur github téléchargées dans un dossier local:
-> npm install
+"npm install"
 Pour lancer le serveur de développement
-> npm start
-> aller à localhost:3000/index-jit.html (pas l'adresse ouverte par défaut)
+"npm start"
+aller à localhost:3000/index-jit.html (pas l'adresse ouverte par défaut)
 Pour lancer le serveur de production
-> npm run serve:aot
+"npm run serve:aot"
 Pour produire le build.js de production
-> npm run build:aot
+"npm run build:aot"
 
 Description
 
