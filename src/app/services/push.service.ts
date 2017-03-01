@@ -29,7 +29,7 @@ export abstract class PushService {
   constructor(public _notif: NotificationService) {
     if (window.localStorage.getItem("pushservice")==null)
       window.localStorage.setItem("pushservice", JSON.stringify(false));
-    this.activated=window.localStorage.getItem("pushservice");
+    this.activated=JSON.parse(window.localStorage.getItem("pushservice"));
   }
 
   /**
