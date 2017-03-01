@@ -74,7 +74,7 @@ export class Menu implements OnInit, OnDestroy {
     let retour: Section[] = [];
     let j = 0;
     for (let i: number = today; i < today + 9; i++) {
-      if (sections[j].titre === date.getDate().toString()) {
+      if (j<sections.length && sections[j].titre === date.getDate().toString()) {
         retour.push(sections[j]);
         j++;
       } else {
