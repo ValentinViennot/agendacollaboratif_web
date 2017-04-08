@@ -11,16 +11,16 @@ Plus d'informations sur [le site de l'Agendapp](https://agendapp.fr/decouvrir/) 
 
 ## Installation
 
-'''
+`
 npm install
 npm start
 npm run serve
-'''
+`
 
 pour créer les fichiers de production
-'''
+`
 npm run build:aot
-'''
+`
 
 ## License
 
