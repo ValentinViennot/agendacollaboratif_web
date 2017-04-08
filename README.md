@@ -29,3 +29,7 @@ npm run build:aot
 ## License
 
 This project is licensed under the GPL v3 License - see [LICENSE](https://www.gnu.org/licenses/gpl-3.0.html) file for details
+
+## Versionning
+
+See package.json file for actual version number.
