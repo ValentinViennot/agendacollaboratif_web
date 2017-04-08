@@ -13,7 +13,11 @@ Plus d'informations sur [le site de l'Agendapp](https://agendapp.fr/decouvrir/) 
 
 `
 npm install
+`
+`
 npm start
+`
+`
 npm run serve
 `
 
