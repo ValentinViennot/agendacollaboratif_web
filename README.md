@@ -32,4 +32,4 @@ This project is licensed under the GPL v3 License - see [LICENSE](https://www.gn
 
 ## Versionning
 
-See package.json file for actual version number.
+AGENDAPP v3.0.0-RC.2
